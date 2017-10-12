@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Atommann" />
+  <meta name="date" content="2013-06-30" />
+  <title>AVR 101 - 按键输入</title>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; }
+code > span.ch { color: #008080; }
+code > span.st { color: #008080; }
+code > span.co { color: #008000; }
+code > span.ot { color: #ff4000; }
+code > span.al { color: #ff0000; }
+code > span.er { font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">AVR 101 - 按键输入</h1>
+<h2 class="author">Atommann</h2>
+<h3 class="date">June 30, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#拆开按键">拆开按键</a></li>
+<li><a href="#输入输出">输入输出</a></li>
+<li><a href="#烦人的抖动">烦人的抖动</a><ul>
+<li><a href="#抖动产生的原因">抖动产生的原因</a></li>
+</ul></li>
+<li><a href="#消除抖动">消除抖动</a><ul>
+<li><a href="#硬件去抖">硬件去抖</a></li>
+<li><a href="#延时去抖">延时去抖</a></li>
+<li><a href="#状态机方法">状态机方法</a></li>
+</ul></li>
+<li><a href="#游乐场">游乐场</a><ul>
+<li><a href="#矩阵键盘">矩阵键盘</a></li>
+<li><a href="#pc-键盘">PC 键盘</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="简介"><a href="#TOC">简介</a></h2>
+<p><a href="./figures/button_bounce.png" title="button bounce"><img src="./figures/button_bounce.png" title="button bounce" alt="bounce" /></a></p>
+<p>按键和开关无处不在。请观察你周边的世界，手机、相机、电风扇、还有你电脑的键盘……，这些简单的机械开关可以让我们和电子设备交互，比如设置它们的参数和状态，等等。按键从分类上讲，属于人机交互装置。目前有很多很酷的人机交互装置，比如 wii 遥控器, Kinect，语音识别，等等。但它们的成本和复杂度都很高。对于简单的单片机应用，我们只需要几分钱一只的按键即可。</p>
+<p>好，让我们来研究怎样把按键接入单片机。</p>
+<h2 id="拆开按键"><a href="#TOC">拆开按键</a></h2>
+<p>我们今天的任务是研究按键，首先要做的是看看这个黑色的小东西里面是什么样子的。</p>
+<p><a href="./figures/button_internal.jpg" title="button internal"><img src="./figures/button_internal.jpg" title="button internal" alt="button_internal" /></a></p>
+<h2 id="输入输出"><a href="#TOC">输入输出</a></h2>
+<p>我们使用的单片机有很多的针脚，其中大部分都可以当成 GPIO 来用(即 General Purpose Input/Output 的缩写，也就是说这些脚是通用的，你可以用它们来干各种事情)，GPIO 作为输出(Output) 模式我们已经见识过了。比如在控制 LED，控制数码管的时候它们都是工作在输出模式。</p>
+<p>如果要识别按键，我们就需要使用输入(Input)模式，因为这时的情况是，单片机外部的按键产生的数据进入到单片机内部。</p>
+<p>欲使用输入功能，我们要做一个小小的作准备工作，即做一个简单的实验来了解一个新的寄存器，也就是 I/O 输入寄存器 PINx, x 在我们的单片机里可以被替换成 B, C, D，如 PINB, PINC, PIND，它是 Port x INput 的意思。</p>
+<p><a href="./figures/pinx.png" title="PINx test"><img src="./figures/pinx.png" title="PINx test" alt="pinx" /></a></p>
+<p>在上面的原理图里，PORTC 上接 4 个 LED，PORTB 上接 4 个 按键。</p>
+<p><a href="./button_pinx.zip" title="PINx">下载源程序</a>。</p>
+<pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;avr/io.h&gt;</span>
+
+<span class="dt">void</span> init(<span class="dt">void</span>)
+{
+    DDRC = <span class="bn">0xFF</span>;  <span class="co">// 将 PORTC 设置成输出模式</span>
+    PORTC = <span class="bn">0x00</span>;
+
+    DDRB = <span class="bn">0x00</span>;  <span class="co">// 将 PORTB 设置成输入模式</span>
+    PORTB = <span class="bn">0xFF</span>; <span class="co">// 打开内部上拉</span>
+}
+
+<span class="dt">int</span> main(<span class="dt">void</span>)
+{
+    init();
+
+    <span class="kw">while</span> (<span class="dv">1</span>) PORTC = PINB; <span class="co">// 读 PORTB 的输入，然后输出给 PORTC</span>
+}</code></pre>
+<p>试试这个程序，你会发现按下按键 S1，LED1 会熄灭；按下按键 S2，LED2 会熄灭；依次类推。</p>
+<p>由于打开了 PORTB 的内部上拉功能，在没有键被按下时，用万用表测量 PORTB 的各个引脚，我们能测到高电压，因此 PINB 会读到 1，这时 PORTC 上对应的 LED 点亮。</p>
+<p>如果某个键被按下，则引脚被拉低到地，因此 PINB 读到 0，PORTC 上对应的 LED 熄灭。</p>
+<p>回顾一下我们前面所了解到的知识，一个 PORT(端口) 由 3 个寄存器控制它们的行为，分别是：</p>
+<ul>
+<li>DDRx – 数据方向寄存器，设置某个 pin 是输出还是输入</li>
+<li>PORTx – 数据寄存器，设置某个 pin 输出高电压还是低电压</li>
+<li>PINx – 输入寄存器，读取某个 pin 上的电压值</li>
+</ul>
+<h2 id="烦人的抖动"><a href="#TOC">烦人的抖动</a></h2>
+<p>通过实验我们了解了 PINx 寄存器的功能，下面就可以进入主题了。这里的想法很简单：当一个键按下时，让一个值加一，然后显示出来。</p>
+<p>实验所使用的电路和第一个实验里的电路一样。</p>
+<p><a href="./button_bounce_leds.zip" title="Button bounce LEDs">下载源程序</a>。</p>
+<pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;avr/io.h&gt;</span>
+
+<span class="dt">void</span> init(<span class="dt">void</span>)
+{
+    DDRC = <span class="bn">0xFF</span>;  <span class="co">// 将 PORTC 设置成输出模式</span>
+    PORTC = <span class="bn">0x00</span>;
+
+    DDRB = <span class="bn">0x00</span>;  <span class="co">// 将 PORTB 设置成输出模式</span>
+    PORTB = <span class="bn">0xFF</span>;
+}
+
+<span class="dt">int</span> main(<span class="dt">void</span>)
+{
+    <span class="dt">uint8_t</span> count = <span class="dv">0</span>; <span class="co">// 按键计数器</span>
+
+    init();
+    PORTC = count;  <span class="co">// 显示 count 的初始值(0)</span>
+
+    <span class="kw">while</span> (<span class="dv">1</span>)
+    {
+        <span class="kw">while</span> (PINB &amp; 0b00000001) ; <span class="co">// 如果键没有被按下，则程序一直停在此处，处于等待状态，不往下走</span>
+
+        count++;                    <span class="co">// 有键按下了, count 自增</span>
+        <span class="kw">if</span> (count &gt; <span class="dv">9</span>) count = <span class="dv">0</span>;   <span class="co">// 超过 9 了回到 0</span>
+
+        <span class="kw">while</span> ( !(PINB &amp; 0b00000001) ) ; <span class="co">// 如果键被按下但未松开，则程序一直停在此处，不往下走</span>
+        PORTC = count;                   <span class="co">// 松开按键后更新显示</span>
+    }
+}</code></pre>
+<p>注意，我们使用 4 个 LED 做显示，因此显示的值是二进制的。如果你觉得这样不够直观，也可以用数码管来做实验，原理是一样的。</p>
+<p><a href="./figures/button-led.png" title="button seven seg led"><img src="./figures/button-led.png" title="button seven seg led" alt="button-led" /></a></p>
+<p>PD0 (pin 2) 通过一个按键接地，PD0 通过一个 10k 的电阻上拉，因此，在按键没有按下的情况下，PD0 上的电压是 5V，如果按下按键，则 PD0 上的电压会就变成 0V，因为这时 PD0 通过按键接到 GND 上了。</p>
+<p>这个电压的变化会发映在单片机里的寄存器，我们在程序里读寄存器的值就可以读出 GPIO 上的电压状态，就知道按键是否被按下，原理就是这样。</p>
+<p>7 段数码管用来显示数字，当按一下键它显示的值就加一，加到 9 又回到 0.</p>
+<p><a href="./button_bounce_7seg.zip" title="Button bounce 7 Seg">下载源程序</a>。</p>
+<pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;avr/io.h&gt;</span>
+<span class="ot">#include &lt;avr/pgmspace.h&gt; // 访问程序空间，后面的 pgm_read_byte 函数就由这个库所提供</span>
+
+<span class="co">// 7-seg LED 段码表</span>
+<span class="co">// 位: 7  6 5 4 3 2 1 0</span>
+<span class="co">// 段: DP G F E D C B A</span>
+<span class="co">// 加额外的 PROGMEM (PROGram MEMory 的缩写)修饰是为了把表格</span>
+<span class="co">// 存储在 Flash 存储器(程序代码就是存储在这里的)里而非 RAM 里以节省内存</span>
+<span class="dt">const</span> <span class="dt">uint8_t</span> led_7[<span class="dv">16</span>] PROGMEM = {
+<span class="bn">0x3F</span>, <span class="co">// 0</span>
+<span class="bn">0x06</span>, <span class="co">// 1</span>
+<span class="bn">0x5B</span>, <span class="co">// 2</span>
+<span class="bn">0x4F</span>, <span class="co">// 3</span>
+<span class="bn">0x66</span>, <span class="co">// 4</span>
+<span class="bn">0x6D</span>, <span class="co">// 5</span>
+<span class="bn">0x7D</span>, <span class="co">// 6</span>
+<span class="bn">0x07</span>, <span class="co">// 7</span>
+<span class="bn">0x7F</span>, <span class="co">// 8</span>
+<span class="bn">0x6F</span>, <span class="co">// 9</span>
+<span class="bn">0x77</span>, <span class="co">// A</span>
+<span class="bn">0x7C</span>, <span class="co">// b</span>
+<span class="bn">0x39</span>, <span class="co">// C</span>
+<span class="bn">0x5E</span>, <span class="co">// d</span>
+<span class="bn">0x79</span>, <span class="co">// E</span>
+<span class="bn">0x71</span>  <span class="co">// F</span>
+};
+
+<span class="dt">void</span> init(<span class="dt">void</span>)
+{
+    DDRC = <span class="bn">0xFF</span>;  <span class="co">// 将 PORTC 设置成输出模式</span>
+    PORTC = <span class="bn">0x00</span>;
+
+    DDRB = <span class="bn">0xFF</span>;  <span class="co">// 将 PORTB 设置成输出模式</span>
+    PORTB = <span class="bn">0x00</span>;
+
+    DDRD = <span class="bn">0x00</span>;
+    PORTD = <span class="bn">0xFF</span>;
+}
+
+<span class="dt">void</span> display(<span class="dt">uint8_t</span> num)
+{
+    <span class="dt">uint8_t</span> temp;
+    
+    temp = pgm_read_byte(led_7 + num); <span class="co">// 查表并赋给一个临时变量，如果是共阳LED，要把值取反(~是取反操作符)</span>
+    PORTC = temp;                    <span class="co">// 把值赋给 IO</span>
+    PORTB = (temp &gt;&gt; <span class="dv">6</span>);             <span class="co">// 把数据向右移 6 位才能对应到 PB0 上</span>
+}
+
+<span class="dt">int</span> main(<span class="dt">void</span>)
+{
+    <span class="dt">uint8_t</span> count = <span class="dv">0</span>; <span class="co">// 按键计数器</span>
+
+    init();
+    display(count); <span class="co">// 显示 count 的初始值(0)</span>
+
+    <span class="kw">while</span> (<span class="dv">1</span>)
+    {
+        <span class="kw">while</span> (PIND &amp; 0b00000001) ; <span class="co">// 如果键没有被按下，则程序一直停在此处，处于等待状态，不往下走</span>
+
+        count++;                    <span class="co">// 有键按下了, count 自增</span>
+        <span class="kw">if</span> (count &gt; <span class="dv">9</span>) count = <span class="dv">0</span>;   <span class="co">// 超过 9 了回到 0</span>
+
+        <span class="kw">while</span> ( !(PIND &amp; 0b00000001) ) ; <span class="co">// 如果键被按下但未松开，则程序一直停在此处，不往下走</span>
+        display(count);                  <span class="co">// 松开按键后更新显示</span>
+    }
+}</code></pre>
+<p>按下面包板上的按键，并观察数码管或 LED 的显示，你应该已经发现了点什么东西。</p>
+<p>我们“希望”(注意，只是我们希望 :)按键以下面的方式工作：当我们按下它时，它瞬间就接通了；当我们松开它时，它瞬间就断开了！因此，每按一下键，变量 count 就会加一。</p>
+<p><a href="./figures/diff_view_ideal.png" title="ideal"><img src="./figures/diff_view_ideal.png" title="ideal" alt="button_ideal" /></a></p>
+<p>但是单片机的 I/O 口看到的是下面这个情况，在键被按下时和松开时会有多次弹跳，因此单片机认为是多次按键，而不是一次！这不是我们想要的效果。</p>
+<p><a href="./figures/diff_view_bounce.png" title="bounce"><img src="./figures/diff_view_bounce.png" title="bounce" alt="button_bounce" /></a></p>
+<p>如果我们用示波器把按键的电压变化过程捕捉下来，真实的情况是下面这样子的(我们的真实世界是模拟的，连续的)：</p>
+<p><a href="./figures/diff_view_analog.png" title="analog"><img src="./figures/diff_view_analog.png" title="analog" alt="button_analog" /></a></p>
+<p><a href="./figures/debounce.png" title="osc"><img src="./figures/debounce.png" title="osc" alt="debounce" /></a></p>
+<p>从上面的实验里我们已经看到，本来我们只按了一次按键，但是单片机却认为我们按了多次按键，完全不是我们想要的效果，这个问题该如何解决？</p>
+<h3 id="抖动产生的原因"><a href="#TOC">抖动产生的原因</a></h3>
+<p>普遍认为抖动是由于机械按键的本身特性所产生的，也就是所在按下按键时，按键内部的金属片会弹跳一会儿，它要花一小点时间才会“稳定”下来。因此，按键的抖动在英语里叫 bounce，去除抖动则叫 debounce。目前大部分的教科书和大学里都是这样讲的。</p>
+<p>也有一些资料说按键的抖动是由于信号的突然变化产生的，这时按键内部的金属片相当于一个小电感。到底哪种说法是正确的，我还没有认真考证。总之，我们的实验表明，抖动是存在的。</p>
+<h2 id="消除抖动"><a href="#TOC">消除抖动</a></h2>
+<p>按键有抖动，当然不能满足我们的要求，下面来看看如何将抖动消除。</p>
+<h3 id="硬件去抖"><a href="#TOC">硬件去抖</a></h3>
+<p>这个方法是在按键和单片机之间加入一些硬件电路，用一些硬件原理将抖动滤除掉。这样做的好处是：在编写软件时会比较简单，但会增加硬件的复杂度。</p>
+<p>与之对应的方法是软件去抖，也就是在程序里消除抖动，下面我们来看看这种方法。</p>
+<h3 id="延时去抖"><a href="#TOC">延时去抖</a></h3>
+<h3 id="状态机方法"><a href="#TOC">状态机方法</a></h3>
+<p>上面的延时去抖法可以工作，但有一个缺点，它调用了软件延时函数 _delay_ms()。在 _delay_ms() 执行的时候，CPU 无法做别的事情，这样降低了单片机的实时性，影响了效率。实际上下面是一个更好的方法，即利用有限状态机来消除抖动<sup><a href="#fn1" class="footnoteRef" id="fnref1">1</a></sup>。</p>
+<p><a href="./button_state_machine.zip" title="Button State Machine">下载源程序</a>。</p>
+<pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;avr/io.h&gt;</span>
+<span class="ot">#define F_CPU 12000000UL</span>
+<span class="ot">#include &lt;util/delay.h&gt;</span>
+<span class="ot">#include &lt;avr/interrupt.h&gt; // sei(), cli() 和 ISR() 等中断相关的定义都在这个头文件里</span>
+
+<span class="co">// key-related constant definition</span>
+<span class="ot">#define KEY_INPUT   PINB </span><span class="co">/* connect port     */</span>
+<span class="ot">#define KEY_MASK    0x3F </span><span class="co">/* mask 0b0011 1111 */</span>
+
+<span class="ot">#define KEY_NO    0   </span><span class="co">/* no key pressed */</span>
+<span class="ot">#define KEY_S1    1   </span><span class="co">/* S1 */</span>
+<span class="ot">#define KEY_S2    2   </span><span class="co">/* S2 */</span>
+<span class="ot">#define KEY_S3    3   </span><span class="co">/* S3 */</span>
+
+<span class="ot">#define KEY_STATE_0 0 </span><span class="co">/* key state 0 */</span>
+<span class="ot">#define KEY_STATE_1 1 </span><span class="co">/* key state 1 */</span>
+<span class="ot">#define KEY_STATE_2 2 </span><span class="co">/* key state 2 */</span>
+
+<span class="co">// function prototypes</span>
+<span class="co">// uint8_t read_key(void);</span>
+
+
+<span class="co">// 全局变量</span>
+<span class="dt">volatile</span> <span class="dt">uint8_t</span> key_scan_time_ok;      <span class="co">// key scan ok</span>
+<span class="dt">volatile</span> <span class="dt">uint8_t</span> key_scan_time_counter; <span class="co">// read keys every 10ms</span>
+
+
+<span class="co">// Timer/Counter 0 溢出中断服务例程</span>
+ISR (TIMER0_OVF_vect) <span class="co">// 查 avr-libc manual</span>
+{
+    <span class="co">// 5.5ms 中断一次</span>
+
+    <span class="kw">if</span> (++key_scan_time_counter &gt;= <span class="dv">2</span>) <span class="co">// check for 11ms, increament counter</span>
+    {
+        key_scan_time_counter = <span class="dv">0</span>;
+        key_scan_time_ok = <span class="dv">1</span>;        <span class="co">// 11ms ready</span>
+    }
+}
+
+<span class="dt">uint8_t</span> read_button(<span class="dt">void</span>)
+{
+    <span class="dt">static</span> <span class="dt">uint8_t</span> key_state = <span class="dv">0</span>, key_press;
+    <span class="dt">uint8_t</span> key_return = KEY_NO; <span class="co">// KEY_NO = 0</span>
+
+    key_press = KEY_INPUT &amp; KEY_MASK; <span class="co">// read the port</span>
+
+    <span class="kw">switch</span> (key_state)
+    {
+        <span class="kw">case</span> KEY_STATE_0:  <span class="co">// intial state</span>
+            <span class="kw">if</span> (key_press != KEY_MASK) key_state = KEY_STATE_1; 
+            <span class="kw">break</span>;           <span class="co">// key pressed, jump to state 1</span>
+        <span class="kw">case</span> KEY_STATE_1:    <span class="co">// confirm state</span>
+            <span class="kw">if</span> (key_press == (KEY_INPUT &amp; KEY_MASK)) <span class="co">// if the key is same</span>
+            {
+                <span class="kw">if</span> (key_press == <span class="bn">0x3E</span>)      <span class="co">// 0b0011 1110</span>
+                    key_return = KEY_S1;    <span class="co">// return the key code</span>
+                <span class="kw">else</span> <span class="kw">if</span> (key_press == <span class="bn">0x3D</span>) <span class="co">// 0b0011 1101</span>
+                    key_return = KEY_S2;
+                <span class="kw">else</span> <span class="kw">if</span> (key_press == <span class="bn">0x3B</span>) <span class="co">// 0b0011 1011</span>
+                    key_return = KEY_S3;
+                key_state = KEY_STATE_2;    <span class="co">// switch to release state</span>
+            }
+            <span class="kw">else</span>
+                key_state = KEY_STATE_0; <span class="co">// key has been release, swith to initial state</span>
+            <span class="kw">break</span>;
+        <span class="kw">case</span> KEY_STATE_2:
+            <span class="kw">if</span> (key_press == KEY_MASK) key_state = KEY_STATE_0; <span class="co">// key has been release, switch to initial state</span>
+            <span class="kw">break</span>;
+    }
+
+    <span class="kw">return</span> key_return;
+}
+
+<span class="dt">void</span> init(<span class="dt">void</span>)
+{
+    DDRC = <span class="bn">0xFF</span>;  <span class="co">// 将 PORTC 设置成输出模式</span>
+    PORTC = <span class="bn">0x00</span>;
+
+    DDRB = <span class="bn">0x00</span>;  <span class="co">// 将 PORTB 设置成输入模式</span>
+    PORTB = <span class="bn">0xFF</span>; <span class="co">// 打开内部上拉</span>
+
+    <span class="co">// 设置 Timer 0</span>
+    TCCR0B = (<span class="dv">1</span> &lt;&lt; CS02);   <span class="co">// Prescaler 256</span>
+    TIMSK0 |= (<span class="dv">1</span> &lt;&lt; TOIE0); <span class="co">// 打开溢出中断功能</span>
+}
+
+<span class="dt">void</span> blink(<span class="dt">void</span>)
+{
+    <span class="dt">uint8_t</span> i;
+    
+    <span class="kw">for</span> (i=<span class="dv">0</span>; i&lt;<span class="dv">3</span>; i++)
+    {
+        PORTC = <span class="bn">0xFF</span>;
+        _delay_ms(<span class="dv">200</span>);
+        PORTC = <span class="bn">0x00</span>;
+        _delay_ms(<span class="dv">200</span>);
+    }
+}
+
+<span class="dt">int</span> main(<span class="dt">void</span>)
+{
+    <span class="dt">uint8_t</span> buttoncode; <span class="co">// 按键码</span>
+    <span class="dt">uint8_t</span> count = <span class="dv">0</span>;  <span class="co">// 按键计数器</span>
+
+    init(); <span class="co">// 初始化</span>
+    sei();  <span class="co">// 开启全局中断</span>
+
+    PORTC = count; <span class="co">// 显示初始值 0</span>
+
+    <span class="kw">while</span> (<span class="dv">1</span>)
+    {
+        <span class="kw">if</span> (key_scan_time_ok)
+        {
+            key_scan_time_ok = <span class="dv">0</span>;
+            buttoncode = read_button(); <span class="co">// 读键</span>
+            <span class="kw">if</span> (buttoncode)             <span class="co">// 如果键值不是 0 表明有键被按下，则做下面的处理</span>
+            {
+                <span class="kw">if</span> (buttoncode == KEY_S1) <span class="co">// key S1</span>
+                {
+                    count++;                    <span class="co">// count 自增</span>
+                    <span class="kw">if</span> (count &gt; <span class="dv">15</span>) count = <span class="dv">0</span>;   <span class="co">// 超过 15 了回到 0</span>
+                }
+                <span class="kw">if</span> (buttoncode == KEY_S2) { <span class="co">// key S2</span>
+                    count--;
+                    <span class="kw">if</span> (count &lt;= <span class="dv">0</span>) count = <span class="dv">0</span>;
+                }
+                <span class="kw">if</span> (buttoncode == KEY_S3) { <span class="co">// key S3</span>
+                    blink();  <span class="co">// 闪烁</span>
+                }
+            }
+        }
+
+        PORTC = count;
+    }
+}</code></pre>
+<p>编译上面的程序并写进芯片，按动按键并观察效果。这些代码可以在项目中重用。</p>
+<h2 id="游乐场"><a href="#TOC">游乐场</a></h2>
+<h3 id="矩阵键盘"><a href="#TOC">矩阵键盘</a></h3>
+<p><a href="./figures/keypad4x4.jpg" title="4x4 keypad"><img src="./figures/keypad4x4.jpg" title="4x4 keypad" alt="keypad4x4" /></a></p>
+<h3 id="pc-键盘"><a href="#TOC">PC 键盘</a></h3>
+<p>除了上面的例子，电脑用的 PS2 键盘也可以接入单片机，但软件处理上比较复杂，超出了本教程的范围。</p>
+<!---
+figures
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>在马潮所著的《AVR单片机嵌入式系统原理与应用实践》对这种方法有详细的讲解。<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+</body>
+</html>

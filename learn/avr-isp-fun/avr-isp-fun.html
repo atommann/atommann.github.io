@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Atommann" />
+  <meta name="date" content="2013-09-28" />
+  <title>AVR ISP 乐事</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">AVR ISP 乐事</h1>
+<h2 class="author">Atommann</h2>
+<h3 class="date">September 28, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#缘由">缘由</a></li>
+<li><a href="#用开发板做编程器">用开发板做编程器</a></li>
+<li><a href="#arduino-isp">Arduino ISP</a></li>
+<li><a href="#dasa-bit-bang-programmer">dasa bit-bang programmer</a></li>
+<li><a href="#结果">结果</a></li>
+<li><a href="#教训">教训</a></li>
+<li><a href="#结语">结语</a></li>
+</ul>
+</div>
+<h2 id="缘由"><a href="#缘由">缘由</a></h2>
+<p>最近一直在研究加速度传感器 MPU6050 (这厮驱动复杂，资料奇少，属奇葩级 sensor)，今天是周末，因此我打算周末在家里继续研究它的驱动程序。回到家，在网上搜索到一个<a href="http://davidegironi.blogspot.hk/2013/02/avr-atmega-mpu6050-gyroscope-and.html" title="AVR MPU6050">可用的 AVR 驱动</a>，可以把传感器的值通过串口传到 PC 上，然后用 Processing 进行显示。</p>
+<p>太好了！我想，只需要把 AVR 和 MPU6050 用 I2C 连起来，而且我手上又有 USB2TTL 的线，这个实验很好做嘛！</p>
+<p>于是我这才想起来自己在离开办公室时做出了一个愚蠢的决定：没有把 AVR ISP 编程器放在电脑包里！因为当时想到家里有一块 STM32 discovery 板，还有一块 Freescale 的 FRDM-KL25Z cortex-m0+ 开发板，我可以用它们做实验嘛，反正都是 C 语言，很好移植的。</p>
+<p>有现成的例子，我当然决定用现成的例子了。于是开始想如何解决手上没有编程器的问题。</p>
+<h2 id="用开发板做编程器"><a href="#用开发板做编程器">用开发板做编程器</a></h2>
+<p>从理论上讲，可以用 STM32 开发板做 AVR 编程器，说不定网上已经有人这样干了，但是我还要在 Linux 里装 STM32 的开发环境……</p>
+<p>这个想法有点疯狂，只是一闪而过。</p>
+<h2 id="arduino-isp"><a href="#arduino-isp">Arduino ISP</a></h2>
+<p>这个年代，Arduino 无处不在。用它做 ISP 当然是一个合理的选择，于是开始在我的“创客垃圾山”里找寻，很快我就翻出了一块红色的 Seeeduino，但是，当我看到它的时候就明白悲剧发生了，见照片：</p>
+<p><a href="./figures/avr.jpg"><img src="./figures/avr-s.jpg" title="avr" alt="avr" /></a></p>
+<p>这让我想起多年前的一桩往事：我用的平放式小台式机散热不好，就把机箱敞开，哪知道一只老鼠跑进去在一块 IC 上面撒了一泡尿，电脑就报废了。这块 Seeeduino 有点像那个样子。但我家里没有老鼠啊，难道是蟑螂干的？(我家里的蟑螂比家里的电阻要多)</p>
+<p><a href="./figures/seeeduino-fixed.jpg" title="fixed seeeduino"><img src="./figures/seeeduino-fixed-s.jpg" title="fixed seeeduino small" alt="fixed" /></a></p>
+<p><更新></p>
+<p>Oct. 21, 2013</p>
+<p>为了有 3.3V 的 Arduino 可以，我决定修复这块 Seeeduino，方法如下：</p>
+<ol style="list-style-type: decimal">
+<li><p>用热风枪吹下被腐蚀的 AVR</p></li>
+<li><p>用刀口电烙铁加焊锡去除 PCB 焊盘上的脏东西</p></li>
+<li><p>焊上新的 AVR</p></li>
+<li><p>用 Arduino IDE 配合 USBtinyISP 烧写 Bootloader</p></li>
+</ol>
+<p>&lt;/更新&gt;</p>
+<p>这块 Arduino 不能用，应该还有别的 Arduino，比如 Nanode。但这时我又有了新的想法：用 TinyPOV 上的 bit-bang 编程器来编程！</p>
+<h2 id="dasa-bit-bang-programmer"><a href="#dasa-bit-bang-programmer">dasa bit-bang programmer</a></h2>
+<p>TinyPOV 是基于 Ladyada 的 miniPOV3 设计的，这个电路板上自带了一个 <a href="http://avrprogrammers.com/programmers/Serial_Port/avr-programmer-dasa" title="dasa avr programmer">bit-bang AVR 编程器</a>，如果要更新 AVR 的固件，我们不需要另外的编程器，只要把板子接到电脑的串口上就能用 avrdude 写程序了。但速度奇慢。因为它是用位拆裂的方式在工作。</p>
+<p>把 TinyPOV 改装成编程器非常简单：只要把上面的 AVR 取下来，再用 6 条杜邦线把 ISP 接口引出来即可。</p>
+<p>执行 make program 之后，烧写过程就开始了。好吧，你先烧，我顺便去冲个凉换个衣服先。等冲完凉回来，发现还早着呢！我得找点别的事情先干着。于是就开始写这篇笔记。</p>
+<p><a href="./figures/programming.jpg" title="programming"><img src="./figures/programming-s.jpg" title="programming" alt="programming" /></a></p>
+<p><a href="./figures/avrdude_isp.png" title="isp"><img src="./figures/avrdude_isp.png" title="isp" alt="avrdude" /></a></p>
+<p>(我的天啦，就在我写这篇文章的时候，洗衣机叫了，这表明衣服已经洗好。我看了一下，差不多已经烧写了 48 分钟了，读回了 60% 多)</p>
+<p>不管，继续写文章。写着写着，LED 熄灭了，编程终于结束了，谢天谢地！</p>
+<p>但到终端里一看，Oh, NO!</p>
+<pre>
+[atommann@atommann src]$ make program
+avrdude -p atmega168 -P /dev/ttyUSB0  -c dasa    -U flash:w:main.hex 
+
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.63s
+
+avrdude: Device signature = 0x1e9406
+avrdude: NOTE: FLASH memory has been specified, an erase cycle will be performed
+         To disable this feature, specify the -D option.
+avrdude: erasing chip
+avrdude: reading input file "main.hex"
+avrdude: input file main.hex auto detected as Intel Hex
+avrdude: writing flash (8868 bytes):
+
+Writing | ################################################## | 100% 1782.90s
+
+avrdude: 8868 bytes of flash written
+avrdude: verifying flash memory against main.hex:
+avrdude: load data flash data from input file main.hex:
+avrdude: input file main.hex auto detected as Intel Hex
+avrdude: input file main.hex contains 8868 bytes
+avrdude: reading on-chip flash data:
+
+Reading | ################################################## | 100% 1766.72s
+
+avrdude: verifying ...
+avrdude: verification error, first mismatch at byte 0x0000
+         0x0c != 0x00
+avrdude: verification error; content mismatch
+
+avrdude: safemode: lfuse changed! Was e2, and is now 0
+Would you like this fuse to be changed back? [y/n] y
+</pre>
+
+<p>写入一共花了 30 分钟，读回来又花了差不多 30 分钟，也就是说写 8.6k 的 flash 一共花了一个小时！</p>
+<p>8868 个字节，在 60 分钟的时间里，不能有任何读写错误！</p>
+<p>超长时间的 ISP 编程在这里看来不是 bug，而是 feature 啊！想想吧，我得到了：</p>
+<ul>
+<li>冲了凉，这样更清爽，可以更好的工作。</li>
+<li>文章也写了一大半，好久没写文章了。</li>
+<li>衣服洗好了，当然，这是洗衣机的功劳。</li>
+<li>把自己给逗乐了，心情好了 :)</li>
+<li>可能创造了一个新的，最漫长的 AVR ISP 编程世界记录，想想那些多少人一起打麻将之类的吉尼斯吧 ;)</li>
+</ul>
+<p>(6:03AM，天亮了，我可以坐车去公司拿编程器了，全程一个小时，和这次 ISP 的时间差不多 :)</p>
+<p>这是到目前为止，我所经历过的最长的一次 AVR ISP 编程，而且，我再也不想这样来第二次了.</p>
+<p>(让我不可接受的是，后来我这样干了第二次！结果依然是 content mismatch!)</p>
+<h2 id="结果"><a href="#结果">结果</a></h2>
+<p>编程失败</p>
+<h2 id="教训"><a href="#教训">教训</a></h2>
+<p>AVR 编程器要随包带，最好装在钱包里。</p>
+<h2 id="结语"><a href="#结语">结语</a></h2>
+<p>工欲善其事，必先利其器！</p>
+<!---
+figures
+-->
+</body>
+</html>

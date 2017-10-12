@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>Temp2Morse</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">Temperature to Morse Code</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Atommann</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　- . -- .--. ..--- -- --- .-. ... .</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">缘由</a></h2>
+
+    <p>做这种温度计的想法由来已久，但直到近两天才把它做来了。夏天来了，我家里那位总是说空调的温度显示不正确，比如空调上显示的是 27 度，她认为可能是 24 度左右，我则说空调的温度正负一度很正常，但不会偏差这么大，她不信我，我决定尽快做个温度计出来说服她(另一个原因是我从未制作过电池供电的嵌入式设备，因此决定尝试一下)。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+
+	  <p><a href="figures/temp2morse.jpg"><img src="figures/temp2morse.jpg" width="800" height="450"/></a></p>
+	</div>
+
+      </div>
+
+      <div class="SECT1">
+	<hr />
+
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">设计构想</a></h2>
+
+    <p>因为想设计成用电池供电，显示设备最初考虑使用 LCD 而不是数码管，因为数码管比较耗电。我正好有 2x8 的字符型 LCD 模块(每行可显示 8 个字符，两行)，其资料上显示工作电流典型值是 1.5mA，背光 LED 典型工作电流 15mA，最大 25mA，可见 LCD 的背光是比较耗电的，如果用电池供电，这不是一个好事情。</p>
+
+    <p>此外，LCD 还需要占用更多的 IO 口，LCD 体积也较大，而我想设计一个小温度计。还有一点：在夜晚如果不开背光，LCD 上的显示是不可读的。当然我可以不用 LCD 的背光而自己加一个 LED 来照亮 LCD，那既然可以加一个 LED，为何不就用这个 LED 来做显示呢？</p>
+
+    <p>用 1 只 LED 来做显示器，听上去有点疯狂，但这是完全可行的，而且这个技术在 170 多年前已经解决了：使用 Morse 码。国际 Morse 码的数字非常有规律，极易读取，如下：</p>
+
+<pre class="SCREEN">
+1 .----
+2 ..---
+3 ...--
+4 ....-
+5 .....
+6 -....
+7 --...
+8 ---..
+9 ----.
+0 -----
+</pre>
+
+    <p>用 LED 做显示时，点(.)表示 LED 短亮，划(-)表示 LED 长亮，划的长度是点的 3 倍。让 Morse 码显示得慢一些，并且只显示两位整数，这样更好读值。</p>
+
+      </div>
+
+      <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">硬件设计</a></h2>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+
+	  <p><a href="figures/temp2morse-sch.jpg"><img src="figures/temp2morse-sch.jpg" width="800" height="400"/></a></p>
+	</div>
+
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">MCU</a></h3>
+
+    <p>由于显示器只用一只 LED，只占用 mcu 一个 IO，这样可以使用只有 8 个脚的 AVR，这个项目使用了 ATTiny85V，其实 ATTiny45/ATTiny13 也是可以的。</p>
+    <p>MCU 工作在 1MHz，我想让它工作在内部 128KHz 以进一步省电，但是在读 DS18B20 的时候有问题。</p>
+
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">供电</a></h3>
+
+    <p>采用两节 AA 电池，3V.</p>
+
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">LED</a></h3>
+
+    <p>为了省电，在 LED 上串联了一只 1k 欧的电阻，假设红色 LED 的压降是 1.7V，根据欧姆定律，LED 工作时的电流为：</p>
+    <p>(3V-1.7V)/1000 Ohm = 0.0013A = 1.3mA</p>
+
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">温度传感器</a></h3>
+
+    <p>有多种温度传感器可供选择，比如 NTC, LM35, TMP36 等等。这里采用 DS18B20 单总线数字温度传感器，误差是正负 0.5 度，数据手册上说它的工作电压是 3.0V 到 5.5V，电池的电压正好是 3V，网上有人报告说在 2.5V 时 DS18B20 都可以工作。</p>
+
+    <p>DS18B20 的 VCC 使用 tiny85 的一个引脚供电，这样在 tiny85 休眠的时候可以关闭 DS18B20 的电源以节省电池能量。</p>
+
+    <p>其实在 tiny85 内部有一个内置温度传感器，但不是很准确(即使做校正也不太准)。</p>
+
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">按键</a></h3>
+
+    <p>ATTiny85 的 INT0 通过一个按钮 S1 接地，中断采用低电平触发。</p>
+
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">功耗</a></h3>
+
+    <p>采用 Power-down 休眠模式，用万用表测得休眠电流 1 uA；工作时 10mA 左右。</p>
+
+	</div>
+
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">软件</a></h2>
+
+    <p>平时 mcu 处于休眠状态，用户按按键时触发中断唤醒 mcu，在 INT0 中断服务程序中设置一个标志位，然后测量温度并以 Morse 码的形式显示，显示完成后又进入休眠模式。</p>
+
+    <p>DS18B20 采用从 Martin Thomas 网站上下载的一个库，对于这个应用可以进一步裁剪以减少代码大小。如果使用 ATTiny13 可能要用汇编语言写 DS18B20 的操作代码才能把代码放进 ROM 里。</p>
+
+  </div>
+
+    <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">关于外壳</a></h2>
+
+    <p>最初想把这个温度计和两节 AA 电池放在一个透明的外壳中，但是这个外壳体积有点大，电池也不好固定。</p>
+
+    <p>其次尝试了把它放进一个常见的 AA 电池盒里，花了一翻功夫，比较麻烦，没能完成。</p>
+
+    <p>这时想到前两周在柴火玩冷光管时的升压电池盒，它上面正好有一个按键，而且放升压电路的地方正好可以用来安装温度计的电路，并且装电池的地方也有了，就决定使用这个外壳。</p>
+
+    <p>对这个升压器作了如下修改：</p>
+
+	<ul>
+		<li>
+            <p>拆去升压器上不需要的器件，只剩下按键、PCB.</p>
+		</li>
+		<li>
+            <p>用小刀把不一些不需要的接线切断</p>
+		</li>
+		<li>
+            <p>在外壳上钻孔以露出 LED.</p>
+		</li>
+		<li>
+            <p>在 PCB 上钻孔以安装 ATTiny85 以电阻和 DS18B20.</p>
+		</li>
+	</ul>
+
+
+
+      </div>
+
+
+    <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">一些想法</a></h2>
+
+	<ul>
+		<li>
+            <p>声音输出版本(实际上 LED 输出比较安静)。</p>
+		</li>
+		<li>
+            <p>字符模式输出，比如 28 度用 TWENTY EIGHT 显示，当 Morse 码练习器使用。</p>
+		</li>
+		<li>
+            <p>用双色 LED 作输出。</p>
+		</li>
+		<li>
+            <p>可以选择显示模式，比如按键后才显示或者是每隔一段时间自动显示。</p>
+		</li>
+		<li>
+            <p>防水处理，把温度计固定在房子外面的树上、电杆上或别的地方，这样在家里可以读出外面的当前温度值(人可以读出很远的闪光而看不清小数码管)。</p>
+		</li>
+		<li>
+            <p>用太阳能供电</p>
+		</li>
+		<li>
+            <p>去掉电池，采用线圈内有一块移动磁铁那种发电器供电(有那种手电筒)，电荷存储在法拉电容或电解电容中(如果家里有孩子，平时可能会晃动它)。</p>
+		</li>
+		<li>
+            <p>设计成 Adafruit 的 iCufflink/iNecklace 那样的穿戴式电子装置，戴在身上。</p>
+		</li>
+		<li>
+            <p>设计成钥匙链上那种 LED 灯的大小。</p>
+		</li>
+	</ul>
+
+
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">代码和图纸</a></h2>
+
+          <p><a href="https://github.com/atommann/temp2morse-led" target="_top"><i class="CITETITLE">Github 上的代码和图纸</i></a></p>
+
+      </div>
+
+      <div class="SECT1">
+	    <h2 class="SECT1"><a id="AEN12" name="AEN12">照片</a></h2>
+
+          <p><a href="http://www.flickr.com/photos/atommann/sets/72157630011325158/" target="_top"><i class="CITETITLE">Flickr</i></a></p>
+      </div>
+
+      <div class="SECT1">
+	    <h2 class="SECT1"><a id="AEN12" name="AEN12">参考</a></h2>
+
+	<ol>
+	<li>
+	<p><a href="http://kd1jv.qrpradio.com/temp2morse/temp2morse.htm" target="_top"><i class="CITETITLE">Wireless Morse thermometer</i></a></p>
+	</li>
+	<li>
+	<p><a href="http://tomscircuits.blogspot.com/2012/05/morse-thermometer-part-1.html" target="_top">The Morse Thermometer - Part 1<i class="CITETITLE"></i></a></p>
+	</li>
+	</ol>
+
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
+

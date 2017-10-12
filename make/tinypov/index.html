@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>TinyPOV</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">TinyPOV</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Atommann</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　Persistence Of Vision</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">概述</a></h2>
+
+	<p>　　这个设计基于 Lady Ada 的 <a href="http://www.ladyada.net/make/minipov3/index.html" target="_top"><i class="CITETITLE">MiniPOV3</i></a>，硬件和软件都和 MiniPOV3 是兼容的，在设计的时候发现 ATtiny2313 还有几个引脚空闲着，就增加了 3 个按键和一个蜂鸣器，按键可以用来输入字符，切换工作状态以及设置定时器的时间，有了蜂鸣器可以把这个 POV 玩具当成烹饪定时器使用。（注意：烹饪定时器的软件还没有实现）。</p>
+
+	<p>　　这个设计内置了一个简单的 AVR 串口编程器，因此用户不需要特殊的编程器就可以给这个套件编程，可以配合普通的 PC 使用(Linux/Unix 或 Windows)，Mac 电脑也可以（需要运行 Mac OS X 和一个 USB/RS232 转换器）。</p>
+
+	<p>　　如 Lady Ada 网站上所写，这个项目的设计意图是针对想要做下面这些事的任何人作为一个理想的入门起始点：</p>
+
+	<ul>
+		<li>
+			<p>学习怎样焊接</p>
+		</li>
+		<li>
+			<p>学习怎样组装简单的电子套件</p>
+		</li>
+		<li>
+			<p>学习怎样给微控制器编程</p>
+		</li>
+		<li>
+			<p>制作闪光的东西</p>
+		</li>
+	</ul>
+
+	<p>　　整个套件包含了制作并让套件运行起来所需的所有器件。</p>
+
+      </div>
+
+      <div class="SECT1">
+	<hr />
+
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">常见问题</a></h2>
+
+	<p>　　</p>
+
+      </div>
+
+      <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">硬件设计</a></h2>
+
+	<p>　　</p>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">微控制器</a></h3>
+
+	<p>　　微控制器，本质上是一个可以向其 Flash 存储器里烧写程序的芯片。当给这个芯片加上电源的时候，它就开始运行这个程序。微控制器一般可以并行执行多个功能，例如通过 A/D 读取一个传感器，在 LCD 上显示信息，处理数据，和其它芯片交互工作等，这是通过利用中断来实现的。微控制器是功能很强大的电子开发工具，因为它们很便宜（有的只要几元钱），带有 ROM, RAM 和 EEPROM，以及一个集成的处理器核心，并且可以用流行的计算机语言如 C, Basic 和汇编语言来编写程序。基于这些原因，我认为对那些在计算机和软件方面有一定经验的人来说，微控制器是绝佳的电子技术入门导引。</p>
+
+	<p>　　TinyPOV 用的微控制器是 Atmel 公司的 20 个引脚的 RISC 控制器 ATtiny2313。之所以选择它是因为它有一个内部振荡器（无需外部晶振和时钟信号）而且有足够的 I/O 端口来驱动每个 LED，而且价格便宜。</p>
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">LED</a></h3>
+
+	<p>　　LED 是电流驱动的。也就是说，LED 的驱动电路应该设计成让某个给定大小的电流通过 LED 而不是说要在 LED 上施加多大的电压。这基本上是指要给 LED 串联一个电阻，电阻值越大，电流就越小。对于大多数的 LED，通以 5 到 20mA 的电流就可以让它很好工作。</p>
+
+	<p>　　要计算电阻的大小，首先必须决定 (1) 电源的电压是多少及 (2) LED 的压降是多少。对于 TinyPOV，电源电压是 3V，因为每节 AA 电池是 1.5V；对于 LED 的压降，需要查看 LED 数据手册中的“正向压降”。这个值信赖于 LED 是由什么材料制造的，材料也决定 LED 的颜色。几乎所有红色 LED 的降压都是 2V。蓝色，白色，紫外和一些绿色 LED 的压降是 3.4V。注意，通常情况下，电源电压要求一定要比 LED 的正向压降要大一点。好，现在把两个电压相减，然后再除以电流值就可以得到电阻的值了，单位是欧姆：(3V - 2V / 0.02A = 50 欧姆)。由于这些电阻限制流经 LED 的电流大小，它们也被称着“限流电阻”。</p>
+	
+	<p>　　 网上有一些在线 LED 计算器，比如这个 <a href="http://led.linear1.org/1led.wiz" target="_top"><i class="CITETITLE">LED calculator</i></a>。你还可以尝试 EMSL 的纸制 <a href="http://www.evilmadscientist.com/article.php/ledcalc" target="_top"><i class="CITETITLE">Wallet-size LED Resistance Calculator</i></a>。</p>
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">按键</a></h3>
+
+	<p>　　3 个按键，用于输入字符和为定时器设置时间（注意：烹饪定时器的软件还没有实现）。</p>
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">传感器</a></h3>
+
+	<p>　　默认情况下套件没有包含传感器，但是在 PCB 上预留了传感器的安装位置，有兴趣改装的朋友可以利用它。例如，可以安装一只 DS18B20 单总线温度传感器(注意脚位的顺序和PCB 不一致，另外还需要一只 4.7K 的上拉电阻)，这样可以测量和显示温度，把 TinyPOV 当成一个 TempPOV 或二进制温度计使用。当把 TinyPOV 安装在自行车轮子上的时候，可以安装霍尔传感器。</p>
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">电池</a></h3>
+
+	<p>　　2 节 AA 电池供电，3V 电压。</p>
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">串口编程器</a></h3>
+
+	<p>　　这个设计的特点之一是把一个简单的 AVR 串口编程器集成到了电路板上，这样用户不需要专用的 AVR 编程器就可以方便的修改 TinyPOV 的显示内容，这个编程器采用 Bitbang 模式，下载程序比较慢，但是它是可用的。</p>
+	</div>
+
+
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">原理图</a></h3>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 1. 原理图</b></p>
+
+	  <p><a href="figures/tinypov-schem.png"><img src="figures/tinypov-schem.png" width="800" height="518"/></a></p>
+	</div>
+
+	</div>
+
+
+	<div class="FIGURE"><a id="AEN36" name="AEN36"></a>
+	  <p><b>图 2. 布线- Component 层</b></p>
+
+	  <p><a href="figures/tinypov-top.png"><img src="figures/tinypov-top.png" width="300" height="598"/></a></p>
+	</div>
+
+	<div class="FIGURE"><a id="AEN36" name="AEN36"></a>
+	  <p><b>图 3. 布线- Solder 层</b></p>
+
+	  <p><a href="figures/tinypov-bottom.png"><img src="figures/tinypov-bottom.png" width="598" height="300" /></a></p>
+	</div>
+
+	<p>　　"TinyPOV" 这几个 "POV" 字体和中文是用 pstoedit 生成的，先在 inkscape 中设计好图案，然后转为 postscript 文件，再用 pstoedit 转为 pcb 格式。</p>
+
+	<div class="FIGURE"><a id="AEN36" name="AEN36"></a>
+	  <p><b>图 4. PCB 照片</b></p>
+
+	  <p><a href="figures/front-and-back.jpg"><img src="figures/front-and-back.jpg" width="800" height="450"/></a></p>
+	</div>
+
+
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">制做</a></h2>
+
+	<p>　　怎样焊接，组装和测试。</p>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">零件列表</a></h3>
+
+	<p>　　检查并确认你的套件包含有下面这些零件。</p>
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">焊接</a></h3>
+
+	<p>　　第一件事就是把套件焊接起来。</p>
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">软件环境</a></h3>
+
+	<p>　　现在套件焊接好了，你可以给它重新烧写程序，显示自定义的信息和图案！</p>
+	<p>　　要给芯片编程，你需要一台带串口的个人电脑（基本上任何 PC 都行），对于没有串口的电脑可以用一个 USB-RS232 转换器。</p>
+
+	<p>　　安装 AVR 编程环境，下载源代码，修改 Makefile，执行 make program-minipov</p>
+
+	</div>
+
+	<div class="SECT2">
+	<hr />
+	<h3 class="SECT2"><a id="AEN41" name="AEN41">显示内容自定义</a></h3>
+
+	<p>　　TinyPOV 的显示内容可以由用户自己设计，然后通过串口下载到 TinyPOV 中。</p>
+	<p>　　手工修改：简单的显示图案可以直接手工修改程序中的 image 数组，1 对应 LED 点亮，0 对应 LED 熄灭。</p>
+	<p>　　应用生成器：如果你不喜欢手工一个像素一个像素地修改的话，可以采用自动化的工具来帮你生成图案，比如这个<a href="http://www.repulsor.net/minipov/" target="_top"><i class="CITETITLE">在线生成器</i></a>，然后用生成的内容替换 image 数组的内容。你甚至可以写自己的脚本来完成这个工作。</p>
+	</div>
+
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">下载</a></h2>
+
+	<ul>
+	<li>
+	<p><a href="./tinypov.tar.gz" target="_top"><i class="CITETITLE">硬件原理图和PCB布线(用 gEDA 设计)</i></a></p>
+	</li>
+	<li>
+	<p><a href="./tinypovfirmware.zip" target="_top"><i class="CITETITLE">firmware zip 压缩包(hex 文件，源代码和 Makefile)</i></a></p>
+	</li>
+	</ul>
+
+
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">论坛</a></h2>
+
+	<p>　　技术支持</p>
+
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">购买套件</a></h2>
+
+	<p>　　暂未上线</p>
+
+
+      </div>
+
+    </div>
+
+  </body>
+</html>
+

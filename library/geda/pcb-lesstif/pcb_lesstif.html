@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>使用 pcb 的 lesstif HID</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">使用 PCB 的 Lesstif GUI</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Atommann</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a
+							   href="mailto:atommann@gmail.com">Atommann</a>&#62;</code></p>
+	  </div>
+	</div>
+	
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　pcb 除了默认的 GTK GUI 用户界面(GUI)外还可以用 Lesstif，它可以为用户在屏幕上留出更大的使用空间。</p>
+	  </div>
+	</div>
+	
+	<hr />
+      </div>
+      
+      <p>　　安装 gd-devel，安装 lesstif 库和头文件，这些在 ./configure --with-gui=lesstif 中都会有提示，安装好需要的库和头文件之后再执行 ./configure 就可以完成配置。</p>
+      
+      <p>　　PCB 的安装方法在源代码文件夹中的 INSTALL 文件中有详细说明，下面对这个过程作个简要介绍。</p>
+      
+      <ul>
+	<li>
+	  <p>执行 ./autogen.sh，这会生成 configure 脚本。</p>
+	</li>
+	
+	<li>
+	  <p>执行 ./configure --with-gui=lesstif，如果这个过程顺利完成，会生成 Makefile</p>
+	</li>
+	
+	<li>
+	  <p>执行 make，注意，在 FreeBSD 上要执行 gmake</p>
+	</li>
+
+	<li>
+	  <p>执行 cd src 进入源代码目录</p>
+	</li>
+
+	<li>
+	  <p>执行 ./pcbtest.sh 运行 pcb</p>
+	</li>
+      </ul>
+      
+      <div class="FIGURE"><a id="AEN22" name="AEN22"></a>
+	<p><b>图 1. PCB Lesstif 图形用户界面</b></p>
+	
+	<p><img src="figures/pcb-lesstif.png" width=648 height=508/></p>
+      </div>
+      
+      <p>　　最后，如果你想用 Lesstif GUI，可以执行 make install 将其安装。</p>
+    </div>
+    
+  </body>
+</html>
+

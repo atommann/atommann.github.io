@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org" />
+<title>gschem 初学者热身</title>
+<meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+<link rel="STYLESHEET" type="text/css" href="docbook.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+alink="#0000FF">
+<div class="ARTICLE">
+<div class="TITLEPAGE">
+<h1 class="TITLE"><a id="AEN2" name="AEN2">gschem 初学者热身</a></h1>
+
+<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Bill Wilson</a></h3>
+
+<div class="AFFILIATION">
+<div class="ADDRESS">
+<p class="ADDRESS"><code class="EMAIL">&#60;<a
+href="mailto:bill-at-gkrellm.net">bill-at-gkrellm.net</a>&#62;</code></p>
+</div>
+</div>
+
+<div>
+<div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+<p>　　非常简短易懂的一篇 gschem 入门文章，翻译自 Bill Wilson 的 gschem warmup。</p>
+</div>
+</div>
+
+<hr />
+</div>
+
+<p>　　学习 gschem，你需要先熟悉几个简单的操作。OK，运行 gschem，让我们开始学习吧：</p>
+
+<p>
+　　程序启动时，会打开一个空白的窗口，菜单和工具栏位于窗口顶部。当你从菜单中选择操作命令时，通常会看到菜单项后面有对应的快捷键，这些快捷键能完成和菜单相同的操作。</p>
+
+<p>
+　　画原理图时，最好是把原理图画在一个指定的范围里，因此我们先给图纸加上一个标题框。我发觉用
+B 号标题框可以在信纸上打印出大小适合的电路图：</p>
+
+<ul>
+<li>
+<p>点击菜单项 Add→Component（或者按快捷键 i） 调出 Select Component
+窗口。也可以点击工具栏上的“添加元件”图标。</p>
+</li>
+
+<li>
+<p>在 Libraries 列表中，选择 Titleblocks(generic)。</p>
+</li>
+
+<li>
+<p>在 Components 列表中，选择 title-B.sym。</p>
+</li>
+</ul>
+
+<div class="FIGURE"><a id="AEN22" name="AEN22"></a>
+<p><b>图 1. 插图1</b></p>
+
+<p><img src="figures/gschem_warmup01.png" /></p>
+</div>
+
+<ul>
+<li>
+<p>把光标移到绘图区，点鼠标左键把标题框放置在窗口中。
+然后点鼠标右键退出命令（取消继续放置）。</p>
+</li>
+
+<li>
+<p>当光标在绘图区时，从键盘输入命令 ve (或从菜单选择 View→Zoom Extents
+命令)让标题框填满整个视图。</p>
+</li>
+
+<li>
+<p>回到元件选择窗口（如果已经关闭，请重新打开它） ，选择 analog 库，然后选择元件
+resistor-1.sym，在绘图区左击，放置两个电阻。你会注意到当你放置一个元件时，它呈红色，这表示该元件已被选中。</p>
+</li>
+
+<li>
+<p>在放电阻的地方，尝试放大(快捷键 z)和缩小(快捷键 SHIFT
+z)操作。如果你迷失了方向(比如看不到图形)，输入
+ve，把视图缩放回满视图显示。缩放操作时，你会注意到可视区域总是以鼠标光标为中心放大或缩小。</p>
+</li>
+
+<li>
+<p>
+在电阻上左击可选中它们，注意，如果你不是恰好点中电阻的话，被选中的将会是标题框而不是电阻。事实上，我们不想再选择标题框，因此可以把它锁定以防止误选择：单击选中标题框，再选择
+Edit→Lock。现在要选中电阻就方便多啦！</p>
+</li>
+
+<li>
+<p>试试用鼠标中键到处移动电阻。</p>
+
+<p></p>
+</li>
+
+<li>
+<p>选中一个电阻，试试用快捷键 er 或菜单 Edit→Rotate 90 Mode 旋转它。</p>
+</li>
+
+<li>
+<p>把两个电阻移动到相对适合的距离，缩放到适当大小。</p>
+</li>
+
+<li>
+<p>把光标放在一个电阻的引脚上，按 n
+键开始添加连线。接着把光标移动到另一个电阻的引脚上，左击，连线就连接到这个引脚上了。右击以取消继续添加连线，你会发觉如果再点一下左键，又可以开始添加另一个新的连线。</p>
+</li>
+</ul>
+
+<div class="FIGURE"><a id="AEN49" name="AEN49"></a>
+<p><b>图 2. 插图2</b></p>
+
+<p><img src="figures/gschem_warmup02.png" /></p>
+</div>
+
+<ul>
+<li>
+<p>观察工具栏，你将发现此时你正处于添加连线模式。在可以再次改变选中电阻之前，你需要按 s
+键重新回到选择模式。（或者点击工具栏的 select 图标，也可以用菜单操作：Edit→Select
+Mode）如果你用鼠标中键来平移视图，你可以这样做，并且你将自动重新进入选择模式。在 gschem
+中画图，你必须习惯它的模式。</p>
+</li>
+
+<li>
+<p>如果当你在电阻间加入了连线后，得到的东西看起来像下面这个样子：</p>
+</li>
+</ul>
+
+<div class="FIGURE"><a id="AEN61" name="AEN61"></a>
+<p><b>图 3. 插图3</b></p>
+
+<p><img src="figures/gschem_warmup03.png" /></p>
+</div>
+
+<p>
+　　这表明你没有连接到右边电阻的引脚上。仔细观察，你会看到引脚的末端是一个小红点，引脚间的连线都必须以这样的红点开始和结束。</p>
+
+<ul>
+<li>
+<p>选择电阻之间的连线，用 Delete 键删除。</p>
+</li>
+
+<li>
+<p>选中一个电阻，输入快捷键
+ee。这将弹出[电阻]属性编辑窗口，在这里，你可以修改电阻现有的属性值，也可以增加新的属性和值。在使用
+gschem 过程中，你必须非常熟悉属性管理，因此对增加和修改属性要多加练习。</p>
+
+<p></p>
+</li>
+</ul>
+
+<p>　　现在回到教程中，试着走完这个简单的例子。如果你遇到某个步骤不是很清楚，请查看
+gschem 文档面页上的 gschem 用户文档和属性文档。</p>
+</div>
+
+</body>
+</html>
+

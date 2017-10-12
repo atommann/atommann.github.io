@@ -1,0 +1,961 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org" />
+<title>gEDA 入门</title>
+<meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+<link rel="STYLESHEET" type="text/css" href="docbook.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+alink="#0000FF">
+<div class="ARTICLE">
+<div class="TITLEPAGE">
+<h1 class="TITLE"><a id="AEN2" name="AEN2">gEDA 入门</a></h1>
+
+<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+
+<div class="AFFILIATION">
+<div class="ADDRESS">
+<p class="ADDRESS"><code class="EMAIL">&#60;<a
+href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+</div>
+</div>
+
+<div>
+<div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+<p>　　这个系列的入门课程讲解怎样用开源的 EDA 软件工具集 gEDA
+来设计开源硬件，伴随着这个入门课程，我们将会设计一个简单的二进制时钟/温度计，并且会接触到
+8 位 AVR 微控制器，等课程结束，大家手上会有一个可用的二进制时钟/温度计作为纪念 :)</p>
+</div>
+</div>
+
+<hr />
+</div>
+
+<div class="SECT1">
+<h2 class="SECT1"><a id="AEN12" name="AEN12">1 gEDA 是什么，为什么选择它</a></h2>
+
+<p>
+　　现在不仅流行开源软件，而且开源硬件(这里说的开源硬件主要是和电子和嵌入式系统相关的)也相当流行，在网上可以找到很多开源硬件
+hacker 和他们的项目，比如 <a href="http://www.ladyada.net/" target="_top"><i
+class="CITETITLE">ladyada.net</i></a>, <a href="http://www.makezine.com/"
+target="_top"><i class="CITETITLE">Makezine</i></a>, <a
+href="http://www.tuxgraphics.org/" target="_top"><i class="CITETITLE">Tux
+Graphics</i></a>, <a href="http://www.makershed.com/" target="_top"><i
+class="CITETITLE">Make SHED</i></a> 等等。</p>
+
+<p>
+　　当我们有了一个好的电子方面的想法之后，想把它制作成实物，这个时候可以在多孔实验板上进行原型验证，如果要做得好一些，就要涉及到用软件绘制原理图，画
+PCB (Printed Circuit Board，印制电路板)等工作。</p>
+
+<p>　　现在可以找到很多做电子设计的专业软件，大部分都是闭源的商业软件，比如
+Protel，Mentor, Candense，德国 cadsoft 公司的 Eagle 等等，我学习的第一个电子设计软件就是
+Eagle，它是一个很不错的软件，简单易用，画出的电路十分漂亮，它可以在 Windows, Linux, Mac
+OS, FreeBSD 上面运行。它有个 Freeware 版本，但是它有限制：尺寸只能 10cm*8cm,
+双面板。很多业余电子爱好者都用 Eagle 来设计，即使在 10x8 的限制下，这些 hacker
+也做出了很多另人惊讶的作品。当我要画大一些的 PCB 的时候，Eagle Freeware
+就满足不了我的要求了，这个时候发现了 gEDA 这个优秀开源 EDA 软件。</p>
+
+<p>　　在 gEDA 的官方网站上这样写到：</p>
+
+<p>　　The gEDA project has produced and continues working on a full GPL'd suite and
+toolkit of Electronic Design Automation tools. These tools are used for electrical
+circuit design, schematic capture, simulation, prototyping, and production. Currently,
+the gEDA project offers a mature suite of free software applications for electronics
+design, including schematic capture, attribute management, bill of materials (BOM)
+generation, netlisting into over 20 netlist formats, analog and digital simulation, and
+printed circuit board (PCB) layout.</p>
+
+<p>　　The gEDA project was started because of the lack of free EDA tools for POSIX
+systems with the primary purpose of advancing the state of free hardware or open source
+hardware. The suite is mainly being developed on the GNU/Linux platform with some
+development effort going into making sure the tools run on other platforms as well.</p>
+
+<p>　　既然是做开源硬件，那当然要用开源的 EDA
+软件来做设计，而且，个人也购买不起昂贵的商业 EDA
+软件。现在，由于自由软件社区的发展，已经可以在自由的操作系统(如
+Linux/*BSD)上面做设计，这是一件相当美妙的事情，做设计的时候会感觉到相当自由，而且设计可以不被保存为私有格式。因此
+gEDA 是一个相当好的选择。除了 gEDA 之外，还有一个法国的开源 EDA 软件，叫
+KiCAD，也相当不错，它是跨平台的，可以运行在 Windows, Linux 和 FreeBSD 上。</p>
+
+<p>　　gEDA 的一些特点</p>
+
+<ul>
+<li>
+<p>不用花钱(可以考虑捐赠)</p>
+</li>
+
+<li>
+<p>所有的文件格式都是透明的纯文本文件，方便手工/脚本 hack。</p>
+</li>
+</ul>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN35" name="AEN35">2 用 gEDA 进行设计的流程</a></h2>
+
+<p>　　一张流程图</p>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN38" name="AEN38">3 绘制原理图</a></h2>
+
+<p>　　可以先阅读 Bill Wilson 的文章 gschem 初学者热身。</p>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN41" name="AEN41">3.1 术语</a></h3>
+
+<p>　　课程中会接触到一些术语，先对一些术语进行简单的介绍。</p>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN44" name="AEN44">3.2 设置</a></h3>
+
+<div class="NOTE">
+<blockquote class="NOTE">
+<p><b>注意:</b> 这一小节中大部分取自以前翻译的 Bill Wilson 的文章 gsch2pcb
+tutorial，我没有对这些内容进行详细的验证，因此不能保证其准确性。</p>
+</blockquote>
+</div>
+
+<p>　　采用适当的目录结构来管理自己的设计项目是一个很好的习惯。安装好 gEDA 和 PCB
+之后，有一套默认的 gschem 元器件符号和 PCB footprint，你也可以建立自己的 gschem 符号库和
+PCB footprint 库。</p>
+
+<p>　　gschem 启动时的一些信息：</p>
+
+<pre class="SCREEN">
+Read system-gafrc file [/usr/local/share/geda/system-gafrc]
+Did not find optional ~/.gEDA/gafrc file [/usr/home/atommann/.gEDA/gafrc]
+Read local gafrc file [/usr/home/atommann/projects/geda-tuto/gafrc]
+Read system-gschemrc file [/usr/local/share/geda/system-gschemrc]
+Did not find optional ~/.gEDA/gschemrc file [/usr/home/atommann/.gEDA/gschemrc]
+Read local gschemrc file [/usr/home/atommann/projects/geda-tuto/gschemrc]
+Read init scm file [/usr/local/share/geda/scheme/gschem.scm]
+Loading schematic [/usr/home/atommann/projects/geda-tuto/nibble.sch]
+RC file [/usr/home/atommann/projects/geda-tuto/gafrc] already read in.
+</pre>
+
+<p>　　可以在某个地方，比如自己的 home
+目录中为项目建立目录结构。取个自己喜欢的名字，该教程会参考下面的目录名称结构：</p>
+
+<pre class="SCREEN">
+         
+gaf/                 gaf 是 gEDA and Friends 的意思
+gaf/gschem-sym/              把自定义的 gschem 符号放在这里
+gaf/gschem-sym/transistors/  可以把符号组织到子目录里
+gaf/pcb-elements/            把自定义的 PCB footprint 放在这里，footprint 也可以组织进子目录
+gaf/myprojects1/             最后，每个项目放在一个独立的目录里
+gaf/myprojects2/
+...
+</pre>
+
+<p>　　采用这种结构，任何你自定义的 gschem 符号和 PCB
+元素都可以被你所有的项目共用，这是一个好的开始。不过，还有别的可能方法：可以有具体项目的
+PCB 文件元素子目录，或 M4 的元素文件。或者，CAD 管理员可以设置全局自定义 PCB
+文件元件目录和 M4 元件文件。</p>
+
+<p>　　设置 gEDA (针对新发行版 &#62;= 2005): gschem, gnetlist, 和你会用到的其它程序，比如
+gattrib 等，所有这些程序都需要能够找到你的自定义符号，因此，你必须使你自定义的 gschem
+符号目录可以被这些程序知道，在 gEDA gafrc 文件里通过添加 component-library 行到一个用户
+${HOME}/gafrc 文件或者是一个具体项目的 gafrc 文件，在项目目录里。此外，还有一个 全系统的
+${GEDADATA}/system-gafrc 文件，管理员可以设置它。HOME 和 GEDADATA
+环境变量必须分别设置，让gafrc
+文件可以被找到。对于我们上面的的目录结构设置，我们可以把这些行加到 <tt
+class="FILENAME">${HOME}/gafrc</tt> (为每增加的 gschem-sym 子目录另加一行）：</p>
+
+<pre class="SCREEN">
+(component-library "${HOME}/gaf/gschem-sym")
+(component-library "${HOME}/gaf/gschem-sym/transistors")
+</pre>
+
+<p>　　或者，在每个项目目录里都设一个 gafrc 文件，文件里有下面这几行：</p>
+
+<pre class="SCREEN">
+(component-library "../gaf/gschem-sym")
+(component-library "../gaf/gschem-sym/transistors")
+</pre>
+
+<div class="SECT3">
+<hr />
+<h4 class="SECT3"><a id="AEN59" name="AEN59">3.2.1 gnetlist 设置</a></h4>
+
+<p>　　gnetlist 同样需要查找这些符号，因此把这几行复制到 ~/.gEDA/gnetlistrc 中。</p>
+
+<p>　　如果你需要一个更详细的 gschem 和 gnetlist 定制，你可以覆盖设置在全局 rc
+文件中的其它的初始化。在 Debian 中，look at rc files in /etc/gEDA/ for settings you can
+make. 例如，我喜欢淡色的 gschem 背景色，我就在 ~/.gEDA/gschemrc 文件里加上下面这行：</p>
+
+<p>　　(load (string-append gedadatarc "/gschem-lightbg")) ; light background</p>
+</div>
+
+<div class="SECT3">
+<hr />
+<h4 class="SECT3"><a id="AEN64" name="AEN64">3.2.2 PCB 设置</a></h4>
+
+<p>　　PCB 通常被设置成在工作目录中自动寻找 packages 子目录。困此，要让 PCB
+能找到所有我放在 gaf/pcb-elements
+里的自定义元素，我在每个项目目录中建立了一个链接。注意，这个连接实际上l在使用 gsch2pcb
+时并不需要，因为像下面讲到的那样，你可以选择 pcb-elements 目录在 project
+文件里。但是如果你真想要建立连接，在gaf/myproject1 路径中输入命令：</p>
+
+<pre class="SCREEN">
+   ln -s ../pcb-elements packages
+</pre>
+</div>
+
+<div class="SECT3">
+<hr />
+<h4 class="SECT3"><a id="AEN68" name="AEN68">3.2.3 gsch2pcb 设置</a></h4>
+
+<p>　　在每个项目目录里, 建立一个 gsch2pcb 工程文件，可以取任何名字，比如
+project-name.prj，但不要以 .sch 结尾，下面是一个工程文件的例子。</p>
+
+<pre class="SCREEN">
+elements-dir ./footprints
+schematics nibble-clock.sch
+output-name nibble-clock
+</pre>
+</div>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN72" name="AEN72">3.3 添加器件</a></h3>
+
+<p>　　按 i
+键会调出“选择器件”窗口，器件按类型进行了分类，可以展开类型选择自己需要的器件。还可以利用窗口中的
+Filter 功能查找器件，比如想在原理图里加一个电容，这时在 Filter 栏里输入 cap，和 cap
+不相关的类就被过滤掉了，展开显示的类，选择相应的器件，比如 Basic devices 下面的
+capacitor-1.sym，选择后点 OK，把器件放置到绘图区。</p>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN75" name="AEN75">3.4 gschem 常用快捷键</a></h3>
+
+<p>　　gschem 的一些操作可以用快捷键来方便地完成，比如添加器件，按 i
+键就能调出器件库窗口，gschem 的快捷键有个特点：有很多快捷键是 2 个字母的组合，比如 ec
+是指 edit 菜单下面的 copy 命令；er 是指 edit 菜单下面的 rotate 命令；at 是指 add 菜单下的
+text 命令。第一个字母是菜单名的首字母，第二个字母表示功能，这很方便记忆。</p>
+
+<p>　　下面是一些常用的快捷键，更完整的列表可以在 Help -&#62; Hotkeys... 中找到（或者用
+hh 命令）。</p>
+
+<div class="TABLE"><a id="AEN79" name="AEN79"></a>
+<p><b>表 1. gschem 常用快捷键</b></p>
+
+<table border="1" frame="border" rules="all" class="CALSTABLE">
+<col />
+<col />
+<thead>
+<tr>
+<th>按键</th>
+<th>功能</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>i</td>
+<td>添加器件</td>
+</tr>
+
+<tr>
+<td>n</td>
+<td>画 net，连接器件</td>
+</tr>
+
+<tr>
+<td>m</td>
+<td>移动所选中的器件</td>
+</tr>
+
+<tr>
+<td>at</td>
+<td>添加文字</td>
+</tr>
+
+<tr>
+<td>og</td>
+<td>显示/关闭网格</td>
+</tr>
+
+<tr>
+<td>ve</td>
+<td>缩放到全屏</td>
+</tr>
+
+<tr>
+<td>ee</td>
+<td>编辑属性</td>
+</tr>
+
+<tr>
+<td>ex</td>
+<td>编辑文字</td>
+</tr>
+
+<tr>
+<td>ec</td>
+<td>复制选中的对象</td>
+</tr>
+
+<tr>
+<td>er</td>
+<td>旋转选中的对象</td>
+</tr>
+
+<tr>
+<td>ei</td>
+<td>镜像选中的对象</td>
+</tr>
+
+<tr>
+<td>fs</td>
+<td>保存文件</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN123" name="AEN123">3.5 创建自己的符号</a></h3>
+
+<p>　　任何 EDA 软件都不可能提供所有器件的符号，gEDA
+的符号比起商业软件要少得多，有些符号需要用户自己创建。简单的框形符号，比如 IC
+的符号可以用 DJ Delorie 的工具 djboxsym 来创建，在网站上有详细的使用方面。有一个专门共享
+gEDA 符号的网站 gedasymbols.org，是一个符号和工具的集散地。</p>
+
+<p>　　一个更常见的创建符号的方法是在 gschem
+画出符号的图形，然后再按一系列步骤把它转化成符号。(gEDA
+官方网站上有一篇详细的文档讲解这个操作)</p>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN127" name="AEN127">3.6 编辑原理图中器件的属性</a></h3>
+
+<p>　　选中器件，按 ee 调出属性编辑窗口。</p>
+</div>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN130" name="AEN130">4 一个简单的例子</a></h2>
+
+<p>
+　　下面用一个简单的例子来说明完整的工作流程。以后的每个项目的工作流程都和这差不多，这个例子只有三个零件：一只普通的
+LED，一只 1/4 W, 470 Ohm 的电阻和一个两位排针。</p>
+
+<p>　　在这个例子里，可以了解到怎样创建 PCB，怎样放置器件，怎样布线。</p>
+
+<p>　　在 $HOME 目录里建立一个比如叫 projects 的文件夹，然后在 projects 里面建立一个名为
+led 的文件夹来存放这个设计的文件。</p>
+
+<p>　　如果有自定义的符号和
+footprint，可以在项目的文件夹里建立本地的符号和封装文件夹，这里的名字是 symbols 和
+footprints (文件夹的名字没有限制)。</p>
+
+<div class="FIGURE"><a id="AEN136" name="AEN136"></a>
+<p><b>图 1. 建立工作文件夹</b></p>
+
+<p><img src="figures/create_dir.png" /></p>
+</div>
+
+<p>　　然后得建些文件，这些文件可以告诉 gschem 和 gsch2pcb
+在哪里去找符号和封装。先建第一个文件，文件名为
+gafrc，内容只有一行，它说本地符号库在当前目录下的 symbols 文件夹中。</p>
+
+<pre class="SCREEN">
+       (component-library "./symbols")
+</pre>
+
+<p>　　第二个文件叫 gschemrc，也只有一行：</p>
+
+<pre class="SCREEN">
+       (component-library "./symbols")
+   
+</pre>
+
+<p>　　第三个是项目(也可以叫工程)文件。gsch2pcb
+这个程序可以从项目文件里读取命令，这个项目文件可以告诉 gsch2pcb
+封装库在什么地方。我把它命名为 led.prj，文件内容如下：</p>
+
+<pre class="SCREEN">
+       elements-dir ./footprints
+        schematics led.sch
+        output-name led
+   
+</pre>
+
+<p>　　看看这个项目文件，第一行告知 gsch2pcb 可以到当前目录下面的 footprints 目录里获取
+footprints，第二行告知 gsch2pcb
+原理图是哪一个（这个例子里只有一个原理图文件，实际上一个项目可以存到多个原理图文件里），第三行指定各种输出文件的基本名字(base
+name)。</p>
+
+<p>　　在这个例子里，我们不准备创建自己的符号。</p>
+
+<div class="FIGURE"><a id="AEN151" name="AEN151"></a>
+<p><b>图 2. 项目中的目录和资源文件</b></p>
+
+<p><img src="figures/rc_files.png" /></p>
+</div>
+
+<p>　　下面建立原理图 led.sch，可以在终端中输入命令来建立</p>
+
+<pre class="SCREEN">
+         <samp class="PROMPT">#</samp> <kbd class="USERINPUT">gschem led.sch</kbd>
+     
+</pre>
+
+<p>　　在原理图中，按 i 键，添加一个电阻(resistor)和一个 led 和
+connector2-1.sym，如下图。</p>
+
+<div class="FIGURE"><a id="AEN163" name="AEN163"></a>
+<p><b>图 3. 添加器件</b></p>
+
+<p><img src="figures/add_components.png" /></p>
+</div>
+
+<p>　　按自己的喜好摆放好器件，这个时候可以用前面学到的 m(移动), er(旋转),
+ei(镜像)等命令，非常方便。</p>
+
+<p>　　用器件按下面用 net 连接起来(用 n 键)，如下图。</p>
+
+<div class="FIGURE"><a id="AEN172" name="AEN172"></a>
+<p><b>图 4. 摆放并连接</b></p>
+
+<p><img src="figures/place_and_connect.png" /></p>
+</div>
+
+<p>　　好，我们来修改器件的属性。对于每个器件，选中它，按 ee
+键就可以调出它的属性窗口（也可以双击器件）。编辑属性的时候暂时不要修改 refdes，refdes
+是器件在每个原理图里的识别号，也是唯一的编号，在后面的操作中可以让零件自动编号，当然，对于零件很多的，可以手工完成。</p>
+
+<ul>
+<li>
+<p>给电阻增加可见的(注意选择 Show value only) value 属性并为其指定一个适当的值(这里是
+470R)。用鼠标左键把新的可见属性移动适当的位置。如果不好选择，放大并重复点击左键。</p>
+</li>
+
+<li>
+<p>给 LED 增加可见的 value 属性并为其指定一个适当的值(这里是 RED)。</p>
+</li>
+
+<li>
+<p>给 connector 增加可见的 value 属性并为其指定一个适当的值(这里是 5VDC)。</p>
+</li>
+
+<li>
+<p>给电阻增加不可见的 footprint 属性，值为 ACY400。</p>
+</li>
+
+<li>
+<p>给 LED 增加不可见的 footprint 属性，值为 RCY100。</p>
+</li>
+
+<li>
+<p>给 connector 增加不可见的 footprint 属性，值为 HEADER2_1。我是在
+/usr/local/share/pcb/pcblib-newlib/geda 目录查找到的。</p>
+</li>
+</ul>
+
+<div class="FIGURE"><a id="AEN193" name="AEN193"></a>
+<p><b>图 5. 为 LED 增加 footprint 属性</b></p>
+
+<p><img src="figures/led_attrib.png" /></p>
+</div>
+
+<p>　　现在属性修改完成了，接下来给原理图中的每个器件指定一个唯一的 refdes。</p>
+
+<ul>
+<li>
+<p>关闭原理图</p>
+</li>
+
+<li>
+<p>在终端中执行 <samp class="PROMPT">#</samp> <kbd class="USERINPUT">grenum
+led.sch</kbd></p>
+</li>
+
+<li>
+<p>然后再执行 <samp class="PROMPT">#</samp> <kbd class="USERINPUT">gschem
+led.sch</kbd>打开原理图，你会发前先前的问号已经变成了数字。</p>
+</li>
+</ul>
+
+<div class="FIGURE"><a id="AEN212" name="AEN212"></a>
+<p><b>图 6. 睢，已经为每个器件都自动编好号了</b></p>
+
+<p><img src="figures/renumbered.png" /></p>
+</div>
+
+<p>　　原理图这个时候就画好了。下面我们执行很关键的一步：把原理图转换成 PCB
+文件。这个工作是用 gsch2pcb 来完成的。关闭原理图并执行下面的命令：</p>
+
+<pre class="SCREEN">
+         <samp class="PROMPT">#</samp> <kbd class="USERINPUT">gsch2pcb led.prj</kbd>
+     
+</pre>
+
+<p>　　瞧，上面就用到了 <tt class="FILENAME">led.prj</tt> 这个文件。</p>
+
+<p>　　执行上面这个命令后，在终端中有一些输入，看看这些输出信息：</p>
+
+<pre class="SCREEN">
+atommann# gsch2pcb led.prj
+
+---------------------------------
+gEDA/gnetlist pcbpins Backend
+This backend is EXPERIMENTAL
+Use at your own risk!
+---------------------------------
+
+Using the m4 processor for pcb footprints
+
+----------------------------------
+Done processing.  Work performed:
+0 file elements and 3 m4 elements added to led.pcb.
+
+Next step:
+1.  Run pcb on your file led.pcb.
+    You will find all your footprints in a bundle ready for you to place
+    or disperse with "Select -&#62; Disperse all elements" in PCB.
+
+2.  From within PCB, select "File -&#62; Load netlist file" and select 
+    led.net to load the netlist.
+
+3.  From within PCB, enter
+
+           :ExecuteFile(led.cmd)
+
+    to propagate the pin names of all footprints to the layout.
+</pre>
+
+<p>　　输出中明确指出了接下来应该执行的操作。执行下面的命令就可以打开刚才生成的 pcb
+文件：</p>
+
+<pre class="SCREEN">
+         <samp class="PROMPT">#</samp> <kbd class="USERINPUT">pcb led.pcb</kbd>
+     
+</pre>
+
+<p>　　欢迎来到 PCB，这是另一个软件，一个您布线的地方 :)</p>
+
+<p>　　这里可以看到元器件都在左上角挤成一堆，用 Select -&#62; Disperse all elements
+菜单操作可以把它们散开。</p>
+
+<p>　　然后执行 File -&#62; load netlist file 并选择 led.net，.net
+文件是网表文件，它里面有各个器件的引脚之间的连接关系。这时执行 Connects -&#62; Optimize
+rats nest(也可以直接按 o
+键，更方便)。现在，元器件的引脚和焊盘会根据原理图用橙色的直线连接起来。如果器件很多的话，这些线看起来很凌乱，就像老鼠窝，因此这些线叫做
+"rats" 或 "rat line"。</p>
+
+<p>　　然后执行下面的命令：</p>
+
+<pre class="SCREEN">
+         :ExecuteFile(led.cmd)
+     
+</pre>
+
+<div class="FIGURE"><a id="AEN236" name="AEN236"></a>
+<p><b>图 7. 执行上面操作后看起来像这个样子</b></p>
+
+<p><img src="figures/pcb.png" /></p>
+</div>
+
+<p>　　移动/旋转这些器件，把它放置成你想要的样子，下面是一个例子。</p>
+
+<div class="FIGURE"><a id="AEN244" name="AEN244"></a>
+<p><b>图 8. 摆放器件</b></p>
+
+<p><img src="figures/pcb_place_component.png" /></p>
+</div>
+
+<p>　　摆放好器件之后就可以开始布线了。PCB 软件左边有一系列的工具按钮，pcb
+还有图层的概念，选择比如说 solder 图层，选择 line
+工具，光标会变成铅笔的样子，对于直线连接，把光标放到一个焊盘的中心点一下，然后移到到与它相连的另一端的焊盘中心双击，一条线就布线了。这时按一下
+o 键，一条 rat line 就消失了。一个小提示：用 /
+键可以改变线条的方向风格，线的精线可以按左侧的 style style
+工具进行修改。OK，继续布其它的线，布好之后像下面这样。另外，请记得保存文件。</p>
+
+<div class="FIGURE"><a id="AEN252" name="AEN252"></a>
+<p><b>图 9. 布线完成</b></p>
+
+<p><img src="figures/layout_complete.png" /></p>
+</div>
+
+<p>　　PCB 有很多使用技巧，请参考它的使用手册获取更多详情，更可以参考 PCB 开人员之一 DJ
+Delorie 写的 <a href="http://www.delorie.com/pcb/docs/gs/" target="_top"><i
+class="CITETITLE">Getting Started With PCB</i></a> 一文，非常详尽！</p>
+
+<p>　　</p>
+
+<p>　　还有一件重要的事情没做，那就是设置 PCB 的尺寸。</p>
+
+<ul>
+<li>
+<p>File -&#62; Preferences...</p>
+</li>
+
+<li>
+<p>Size -&#62; Board Size，这里我把宽设置成 750 mil，高为 450 mil。(1mil = 1/1000 inch =
+0.0254 mm)</p>
+</li>
+
+<li>
+<p>确定</p>
+</li>
+</ul>
+
+<p>　　OK，PCB 已经画好了。要是想把 PCB
+文件发到工厂去做出来应该怎么办呢？非常简单，只要导出 gerber 文件即可： File -&#62; Export
+Layout... -&#62; gerber&#60; -&#62;
+确定。这里你的文件夹会生成几个文件。在我们这个简单的例子中有 6 个 gbr 文件和一个 cnc
+文件，它们的名字就说明了它们是什么：</p>
+
+<div class="TABLE"><a id="AEN272" name="AEN272"></a>
+<p><b>表 2. gerber 文件说明</b></p>
+
+<table border="1" frame="border" rules="all" class="CALSTABLE">
+<col />
+<col />
+<thead>
+<tr>
+<th>文件名</th>
+<th>内容</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>led.back.gbr</td>
+<td>底层布线</td>
+</tr>
+
+<tr>
+<td>led.backmask.gbr</td>
+<td>底阻焊层</td>
+</tr>
+
+<tr>
+<td>led.front.gbr</td>
+<td>顶层布线</td>
+</tr>
+
+<tr>
+<td>led.frontmask.gbr</td>
+<td>顶阻焊层</td>
+</tr>
+
+<tr>
+<td>led.frontsilk.gbr</td>
+<td>顶丝印层（印字层）</td>
+</tr>
+
+<tr>
+<td>led.fab.gbr</td>
+<td>制造人员参考文件，有钻孔及外形轮廓等说明</td>
+</tr>
+
+<tr>
+<td>led.plated-drill.cnc</td>
+<td>金属化钻孔文件</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p>　　这些文件可以使用 gerbv 这个软件来查看：</p>
+
+<pre class="SCREEN">
+         <samp class="PROMPT">#</samp> <kbd
+class="USERINPUT">gerbv led.*.gbr led.*.cnc</kbd>
+     
+</pre>
+
+<div class="FIGURE"><a id="AEN305" name="AEN305"></a>
+<p><b>图 10. 用 gerbv 查看输出的 gerber 文件</b></p>
+
+<p><img src="figures/gerbv_check.png" /></p>
+</div>
+
+<p>　　如果没有错误，就可以把这些 gerber 文件和 cnc 钻孔文件打包，发给 PCB
+工厂，几天之后，新鲜的 PCB
+就可以到手了！接下来你可能又要忙上一阵子了：焊接，调试，给单片机编写软件等等。</p>
+
+<p>　　对了，在上面提到 gEDA 的文件都是纯文本文件格式，好，用 vi/emacs 打开它看看吧：</p>
+
+<pre class="SCREEN">
+         <samp class="PROMPT">#</samp> <kbd class="USERINPUT">gvim led.sch</kbd>
+     
+</pre>
+
+<pre class="SCREEN">
+v 20081231 1
+C 40000 40000 0 0 0 title-B.sym
+C 45700 50100 1 270 0 resistor-1.sym
+{
+T 46100 49800 5 10 0 0 270 0 1
+device=RESISTOR
+T 46000 49800 5 10 1 1 0 0 1
+refdes=R1
+T 46000 49500 5 10 1 1 0 0 1
+value=470R
+T 45700 50100 5 10 0 0 0 0 1
+footprint=ACY400
+}
+C 46000 47900 1 90 0 led-3.sym
+{
+T 45350 48850 5 10 0 0 90 0 1
+device=LED
+T 46050 48450 5 10 1 1 0 0 1
+refdes=D1
+T 46100 48200 5 10 1 1 0 0 1
+value=RED
+T 46000 47900 5 10 0 0 0 0 1
+footprint=RCY100
+}
+C 43100 48700 1 0 0 connector2-1.sym
+{
+T 43300 49700 5 10 0 0 0 0 1
+device=CONNECTOR_2
+T 43100 49500 5 10 1 1 0 0 1
+refdes=CONN1
+T 43100 48500 5 10 1 1 0 0 1
+value=5VDC
+T 43100 48700 5 10 0 0 0 0 1
+footprint=HEADER2_1
+}
+N 44800 49200 44800 50100 4
+N 44800 50100 45800 50100 4
+N 44800 48900 44800 47900 4
+N 44800 47900 45800 47900 4
+N 45800 48800 45800 49200 4
+</pre>
+
+<p>　　上面是 led.sch 的内容，如果文件有问题，可以用工修改。</p>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN319" name="AEN319">5 从原理图生成 PCB 文件</a></h2>
+
+<p>　　使用 gsch2pcb 命令。</p>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN322" name="AEN322">6 PCB 布线</a></h2>
+
+<p>　　开始布线了。</p>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN325" name="AEN325">6.1 设置</a></h3>
+
+<p>　　设置一些初始化值，比如线宽，PCB 的尺寸，图层等。</p>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN328" name="AEN328">6.2 分散器件</a></h3>
+
+<p>　　第一次打开，器件会堆到一起，可以用命令让它们自动分散。</p>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN331" name="AEN331">6.3 导入网表</a></h3>
+
+<p>　　netlist (网表)，表示器件之间的连接关系。</p>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN334" name="AEN334">6.4 摆放器件</a></h3>
+
+<p>　　根据设计，把各个器件放置到合适的位置，当有外壳时，要考虑接口的位置等等。</p>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN337" name="AEN337">6.5 从“鼠巢”到线路</a></h3>
+
+<p>　　开始布线，把 ratnest 变成铜线。</p>
+</div>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN340" name="AEN340">7 修改原理图</a></h2>
+
+<p>　　当发现设计有问题，或者电路图需要修改，怎样把修改后的原理图更新到 PCB 中去。</p>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN343" name="AEN343">8 怎样制作器件的 footprint</a></h2>
+
+<p>　　footprint 就是器件的封装。大家在网上共享 symbol 和 footprint 的地方 <a
+href="http://www.gedasymbols.org/" target="_top"><i
+class="CITETITLE">gedasymbols</i></a>，John Luciani 用 perl 脚本生成的 footprint。</p>
+
+<p>　　在 PCB 中画好 footprint，按照一定的步骤把它转换成 footprint。</p>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN349" name="AEN349">9 把 PCB 做成实物</a></h2>
+
+<p>　　电路板设计好了，接下来选择一家 PCB 打样工厂把它做出来吧。</p>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN352" name="AEN352">9.1 什么是 Gerber 文件</a></h3>
+
+<p>　　PCB 工厂只接收 Protel 文件？什么是光绘文件，RS274-X
+格式，下面是一段光绘文件的格式。</p>
+
+<pre class="SCREEN">
+G04 start of page 2 for group 0 idx 0
+
+G04 Title: (unknown), component *
+
+G04 Creator: pcb 20080202 *
+
+G04 CreationDate: 六 11/15 15:31:08 2008 UTC *
+
+G04 For: atommann *
+
+G04 Format: Gerber/RS-274X *
+
+G04 PCB-Dimensions: 500000 300000 *
+
+G04 PCB-Coordinate-Origin: lower left *
+
+%MOIN*%
+
+%FSLAX24Y24*%
+
+%LNFRONT*%
+
+%ADD11C,0.0200*%
+
+%ADD12C,0.0250*%
+
+%ADD13C,0.0100*%
+
+%ADD14C,0.0080*%
+
+%ADD15C,0.0120*%
+
+%ADD16C,0.0160*%
+
+%ADD17C,0.0600*%
+...
+</pre>
+
+<p>　　[图片]旧式的光绘机。</p>
+</div>
+
+<div class="SECT2">
+<hr />
+<h3 class="SECT2"><a id="AEN357" name="AEN357">9.2 从 PCB 导出文件</a></h3>
+
+<div class="SECT3">
+<h4 class="SECT3"><a id="AEN359" name="AEN359">9.2.1 gerber 文件</a></h4>
+
+<p>　　可以从 PCB 输出各种文件，其中最重要的当属 gerber 文件。导出 gerber
+文件之后，可以用 gerbv 查看导出的文件是否有问题，如果没有问题的话，就可以把文件打包发给
+PCB 工厂做板啦！</p>
+</div>
+
+<div class="SECT3">
+<hr />
+<h4 class="SECT3"><a id="AEN362" name="AEN362">9.2.2 输出成其它格式</a></h4>
+
+<p>　　可以 PCB 文件输出成 ps 文件，eps 文件，png
+图片，等等。这些文件可以用于出版，网页，交流等各种用途。</p>
+
+<div class="FIGURE"><a id="AEN365" name="AEN365"></a>
+<p><b>图 11. 输出成 Ben-mode 图片</b></p>
+
+<p><img src="figures/card.png" /></p>
+</div>
+
+<p>　　另外，还可以从 PCB 文件中输出 BOM 表(Bill Of
+Material)，这是一张详细的物料清单，方便组装设计的作品。</p>
+</div>
+</div>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN373" name="AEN373">10 一些用 gEDA 设计的作品</a></h2>
+
+<p>　　已经有很多硬件 hacker 开始使用 gEDA 来设计他们的作品，下面是一些：</p>
+
+<p>　　Dr. Stefan Salewski 的“数字存储示波器”(DSO, Digital Storage Oscilloscope)。</p>
+
+<p>　　<a href="http://www.ssalewski.de/DAD.html.en" target="_top"><i
+class="CITETITLE">Homepage of Dr. Stefan Salewski</i></a></p>
+
+<div class="FIGURE"><a id="AEN380" name="AEN380"></a>
+<p><b>图 12. Stefan 的数字存储示波器</b></p>
+
+<p><img src="figures/b1.jpg" /></p>
+</div>
+
+<p>　　DJ 的一些作品，如<a href="http://www.delorie.com/electronics/alarmclock/"
+target="_top"><i class="CITETITLE">连接网络的 MP3 闹钟</i></a>。</p>
+
+<p>　　Levente Kovacs 的回流焊接烤箱项目。</p>
+
+<p>　　ARM 单板计算机。</p>
+
+<p>　　列出网址，照片等</p>
+</div>
+
+<div class="SECT1">
+<hr />
+<h2 class="SECT1"><a id="AEN393" name="AEN393">11 修订历史</a></h2>
+
+<ul>
+<li>
+<p>2009-11-11: version 1.0 -- 草稿。</p>
+</li>
+
+<li>
+<p>2009-11-14: version 1.1 -- 继续编写。</p>
+</li>
+
+<li>
+<p>2009-11-15: version 1.1 -- 继续编写。</p>
+</li>
+
+<li>
+<p>2010-06-19: 更正例子中电阻和电容的 footprint。</p>
+</li>
+</ul>
+
+<div class="NOTE">
+<blockquote class="NOTE">
+<p><b>注意:</b> 这篇入门 tutorial 写得比较乱，条理还不是很清晰，我还会继续改善。</p>
+</blockquote>
+</div>
+</div>
+</div>
+
+</body>
+</html>
+

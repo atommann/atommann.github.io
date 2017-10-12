@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org" />
+<title>Arduino bootloader</title>
+<meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+<link rel="STYLESHEET" type="text/css" href="docbook.css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+alink="#0000FF">
+<div class="ARTICLE">
+<div class="TITLEPAGE">
+<h1 class="TITLE"><a id="AEN2" name="AEN2">Arduino bootloader</a></h1>
+
+<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+
+<div class="AFFILIATION">
+<div class="ADDRESS">
+<p class="ADDRESS"><code class="EMAIL">&#60;<a
+href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+</div>
+</div>
+
+<div>
+<div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+<p>　　怎样为一块新的 AVR 烧写 Arduino 的 bootloader</p>
+</div>
+</div>
+
+<hr />
+</div>
+
+<div class="SECT1">
+<h2 class="SECT1"><a id="AEN12" name="AEN12">1 Fuse bit</a></h2>
+
+<p>　　先 unlock 芯片并修改 fuse bit，fuse bit 的值可以在 <tt
+class="FILENAME">arduino-0018/hardware/arduino/boards.txt</tt>
+里找到，这个文件里还说明了各种 AVR 应该使用的 bootloader 文件，例如 ATmega168 使用的是
+<tt class="FILENAME">ATmegaBOOT_168_diecimila.hex</tt>，这个文件稍后会用到。</p>
+
+<p>　　<tt class="FILENAME">boards.txt</tt> 中关于 Arduino Diecimila, Duemilanove, or
+Nano w/ ATmega168 的部分：</p>
+
+<pre class="SCREEN">
+##############################################################
+
+diecimila.name=Arduino Diecimila, Duemilanove, or Nano w/ ATmega168
+
+diecimila.upload.protocol=stk500
+diecimila.upload.maximum_size=14336
+diecimila.upload.speed=19200
+
+diecimila.bootloader.low_fuses=0xff
+diecimila.bootloader.high_fuses=0xdd
+diecimila.bootloader.extended_fuses=0x00
+diecimila.bootloader.path=atmega
+diecimila.bootloader.file=ATmegaBOOT_168_diecimila.hex
+diecimila.bootloader.unlock_bits=0x3F
+diecimila.bootloader.lock_bits=0x0F
+
+diecimila.build.mcu=atmega168
+diecimila.build.f_cpu=16000000L
+diecimila.build.core=arduino
+
+##############################################################
+</pre>
+
+<p>　　执行操作：</p>
+
+<pre class="SCREEN">
+atommann# avrdude -p m168 -c usbasp -e -u -U lock:w:0x3f:m -U efuse:w:0x00:m -U hfuse:w:0xDD:m -U lfuse:w:0xFF:m
+
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.02s
+
+avrdude: Device signature = 0x1e9406
+avrdude: erasing chip
+avrdude: reading input file "0x3f"
+avrdude: writing lock (1 bytes):
+
+Writing | ################################################## | 100% 0.01s
+
+avrdude: 1 bytes of lock written
+avrdude: verifying lock memory against 0x3f:
+avrdude: load data lock data from input file 0x3f:
+avrdude: input file 0x3f contains 1 bytes
+avrdude: reading on-chip lock data:
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: verifying ...
+avrdude: 1 bytes of lock verified
+avrdude: reading input file "0x00"
+avrdude: writing efuse (1 bytes):
+
+Writing | ################################################## | 100% 0.01s
+
+avrdude: 1 bytes of efuse written
+avrdude: verifying efuse memory against 0x00:
+avrdude: load data efuse data from input file 0x00:
+avrdude: input file 0x00 contains 1 bytes
+avrdude: reading on-chip efuse data:
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: verifying ...
+avrdude: 1 bytes of efuse verified
+avrdude: reading input file "0xDD"
+avrdude: writing hfuse (1 bytes):
+
+Writing | ################################################## | 100% 0.01s
+
+avrdude: 1 bytes of hfuse written
+avrdude: verifying hfuse memory against 0xDD:
+avrdude: load data hfuse data from input file 0xDD:
+avrdude: input file 0xDD contains 1 bytes
+avrdude: reading on-chip hfuse data:
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: verifying ...
+avrdude: 1 bytes of hfuse verified
+avrdude: reading input file "0xFF"
+avrdude: writing lfuse (1 bytes):
+
+Writing | ################################################## | 100% 0.01s
+
+avrdude: 1 bytes of lfuse written
+avrdude: verifying lfuse memory against 0xFF:
+avrdude: load data lfuse data from input file 0xFF:
+avrdude: input file 0xFF contains 1 bytes
+avrdude: reading on-chip lfuse data:
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: verifying ...
+avrdude: 1 bytes of lfuse verified
+
+avrdude done.  Thank you.&#13;
+</pre>
+
+<p>　　接下来，写入 bootloader 并锁住 AVR。</p>
+
+<pre class="SCREEN">
+atommann# avrdude -p m168 -c usbasp -U flash:w:ATmegaBOOT_168_diecimila.hex -U lock:w:0x0f:m
+
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.02s
+
+avrdude: Device signature = 0x1e9406
+avrdude: NOTE: FLASH memory has been specified, an erase cycle will be performed
+         To disable this feature, specify the -D option.
+avrdude: erasing chip
+avrdude: reading input file "ATmegaBOOT_168_diecimila.hex"
+avrdude: input file ATmegaBOOT_168_diecimila.hex auto detected as Intel Hex
+avrdude: writing flash (16294 bytes):
+
+Writing | ################################################## | 100% 77.03s
+
+
+
+avrdude: 16294 bytes of flash written
+avrdude: verifying flash memory against ATmegaBOOT_168_diecimila.hex:
+avrdude: load data flash data from input file ATmegaBOOT_168_diecimila.hex:
+avrdude: input file ATmegaBOOT_168_diecimila.hex auto detected as Intel Hex
+avrdude: input file ATmegaBOOT_168_diecimila.hex contains 16294 bytes
+avrdude: reading on-chip flash data:
+
+Reading | ################################################## | 100% 71.70s
+
+
+
+avrdude: verifying ...
+avrdude: 16294 bytes of flash verified
+avrdude: reading input file "0x0f"
+avrdude: writing lock (1 bytes):
+
+Writing | ################################################## | 100% 0.03s
+
+avrdude: 1 bytes of lock written
+avrdude: verifying lock memory against 0x0f:
+avrdude: load data lock data from input file 0x0f:
+avrdude: input file 0x0f contains 1 bytes
+avrdude: reading on-chip lock data:
+
+Reading | ################################################## | 100% 0.01s
+
+avrdude: verifying ...
+avrdude: 1 bytes of lock verified
+
+avrdude: safemode: Fuses OK
+
+avrdude done.  Thank you.&#13;
+</pre>
+
+<p>　　完成！这时可以把 AVR 插到 Arduino 2009 上了（Arduino 2009 上有 6 针 ISP
+编程接口，上面这些操作都可以在板上完成）。</p>
+</div>
+</div>
+
+</body>
+</html>
+

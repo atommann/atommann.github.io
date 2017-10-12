@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Atommann" />
+  <meta name="date" content="2013-11-02" />
+  <title>手写 Gerber</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">手写 Gerber</h1>
+<h2 class="author">Atommann</h2>
+<h3 class="date">November 02, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#缘由">缘由</a></li>
+<li><a href="#边做边学">边做边学</a></li>
+<li><a href="#阅读材料">阅读材料</a></li>
+</ul>
+</div>
+<h2 id="缘由"><a href="#缘由">缘由</a></h2>
+<p>当我最开始学电子学的时候，一个爱好就是手工制作 PCB。最初的两次制作让我非常兴奋，但后来就发现手工制作 PCB 的诸多不便之处，其中一个恼人的问题就是钻孔。如果孔太多，手工给 PCB 钻孔实在是太烦人了，于是就想，孔位就是一些坐标位置，完全可以用机械来完成，于是开始研究 <a href="http://en.wikipedia.org/wiki/G-code" title="G-code">G-code</a>，突然又对 <a href="http://en.wikipedia.org/wiki/Gerber_file" title="Gerber file">Gerber 文件</a>产生了兴趣，于是花两天晚上读完了 “Gerber RS-274X Format User’s Guide”，觉得 RS-274X 设计得非常简单，而且功能强大。</p>
+<h2 id="边做边学"><a href="#边做边学">边做边学</a></h2>
+<p>读着读着 Gerber 手册，我就抑制不住冲动，因为 Gerber 是人工可读的，那为何不一边读资料一边编写资料中的例子来加强理解呢？</p>
+<p>如果我们手写 HTML 可以用 firefox 来进行预览，Gerber 文件也有相应的 viewer，比如 <a href="http://gerbv.sourceforge.net" title="gerbv">Gerbv</a>，这样就可以知道自己写的文件是否存在问题。 Gerbv 是一个很好的工具，它可以把 Gerber 文件转换为 png, svg, pdf, ps 等格式，非常方便。</p>
+<p>手工 hack 的 Gerber 文件及其显示的样子：</p>
+<pre>
+%FSLAX24Y24*%
+%MOIN*%
+%AMDONUT*1,1,$1,$2,$3*1,0,$4,$2,$3*%
+%AMDONUT1*1,1,$1,$2,$3*$1=$2+0.030*1,0,$1-$4,$2,$3*%
+%AMDONUT2*1,1,0.100X0X0*1,0,0.080X0X0*%
+%AMTARGET*6,0,0,0.125,.01,0.01,3,0.003,0.150,45*%
+%AMTHERMAL*7,0,0,0.080,0.055,0.0125,45*%
+%KODX1000Y1000I1000J1000*%
+%ADD10C,.05X0.025*%
+%ADD11R,0.020X0.040X0.010*%
+%ADD12O,0.020X0.040X0.010*%
+%ADD13C,.05X0.025X0.025*%
+%ADD14O,0.040X0.020X0.010X0.010*%
+%ADD18TARGET*%
+%ADD19THERMAL*%
+%ADD32DONUT,0.100X0X0X0.080*%
+%ADD33DONUT1,0.020X0X0X0.014*%
+%ADD34DONUT2*%
+%LPD*%
+G54D10*
+X1000Y1000D03*
+G54D11*
+X1500D03*
+G54D12*
+X2000D03*
+G54D13*
+X2500D03*
+G54D14*
+X3000D03*
+G54D18*
+G55X4000Y1000D03*
+G54D19*
+X3000Y2000D03*
+G54D32*
+X2000Y2000D03*
+M02*
+</pre>
+
+
+<p><a href="./figures/gerbv.png" title="view gerber file in gerbv"><img src="./figures/gerbv.png" title="view gerber file in gerbv" alt="gerbv" /></a></p>
+<p>图中十字叉还有个专门的名字，叫 <a href="http://en.wikipedia.org/wiki/Moir%C3%A9_pattern" title="Moiré pattern">Moiré pattern</a>。</p>
+<h2 id="阅读材料"><a href="#阅读材料">阅读材料</a></h2>
+<ol style="list-style-type: decimal">
+<li><p><a href="http://www.artwork.com/gerber/appl2.htm" title="D-Codes, Apertures and Plot Files">D-Codes, Apertures and Plot Files</a></p></li>
+<li><p><a href="http://www.artwork.com/gerber/274x/rs274x.htm" title="All About RS274X">All About RS274X</a></p></li>
+<li><p><a href="http://circuitpeople.com/Blog/WhatIsAGerberFile.aspx" title="CircuitPeople - What is a Gerber File?">CircuitPeople - What is a Gerber File?</a></p></li>
+</ol>
+<!---
+links
+-->
+<!---
+figures
+-->
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>Joule Thief- 能量小偷</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">Joule Thief - 能量小偷</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　榨干电池的最后一滴“油”！</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">1 简介</a></h2>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 1. 能量小偷</b></p>
+
+	  <p><a href="figures/joule-thief.jpg"><img src="figures/joule-thief.jpg" width="800" height="450"/></a></p>
+	</div>
+
+	<p>　　今天在 <a href="http://www.ourdev.cn/bbs/bbs_content.jsp?bbs_sn=4406893&bbs_page_no=1&bbs_id=9999">ourdev</a> 上看到这个电路，非常简单的电路，但是很优雅。Windell 对制作过程作了<a href="http://www.evilmadscientist.com/article.php/joulethief">详细的描述</a>。通过 google 可以找到大量的资源，比如<a href="http://www.emanator.demon.co.uk/bigclive/joule.htm">MAKE A JOULE THIEF</a>，还有<a href="http://www.prc68.com/I/JouleThief.shtml">这个详细的介绍，配合大量的示波器波形照片</a>。</p>
+	<p>　　蓝色 LED 大约需要 3V 的电压可以点亮，但是通过这个电路，1.5V 的电压就可以把它点亮，这是一个升压电路。网上提到这个电压可以工作在低于 0.3V 的电压，可是我用 0.4V 的废旧电池没能点亮蓝光 LED，可能是我的线圈上有点问题，比如磁环的直径和铜丝的粗细(实际原因可能是三极管的基极导通电压，得找个锗三极管试试，它的压降比较低)。</p>
+
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 2. 原理图</b></p>
+
+	  <p><a href="figures/joule-thief-sch.jpg"><img src="figures/joule-thief-sch.jpg" /></a></p>
+	</div>
+	<p>　　一只 1K 电阻，一只 2N3904，一个线圈，一只白光或蓝光 LED 和一枚电池。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 3. 波形</b></p>
+
+	  <p><a href="figures/waveform.jpg"><img src="figures/waveform.jpg" width="800" height="623" /></a></p>
+	</div>
+	<p>　　Y 方向 2V/格，X 方向 10us/格，从示波器上算起来。电压从 1.5V 被提升到了最高算差不多接近 4V，计算那个梯形的面积，可以算出 ((3.8V+2.8V)*10us)/2/10us = 3.3V，并维持了 10us 时间，后面 20us 都没有电压。再算一下那个小三角形的面积 (4us*3.8V)/2 = 7.6Vus。把梯形的面积加上小三角形的面积 (33Vus + 7.6Vus)/30us = 1.35V，这就是平均电压! </p>
+
+	<p>　　接下来计算频率，因为横向的时间轴每格是 10us，一个完整的波形正好占了 3 格，就是说是 30us，(1s/30us)*1000000 = 33333.33 Hz = 33.33KHz。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 4. 用万用表测量频率</b></p>
+
+	  <p><a href="figures/freq.jpg"><img src="figures/freq.jpg" /></a></p>
+	</div>
+	<p>　　用万用表测量显示为 33.92kHz，和示波器测得的波形频率基本一致。</p>
+
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
+

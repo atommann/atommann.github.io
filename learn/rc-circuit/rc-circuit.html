@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>RC 电路充放电实验</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">RC 电路充放电实验</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　让我们来玩 RC 电路！</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">什么是 RC 电路</a></h2>
+
+	<p>　　R 是 Resistor (电阻)，C 是 Capacitor (电容)，把它们连在一起就是一个最简单的 <a href=" http://en.wikipedia.org/wiki/RC_circuit" target="_top"><i class="CITETITLE">RC 电路</i></a>，这个简单的电路有很多奇妙之处，我们来探索一二。</p>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 1. RC 电路</b></p>
+
+	  <p><img src="figures/RC_Series_Filter_(with_V%26I_Labels).svg" /></p>
+	</div>
+
+	<p>　　上面的图来自维基百科(后面也有图片取自维基百科)。观察上面的图，当电源通过电阻 R 向电容 C 充电的时候，电容 C 两端的电压会如何变化呢(也就是会呈现出何种规律)？这可以应用基尔霍夫电路定律来建立一个微分方程，然后解出这个微分方程就会得到电容 C 在充电时的电压变化情况(也可以用拉普拉斯变换求解，关于如何求解这个方程则需要另一篇文章 :)，它是时间 t 的函数：</p>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+
+	  <p><img src="figures/formula_vc.png" /></p>
+	</div>
+
+	<p>　　有了公式我们就可以画出它的曲线，如下图所示。</p>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 2. 电容的充电曲线</b></p>
+
+	  <p><img src="figures/720px-Series_RC_capacitor_voltage.svg.png" /></p>
+	</div>
+
+	<p>　　在上面的图形中 y 轴是电容电压 V_C，x 轴是时间 t，那 x 轴上标的希腊字母 τ, 2τ... 和与之对应的 y 轴上标的 63.2%, 86.5%... 又是什么呢？</p>
+
+    <p>　　实际上 τ = RC，它是电阻的阻值 R 和电容的容值 C 的乘积，在这个公式里 R 是电阻值，单位取欧姆，C 是电容值，单位取法拉，τ 被称为 RC 时间常数。我们只要再观察一下上面的公式就会明白这些坐标点是如何计算出来的：当公式右边的时间 t 正好等于 RC 的时候，电容电压 V_C = V(1-e^(-1))，e 是自然对数的底，其值约为 2.71828，经过计算 V_C = 63.2%V，也就是说当充电时间正好是 R*C 秒的时候电容两端的电压差不多等于充电电压 V 的 63.2%，假设我们用 5V 的电压给它充电，此时电容电压就是 63.2%*5V = 3.16V。</p>
+
+	<p>　　用同样的方法可以算得其它的坐标点：</p>
+
+<div class="TABLE"><a id="AEN79" name="AEN79"></a>
+<p><b>表 1. RC 曲线坐标点计算</b></p>
+
+<table border="1" frame="border" rules="all" class="CALSTABLE">
+<col />
+<col />
+<col />
+<col />
+<col />
+<thead>
+
+<tr>
+<th>时间 t</th>
+<th>代入时间并化简</th>
+<th>值</th>
+<th>R=10K, C=2200uF时算得的时间(单位：秒)</th>
+<th>设充电电压为5V时对应的电压(单位：V)</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>τ (RC)</td>
+<td>V(1-e^(-1))</td>
+<td>63.2%V</td>
+<td>22</td>
+<td>3.16</td>
+</tr>
+
+<tr>
+<td>2τ (2RC)</td>
+<td>V(1-e^(-2))</td>
+<td>86.5%V</td>
+<td>44</td>
+<td>4.33</td>
+</tr>
+
+<tr>
+<td>3τ (3RC)</td>
+<td>V(1-e^(-3))</td>
+<td>95.0%V</td>
+<td>66</td>
+<td>4.75</td>
+</tr>
+
+<tr>
+<td>4τ (4RC)</td>
+<td>V(1-e^(-4))</td>
+<td>98.2%V</td>
+<td>88</td>
+<td>4.91</td>
+</tr>
+
+<tr>
+<td>5τ (5RC)</td>
+<td>V(1-e^(-5))</td>
+<td>99.3%V</td>
+<td>110</td>
+<td>4.97</td>
+</tr>
+
+
+</tbody>
+</table>
+</div>
+
+
+      </div>
+
+	<hr />
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">用实验来验证理论</a></h2>
+
+	<p>　　上面讲了一些理论，接下来我们设计一个实验来验证一下 RC 时间常数和电压的关系是不是这样。</p>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 3. 实验电路的原理图</b></p>
+
+	  <p><img src="figures/rc-sch.png" /></p>
+	</div>
+
+	<p>　　在上面的电路中，S1 是一个 3 档的单刀双掷开关(这3档是指：公共脚1切换到2, 切换到3或不与任何脚相连)。当开关 S1 的 1, 2 接通时，电源就会通过电阻 R1 向电容 C1 充电；当开关的 1, 3 脚接通时，电容会通过电阻 R1 放电；当 S1 的 1 脚处于中间位置时(既不与2也不与3相连)，电容两端的电压维持不变(因为没有形成通路)。</p>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 4. 在多孔板上搭的实验电路</b></p>
+
+      <p><a href="figures/circuit.jpg"><img src="figures/circuit.jpg" width="800" height="450"/></a></p>
+
+	</div>
+
+	<p>　　我们在多孔实验板上把这个电路搭建起来。在电路中有意用了 IC 座来安装电阻，这样子可以方便的更换别的阻值的电阻，电容也作了同样的安排，左侧的两个排针上面是正极，下面是 GND，在右侧的排针上可以测量电容的电压。</p>
+
+	<p>　　此外，这个简单的电路也可以用面包板搭建。</p>
+
+	<p>　　根据上面提到的 RC 电路理论可以算出我们电路的 RC 时间常数，在上面的电路中 R = 10KΩ, C = 2200uF，τ = RC = 10KΩ * 2200uF = (10*10^3)Ω * (2200*10^(-6))F =  22 秒。这就是说假设最初电容未被充电，当充电时间到 22 秒时电容两端的电压应该是 5V*63.2%，也就是 3.16V(参见表格 1)，依此类推，当充电时间为 44 秒时，电容电压应为 4.33V，等等。</p>
+
+	<p>　　这可以借助简单的实验来验证：拿一块数字万用表，切换到直流 20V 档，把红色表笔接到电容的正极上，黑色表笔接到电容负极上。现在一般的手机都有秒表功用(实际上凡是能显示秒的计时工具都可以用)，在把开关切换到充电功能的同时启动秒表，同时观察万用表的读数，当读数达到 3.16V 左右立即停止秒表，看一下秒表的读数是多少，如果不出意外，在我们的实验中，它应该是 22 秒左右，这表明理论工作得非常完美。</p>
+
+	<p>　　这样做有点麻烦(人手不够)，如果有另一个人帮忙，情况会好很多。当然，如果你能合理安排，一个人也没有问题。</p>
+
+
+  </div>
+
+<hr />
+
+<div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">来一点自动化</a></h2>
+
+	<p>　　毕竟作为普通人我们都只有两只手，我们需要把事情弄得聪明一点，自动化一些。现在一般的微控制器(也叫单片机或 MCU)都带有 ADC (数/模转换器)功能，可以用 ADC 来测量电容充电时的电压并用串口把测得的数据发送到电脑上，我们可以利用这些采集到的数据来进行研究，绘出图表，等等。用 Arduino 来做这个实验是一个不错的选择，下面显示了我们的实验电路和 Arduino 之间的连接关系。</p>
+
+	<div class="FIGURE"><a id="AEN44" name="AEN44"></a>
+	  <p><b>图 5. Arduino 与实验电路相连</b></p>
+
+	  <p><img src="figures/arduino-con.png" /></p>
+	</div>
+
+	<p>　　我们用一段简短的程序读取 Arduino 模拟输入通道 0 的数据，并把它输出给串口。Arduino 的 ADC 是 10 位的，默认的参考电压是 5V，ADC 结果是一个 0 到 1023 之间的整数(就是0V对应于数值0, 5V对应于最大数值1023，就是电压被映射成了数值)，我们可以把这个数值转换成电压值。</p>
+
+	<p>　　电压值 = 5*(ADC 转换结果)/1024</p>
+
+	<p>　　上面的公式是容易理解的，假设 ADC 结果是 512，则电压值 = 5V*(512/1024) = 2.5V，这是正确的，因为 512 正好是 1024 的一半。</p>
+
+	<pre class="SCREEN">
+/* RC Circuit experiment sketch. 
+ 
+Connect the positive end of the capacitor to Analog 0.
+Then connect power supply to the power headers of the RC circuit.  
+For more information see www.atommann.com/learn/rc-circuit/rc-circuit.html */
+ 
+int capPin = 0;      // the positive end of capacitor is connected to a0
+int capvoltReading;  // the analog reading from a0
+unsigned long time;
+
+void setup(void) {
+  // We'll send debugging information via the Serial monitor
+  Serial.begin(9600);   
+}
+ 
+void loop(void) {
+  time = millis();
+  capvoltReading = analogRead(capPin); // getting the voltage reading from capacitor
+  
+  // converting that reading to voltage, for 3.3v arduino use 3.3
+  float voltage = capvoltReading * 5.0;
+  voltage /= 1024.0;
+ 
+  //prints time since program started
+  Serial.print(time/1000); // in seconds
+  //Serial.print("0:");
+  Serial.print(", ");      // we output data with CSV format
+  Serial.println(voltage); // print out the voltage
+ 
+  delay(1000); // 1000ms
+}
+	</pre>
+
+	<p>　　上面是实验用到的 Arduino 程序。将程序下载到 Arduino 中，然后启动终端软件，把开关打到充电档，Arduino ADC 测量到的电压值就会显示在屏幕上。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 6. minicom 记录的数据</b></p>
+
+	  <p><img src="figures/minicom.png" /></p>
+	</div>
+
+	<p>　　第 1 列数据是时间，单位为秒，第 2 列数据就是电压值，我们可以看到 22 秒对应于 3.18V，这和我们上面计算的 3.16V 是非常接近的，考虑到电阻、电容、电源电压都有误差，这个结果是可以接受的。在另一次实验中，我记录了 146 秒的数据(<a href="./minicom-cap.csv" target="_top"><i class="CITETITLE">下载</i></a>)，可以观察它们和理论值的误差。</p>
+
+<div class="TABLE"><a id="AEN79" name="AEN79"></a>
+<p><b>表 2. RC 充电曲线采集值与理论值的对比</b></p>
+
+<table border="1" frame="border" rules="all" class="CALSTABLE">
+<col />
+<col />
+<col />
+<thead>
+
+<tr>
+<th>时间 t</th>
+<th>理论计算值</th>
+<th>实际测量值</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>22</td>
+<td>3.16</td>
+<td>3.19</td>
+</tr>
+
+<tr>
+<td>44</td>
+<td>4.33</td>
+<td>4.34</td>
+</tr>
+
+<tr>
+<td>66</td>
+<td>4.75</td>
+<td>4.75</td>
+</tr>
+
+<tr>
+<td>88</td>
+<td>4.91</td>
+<td>4.90</td>
+</tr>
+
+<tr>
+<td>110</td>
+<td>4.97</td>
+<td>4.95</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+	<p>　　我们可以把数据导入到电子表格中进行对比：</p>
+
+	<div class="FIGURE"><a id="AEN36" name="AEN36"></a>
+	  <p><b>图 7. 对比曲线</b></p>
+
+	  <p><img src="figures/compare-spreadsheet.png" /></p>
+	</div>
+
+	<p>　　第 1 列是时间，第 2 列是用公式算出的理论值，第 3 列是实验测得的值，然后利用电子表格的插入图表功能让这些数据可视化，可以看出红色和蓝色两条曲线几乎重叠在一起。<a href="./rc.xls" target="_top"><i class="CITETITLE">电子表格</i></a></p>
+
+
+</div>
+
+<hr />
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">来一点直观化</a></h2>
+
+	<p>　　先记录数据，再导入到电子表格中生成图表总是有点麻烦，是否能用某种方法把 Arduino ADC 的结果直接用曲线实时描绘在屏幕上呢？</p>
+
+	<p>　　要办到这点有多种方法，可以为此写个软件，从串口读取读数值，然后绘图。也能借助别的一些虚拟仪器软件。我们也可以用自由软件 Gnuplot 来做这件事情，接下来介绍这个方法。</p>
+
+    <p>　　以前在做<a href="http://www.atommann.com/learn/toaster-reflow/index.html" target="_top"><i class="CITETITLE">烤箱回流焊</i></a>实验时想要用 Gnuplot 实时绘图，于是 google 到了 <a href="http://users.softlab.ece.ntua.gr/~ttsiod/gnuplotStreaming.html" target="_top"><i class="CITETITLE">Visualize real-time data streams with Gnuplot</i></a> 一文。作者用 perl 脚本让来自标准输出的数据通过管道实时打印在 Gnuplot 上，让数据可视化。 我试用了一下，确实可行！但这个脚本只能在一个窗口里打印一个通道的数据。还好，另一个人在他代码的基础上实现了一个窗口打印几个通道的数据，见 <a href="http://www.lysium.de/blog/index.php?/archives/234-Plotting-data-with-gnuplot-in-real-time.html" target="_top"><i class="CITETITLE">Plotting data with gnuplot in real-time</i></a>。利用这种方法，我成功打印了回流焊过程中的温度曲线，这个方法也可以应用在我们这个实验中。</p>
+
+
+	<p>　　首先，下载<a href="./driveGnuPlotStreams.pl" target="_top"><i class="CITETITLE">这个 perl 脚本</i></a>，然后为它增加可执行权限：</p>
+
+<pre class="SCREEN">
+# chmod a+x driveGnuPlotStreams.pl
+</pre>
+
+	<p>　　这个脚本可以处理多个通道的数据，因此它要求来自串口的数据要有一定的格式，也就是要有通道号，像 "0:3.2" 这个样子，0 的通道号，3.2 是数据，我们修改 Arduino 程序让它输出这样的格式即可：</p>
+
+	<pre class="SCREEN">
+/* RC Circuit experiment sketch. 
+ 
+Connect the positive end of the capacitor to Analog 0.
+Then connect power supply to the power headers of the RC circuit.  
+For more information see www.atommann.com/learn/rc-circuit/rc-circuit.html */
+ 
+int capPin = 0;      // the positive end of capacitor is connected to a0
+int capvoltReading;  // the analog reading from a0
+unsigned long time;
+
+void setup(void) {
+  // We'll send debugging information via the Serial monitor
+  Serial.begin(9600);   
+}
+ 
+void loop(void) {
+  //time = millis();
+  capvoltReading = analogRead(capPin); // getting the voltage reading from capacitor
+  
+  // converting that reading to voltage, for 3.3v arduino use 3.3
+  float voltage = capvoltReading * 5.0;
+  voltage /= 1024.0;
+ 
+  //prints time since program started
+  //Serial.print(time);
+  Serial.print("0:");      // print channel number
+  //Serial.print(", ");    // we output data with CSV format
+  Serial.println(voltage); // print out the voltage
+ 
+  delay(100); // 100ms, faster output
+}
+	</pre>
+
+	<p>　　把这段 Arduino 程序下载到 Arduino 中，然后执行下面的命令：</p>
+
+<pre class="SCREEN">
+$ sudo minicom | ./driveGnuPlotStreams.pl 1 1 200 0 5.0 800x600+0+0 'adcresult' 0
+</pre>
+
+	<p>　　事先要为 minicom 设置一些参数，比如串口设置文件设成 /dev/ttyUSB0，通讯参数设置成 9600 8N1(和 Arduino 程序中的通讯参数相对应)，minicom 会从串口读取 Arduino 传上来的值，然后通过管道把数据传给 driveGnuPlotStreams.pl，这个脚本控制 Gnuplot 进行绘图。注意，从 minicom 传到 perl 脚本之间的数据还可以用程序/脚本对它进行过滤和处理。</p>
+
+	<p>　　driveGnuPlotStreams.pl 后面是一些参数，用来控制 Gnuplot 绘图的效果，下面是这个命令的说明：</p>
+
+<pre class="SCREEN">
+sudo minicom | ./driveGnuPlotStreams.pl 1 1 \ # 数据流的个数和窗口数量，在我们的例子里都为 1
+   200 \                                      # 窗口的采样数
+   0 5.0 \                                    # 窗口上数值的最小/最大值，因为最高电压为 5V
+   500x300+0+0 \                              # 窗口的几何尺寸，后面的两个+号指定窗口的xy坐标偏移，单位为像素
+   'adcresult \                               # 数据流的标题
+   0                                          # 我们把数据流打印在窗口 0 里
+</pre>
+
+	<p>　　立即你就会看到 ADC 的结果被实时地绘制出来，像下面这个 gif 动画一样(用 byzanz 录制)：</p>
+
+    <p>　　要结束命令，按 Ctrl-a 然后 q，然后回车。</p>
+
+	<div class="FIGURE"><a id="AEN44" name="AEN44"></a>
+	  <p><b>图 8. Gnuplot 实时绘图</b></p>
+
+	  <p><img src="figures/adc-gnuplot.gif" /></p>
+	</div>
+
+	<p>　　上面的方法是在 Linux 中完成的，minicom, Gnuplot, Perl 这些软件都有 Windows 版本，因此类似的方法在 Windows 中应该是可行的。</p>
+    
+
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
+

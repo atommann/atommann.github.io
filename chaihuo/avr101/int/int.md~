@@ -1,0 +1,119 @@
+% AVR 101 - Excuse me... (中断的概念)
+% Atommann
+% May 01, 2013
+
+简介
+--------
+
+* 我笔记本中的插图
+* 水桶溢出作为例子 
+* 古代的水钟 插图
+* 秒钟 马潮书中的例子
+* 用 xfig 画插图
+* 用 dia 画 flow chart
+* 用 fritzing 画面包板图
+* 用示波器显示晶振的波形
+
+用一个实验引出我们的话题
+------------------------
+
+C 代码
+
+把上面的程序编译后写入单片机，观察效果。
+
+外部中断
+--------
+
+笔记本上的例子。
+push button
+
+
+INT1 D3
+
+
+中断服务程序(ISR)
+-----------------
+
+ISR, Interrupt Service Routine
+
+CPU 响应中断
+A: 老师，我有问题，请过来看一下！
+B: 老师，我有问题，请过来看一下！
+
+老师：好，我来了
+
+这个就是响应中断。
+
+定时器溢出中断
+---------------
+
+讲 Timer 0 的控制寄存器 TCCR0 和 TCNT0
+
+表格
+
+怎样设置时钟
+
+    #include <avr/io.h>
+    #include <avr/interrupt.h>
+    
+    int main(void)
+    {
+        // 设置 Timer 0 的参数
+        TCCR0 = (1 << CS01); // Prescaler 8
+ 
+        // 打开溢出中断功能
+        TIMSK |= (1 << TOIE0);
+        
+        // 打开全局中断开关
+        sei();
+        
+        while(1)
+        {
+            /* 可以在这里写其它的代码 */
+        }
+    }
+ 
+    /*
+    溢出中断处理程序
+    wird aufgerufen, wenn TCNT0 von
+    255 auf 0 wechselt (256 Schritte),
+    d.h. ca. alle 2 ms
+    */
+
+    ISR (TIMER0_OVF_vect)
+    {
+        /* Interrupt Aktion alle
+        (1000000/8)/256 Hz = 488,28125 Hz
+        bzw.
+        1/488,28125 s = 2,048 ms  
+        */
+    }
+
+
+一个简单时钟
+--------------
+
+### 原理图
+
+[![blink][blink]][blink]
+
+游乐场
+------------
+
+### 7 段数码管显示
+
+### 16 段数码管显示
+
+### 蜂鸣器
+
+### Timer 计数功能
+
+用一个转盘，IR LED 光电传感器，对脉冲进行计数。或者用对射的方案，只要有东西经过就能计数。演示用 camera 看见红外。
+
+
+<!---
+figures
+-->
+
+[breadboard]: ./figures/ab0cw-breadboard.jpg "breadboard"
+

@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Atommann" />
+  <meta name="date" content="2013-10-22" />
+  <title>xps 转 pdf</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">xps 转 pdf</h1>
+<h2 class="author">Atommann</h2>
+<h3 class="date">October 22, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#缘由">缘由</a></li>
+<li><a href="#evince">evince</a></li>
+<li><a href="#在线转换">在线转换</a></li>
+<li><a href="#okular">okular</a></li>
+<li><a href="#libgxps-tools">libgxps-tools</a></li>
+<li><a href="#借助-ghostpdl">借助 ghostpdl</a></li>
+</ul>
+</div>
+<h2 id="缘由"><a href="#缘由">缘由</a></h2>
+<p>我有一个“单片机朋友”，他用的电子设计软件是 Windows 里的 <a href="http://en.wikipedia.org/wiki/TARGET_3001!" title="target3001!">target3001!</a> (一个德国人写的软件，几乎是一人完成，至今大概有 20 年的历史)。而我只用 GNU/Linux，不方便安装 target3001!，而我又要看他画的图纸，这时，PDF 就是一个最好的选择。我让他导出一个 PDF 给我，他却给我导出一个 <a href="http://en.wikipedia.org/wiki/Open_XML_Paper_Specification" title="xps">xps 文件</a>，多年不用 Windows，我还是第一次知道有 xps 这种文件格式存在。现在有了 xps 文件，下一步就是如何查看的问题了。</p>
+<h2 id="evince"><a href="#evince">evince</a></h2>
+<p>可以打开 xps 文件，但在显示电路原理图时却有一个严重的 bug!交叉相连处的点全部消失不见，而这些圆点在电路里极其重要！它表示相交错的线之间是相连还是不相连。</p>
+<p><a href="./figures/sch_no_dots.png" title="no dots"><img src="./figures/sch_no_dots.png" title="no dots" alt="no_dots" /></a></p>
+<p>这应该是 evince 的一个 bug，或者是 libgxps 的一个 bug。于是，我决定把 xps 转成 pdf 再来看看。</p>
+<p>evince 是我常用的 PDF 查看器，对我来说最好的功能是它支持 vi 的 hjkl 移动功能，在 PDF 图纸里漫游可以灵活自如。如何能再一些别的快捷键，那就更理好了，比加上下面这些快捷键。</p>
+<ul>
+<li>zi (zoom in)</li>
+<li>zo (zoom out)</li>
+<li>zz (zoom extent)</li>
+<li>gg (到文档顶部)</li>
+<li>G (到文档末尾)</li>
+</ul>
+<h2 id="在线转换"><a href="#在线转换">在线转换</a></h2>
+<p>有 <a href="http://xps2pdf.co.uk/" title="XPS2PDF - Convert your XPS files to PDF online">xps2pdf 在线的转换服务</a>，但是如果是商业项目，最好不要用在线工具来转换，因为服务器会保存你的文件，而且文件可以公开下载。</p>
+<h2 id="okular"><a href="#okular">okular</a></h2>
+<p>不能显示圆点。</p>
+<h2 id="libgxps-tools"><a href="#libgxps-tools">libgxps-tools</a></h2>
+<p>安装 libgxps-tools，这时我们有了很多 xps 转换命令</p>
+<ul>
+<li>xpstojpeg</li>
+<li>xpstopdf</li>
+<li>xpstopng</li>
+<li>xpstops</li>
+<li>xpstosvg</li>
+</ul>
+<p>但是，这些工具转换出来的文件都没有交叉点。</p>
+<h2 id="借助-ghostpdl"><a href="#借助-ghostpdl">借助 ghostpdl</a></h2>
+<p>经过 google，发现可以<a href="http://mbalmeida.wordpress.com/2011/01/15/xps-to-pdf-in-ubuntu/" title="xps to pdf in ubuntu">借助 ghostpdl 来进行 xps 文件的转换</a>，具体操作如下：</p>
+<p>先下载 ghostpdl。</p>
+<pre>
+wget -c http://downloads.ghostscript.com/public/ghostpdl-9.10.tar.gz
+</pre>
+
+<p>如果版本号改变或服务器上的文件作了修改，上面的命令将无法工作，这时请到 <a href="http://www.ghostscript.com/download/gpdldnld.html" title="ghostpdl">ghostpdl 官方网站</a>去下载软件。</p>
+<p>接下来是标准的 GNU/Linux 安装方法：</p>
+<pre>
+tar -xzvf ghostpdl-9.10.tar.gz
+cd ghostpdl-9.10
+./autogen.sh
+make xps
+cp xps/obj/gxps /usr/local/bin
+</pre>
+
+<p>此时，我们的系统就有 gxps 这个命令了。可以用下面的命令把你所 xps 文件转换成 PDF 文件。</p>
+<pre>
+gxps -sDEVICE=pdfwrite -sOutputFile=file.pdf -dNOPAUSE input.xps
+</pre>
+
+<p>经测试，转换成的 PDF 正常，有线路的交叉点。</p>
+<p><a href="./figures/sch_show_dots.png" title="show dots"><img src="./figures/sch_show_dots.png" title="show dots" alt="show_dots" /></a></p>
+<!---
+links
+-->
+<!---
+figures
+-->
+</body>
+</html>

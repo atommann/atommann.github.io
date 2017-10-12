@@ -1,0 +1,14 @@
+文件转换命令
+
+生成 pdf
+markdown2pdf tuto.md -o tuto.pdf --xetex
+
+生成 Word docx 文件：
+pandoc -s -S tuto.md -o tuto.docx
+
+生成 ODT (OpenDocument Text, readable by OpenOffice):
+pandoc tuto.md -o tuto.odt
+
+生成 Rich text format (RTF):
+pandoc -s tuto.md -o tuto.rtf
+

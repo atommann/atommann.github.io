@@ -1,0 +1,599 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>用 Arduino 硬件体验 amforth</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">用 Arduino 硬件体验 amforth</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>: led-blink   led-on 500 ms led-off 500 ms ;</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">简介</a></h2>
+
+	<p><a href="http://zh.wikipedia.org/zh-cn/Forth" target="_top"><i class="CITETITLE">Forth</i></a> 是一种有趣的编程语言，而 <a href="http://amforth.sourceforge.net" target="_top"><i class="CITETITLE">amorth</i></a> 是 Forth 在 AVR 微控制器上的实现，它是一个运行在 AVR 上的交互式的和具有可扩展性的命令解释器。整套系统完全运行在微控制器上，最小系统对硬件的需求除了电源基本上不需要别的器件。当然，用户可以根据他们的应用场合扩展所需硬件。</p>
+
+    <p>amforth 的交互功能需要串口连接(对于没有串口的计算机可以用 USB 转串口设备)，也可以用蓝牙或别的连接方式实现无线连接。</p>
+
+    <p>amforth 核心系统大约需要占用 8KB Flash 存储器, 80 字节 EEPROM 以及大约 200 字节的 RAM.</p>
+
+      </div>
+
+      <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">软件和硬件需求</a></h2>
+
+	<p>本文中的实验需要具备一定的软件和硬件环境。</p>
+
+        <ol>
+            <li>
+                <p>知道如何在自己所用操作系统中用命令行工作，比如 Linux/Unix 的终端和 Windows 的 cmd/DOS 环境。</p>
+            </li>
+
+            <li>
+                <p>AVR 开发环境，比如在 Windows 中安装 WinAVR，在 Linux 中安装 avr-gcc, avr-libc 以及 avrdude.</p>
+            </li>
+
+            <li>
+                <p>一套 Arduino 硬件。</p>
+            </li>
+
+            <li>
+                <p>一个 AVR 编程器，比如 pony-stk200, USBtinyISP 或 USBasp.</p>
+            </li>
+
+            <li>
+                <p>一些常用电子器件，比如电阻、LED、多孔板、2.54mm 间距排针以及导线。</p>
+            </li>
+
+             <li>
+                <p>基本的焊接技能。</p>
+            </li>
+
+             <li>
+                <p>一个蓝牙模块(如果想体验无线连接)</p>
+            </li>
+        </ol>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图1. 三种 AVR ISP 编程器</b></p>
+
+      <a href="http://www.flickr.com/photos/atommann/7163256696/" title="avr-isp-programmer by atommann, on Flickr"><img src="http://farm8.staticflickr.com/7074/7163256696_daf5b8912a_z.jpg" width="640" height="360" alt="avr-isp-programmer"></a>
+
+    <p>上方：需要并口连接的 <a href="http://www.lancos.com/prog.html" target="_top"><i class="CITETITLE">pony-stk200 编程器</i></a></p>
+    <p>左边：<a href="http://www.fischl.de/usbasp/" target="_top"><i class="CITETITLE">USBasp</i></a>，右边：<a href="http://www.ladyada.net/make/usbtinyisp/" target="_top"><i class="CITETITLE">USBtinyISP</i></a></p>
+    </div>
+
+
+	 </div>
+
+      <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN12" name="AEN12"> 1 + 2 = 3</a></h2>
+
+    <p>要体验 amforth 的基本功能不需要复杂的硬件，我们可以用 Arduino 的硬件来做实验。</p>
+
+    <p>首先，到 <a href="http://amforth.sourceforge.net" target="_top"><i class="CITETITLE">amforth 网站</i></a> 下载最新的软件包(写本文时最新版本是 4.8)，然后在某个目录解压缩。在目录 amforth-4.8/appl/arduino/ 里可以看到一些 hex 文件，这些是为 Arduino 硬件预编译好的 amforth 固件，主要起演示作用。比如 <tt class="FILENAME">duemilanove.hex</tt> 和 <tt class="FILENAME">duemilanove.eep.hex</tt> 这两个文件就是为 Arduino Duemilanove 准备的。</p>
+
+<pre class="SCREEN">
+[atommann@atommann arduino]$ pwd
+/home/atommann/forth/amforth/amforth-4.8/appl/arduino
+[atommann@atommann arduino]$ ll
+total 1256
+drwxrwxr-x. 2 atommann atommann   4096 May  9 11:20 blocks
+-rw-rw-r--. 1 atommann atommann   2253 Jun 26  2011 build.xml
+-rw-rw-r--. 1 atommann atommann    844 Jun 26  2011 dict_appl_core.inc
+-rw-rw-r--. 1 atommann atommann    181 Jun 26  2011 dict_appl.inc
+-rw-rw-r--. 1 atommann atommann   1360 Aug  3  2011 diecimila.asm
+-rw-rw-r--. 1 atommann atommann    549 Aug  3  2011 duemilanove.asm
+-rw-rw-r--. 1 atommann atommann    214 Mar 27 02:36 duemilanove.eep.hex
+-rw-rw-r--. 1 atommann atommann  25182 Mar 27 02:36 duemilanove.hex
+-rw-rw-r--. 1 atommann atommann 308909 Mar 27 02:36 duemilanove.lst
+-rw-rw-r--. 1 atommann atommann  54303 Mar 27 02:36 duemilanove.map
+-rw-rw-r--. 1 atommann atommann    118 May  8 15:47 Makefile
+-rw-rw-r--. 1 atommann atommann   1448 Aug  3  2011 mega128.asm
+-rw-rw-r--. 1 atommann atommann    214 Mar 27 02:36 mega128.eep.hex
+-rw-rw-r--. 1 atommann atommann  26712 Mar 27 02:36 mega128.hex
+-rw-rw-r--. 1 atommann atommann 325534 Mar 27 02:36 mega128.lst
+-rw-rw-r--. 1 atommann atommann  75297 Mar 27 02:36 mega128.map
+-rw-rw-r--. 1 atommann atommann   2858 Feb  4 03:17 readme.txt
+-rw-rw-r--. 1 atommann atommann    647 Aug  3  2011 sanguino.asm
+-rw-rw-r--. 1 atommann atommann    214 Mar 27 02:36 sanguino.eep.hex
+-rw-rw-r--. 1 atommann atommann  24956 Mar 27 02:36 sanguino.hex
+-rw-rw-r--. 1 atommann atommann 306477 Mar 27 02:36 sanguino.lst
+-rw-rw-r--. 1 atommann atommann  57494 Mar 27 02:36 sanguino.map
+drwxrwxr-x. 2 atommann atommann   4096 May  1 17:52 words
+</pre>
+
+
+    <p>文件 <tt class="FILENAME">readme.txt</tt> 是一些说明，其中讲了 fuse bit 的设置。我们知道 Arduino 能够通过内置的 bootloader 向自身下载固件，但我们的例子只用到它的硬件，不需要 Arduino 的软件环境。如果要在 Arduino 上测试 amforth，需要按 <tt class="FILENAME">readme.txt</tt> 修改 fuse bit 的设置：</p>
+
+<pre class="SCREEN">
+Model       Microcontroler  Host    Xtal    DBG-LED Flash   B-Load              Ram Fuses (E,H,L)
+Mega        ATMega 1280     uart0   16Mhz   PB7     128K    512b/1k/2k/4k       8k  F7 D9 FF
+Diecimila   ATMega 168      uart0   16Mhz   PB5     16K     128b/256b/512b/1k   1k  F9 DD FF
+Duemilanove ATMega 328      uart0   16Mhz   PB5     32k     256b/512b/1k/2k     2k  05 D9 FF
+Uno         ATMega 328      uart0   16Mhz   PB5     32k     256b/512b/1k/2k     2k  05 D9 FF
+Sanguino    ATMega 644      uart0   16Mhz   PB0     64k     512/1k/2k/4k        4k  FD F9 FF
+</pre>
+
+
+    <p>把 Arduino Duemilanove 的 fuse bit 设置和上面的表格相对比，可以发现只需要把 Hfuse 从 0xda 改成 0xd9 即可。用 AVR ISP 编程器可以很容易修改 fuse bit: 把 AVR ISP 编程器与 Arduino 的 6 针 ISP 接口相连，然后执行下面的命令：</p>
+
+<pre class="SCREEN">
+# avrdude -c pony-stk200 -P /dev/parport0 -p m328p -U hfuse:w:0xd9:m
+</pre>
+
+    <p>在上面的命令中有几点要注意，在 Linux 上如果没有经过适当设置需要 sudo 才能执行上面的命令；选项 -c 后面跟的是 ISP 编程器的类型，请修改成你的编程器名字；-P 是 ISP 编程器所使用的计算机接口，请使用正确的端口(例子中用的是并口)；-p 后面是器件型号，请根据你所使用的 Arduino 上的 AVR 型号作相应修改。</p>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图2. 用 pony-stk200 为 Arduino 烧写程序</b></p>
+<a href="http://www.flickr.com/photos/atommann/7169555612/" title="isp by atommann, on Flickr"><img src="http://farm8.staticflickr.com/7218/7169555612_578809222c_z.jpg" width="640" height="360" alt="isp"></a>
+
+    <p>(注意 Arduino 右上角的 ISP 编程线，照片左边的 USB 连接只起提供电源的作用，因为pony-stk200 不向目标板供电)</p>
+    </div>
+
+    <p>设置好 Fuse bit 后就可以向 AVR 下载 amforth 固件了，执行命令：</p>
+
+<pre class="SCREEN">
+# avrdude -c pony-stk200 -P /dev/parport0 -p m328p -U flash:w:duemilanove.hex -U eeprom:w:duemilanove.eep.hex
+</pre>
+
+    <p>如果 avrdude 在烧写固件过程中没有错误提示，至此你的 Arduino 已经可以运行 Forth 程序了！</p>
+
+    <p>接下来我们可以用串口软件来和 amforth 进行交互。</p>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图3. 通过 minicom 和 Arduino 上的 amforth 交互</b></p>
+<a href="http://www.flickr.com/photos/atommann/7163383958/" title="minicom-amforth by atommann, on Flickr"><img src="http://farm8.staticflickr.com/7086/7163383958_89be3f93d9.jpg" width="478" height="425" alt="minicom-amforth"></a>
+    </div>
+
+    <p>minicom 的设置是 9600, 8N1, 串口设备为 <tt class="FILENAME">/dev/ttyUSB0</tt>，在截图中我们可以看到 amforth 在启动的时候会显示 mforth 4.8 ATmega328P Forthduino 字样，接下来是 &gt; 符号，这是 amforth 的命令行提示符，提示用户可以在此输入命令。注意关掉 minicom 的回显(local Echo)功能。</p>
+
+    <p>从截屏中可以看到当用户输入 1 2 + . 并回车之后 amforth 打印出结果 3，后面再跟一个 ok，然后用户可以输入下一条命令。1 2 + 这种形式称为<a href="http://zh.wikipedia.org/wiki/逆波兰表示法" target="_top"><i class="CITETITLE">后缀表示法(也叫逆波兰表示法)</i></a>，其特点是操作符被放在操作数的后面，在这个例子里 + 号是操作符，1 和 2 是操作数。这对 Forth 来说是很正常的，因为 Forth 像 <a href="http://zh.wikipedia.org/wiki/PostScript" target="_top"><i class="CITETITLE">Postscript</i></a> 一样是一种基于堆栈的语言。</p>
+
+    <p>为了说得更清楚一点，我们在这里来粗略了解一下这个 1 + 2 的例子在 amforth 中是如何被执行的。amforth 中运行着一个解释器，当我们输入 1 2 + . 的时候解释器会扫描我们的输入。当它扫描到数字 1 时会把它放入堆栈存起来，然后扫描到 2，也存到堆栈中，然后扫描到 + 号，+ 号是 amforth 在它的“字典”中已经定义好的一个 word (就是命令)，根据定义，+ 号命令需要两个操作数，于是 amforth 就把 2 和 1 从堆栈中取出相加 (Forth 的堆栈是后进先出的，即 LIFO)，加好之后得到数字 3，再把 3 存回到堆栈中，. 符号也是一个 amforth 命令，它的作用是从堆栈中弹出一个数字并显示到终端上，于是我们就看到了结果 3.</p>
+
+
+    </div>
+
+    <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">Hello world (闪烁 LED)</a></h2>
+
+    <p>我们已经看到 amforth 可以在 Arduino 硬件上运行并执行了一个简单的算术命令。好吧，你可以认为它是一个 amforth 的 Hello world，但是对于硬件实验而言，能够操纵真实物理硬件更能让我们感受到 Hello world 的快乐：比如让 Arduino 上自带的 LED 闪烁起来。这个例子来自 amforth 网站上的 recipes 部分：<a href="http://amforth.sourceforge.net/recipes/arduino-helloworld.html" target="_top"><i class="CITETITLE">Arduino Hello World</i></a>，在这里用中文对此例子作一些翻译和解释。</p>
+
+    <p>首先定义两个常量：</p>
+<pre class="SCREEN">
+> $25 constant PORTB
+> $24 constant DDRB
+</pre>
+
+    <p>最前面的 &gt; 符号是命令提示符，这个符号不用自己输入，它表示 amforth 准备接收用户的输入。amforth 对命令的长度有 80 个字符的限制，如果你想输入更长的字符，那得改源程序并重新向 Arduino 烧写固件。</p>
+
+    <p>Arduino 对它上面的 IO 按照自己的方式进行了编号。但是我们只是用 Arduino 的硬件平台，对于 Arduino Duemilanove 而言 digial-13 就是 PORTB 的第 5 位(Arduino 自带的 LED 连接在这个 pin 上)。Port B 有 8 个 pin 和 3 个相关的寄存器，在我们的例子里只用到其中两个：数据方向寄存器(Data Direction Register, DDR) 和 PORT (输出) 寄存器。第三个寄存器是用来读取来自端口的输入信号的 PIN 寄存器。</p>
+
+    <p>在 AVR 中每个寄存器都有一个地址，$ 符号开头的数在 Forth 中表示十六进制数，$25 是 Port B 的 PORT 寄存器的地址；$24 是 Port B 的 DDR 寄存器的地址。进行常量定义后我们在后面的程序中就可以直接用 PORTB, DDRB 这样的字符来表示寄存器了，而不管它们的十六进制地址是多少，这给编程带来便利。</p>
+
+    <p>要想立即体验一下操作物理硬件的效果请输入下面的命令并回车：</p>
+<pre class="SCREEN">
+> $20 DDRB c! $20 PORTB c! 
+</pre>
+
+    <p>可以看到 Arduino 板载的 LED 被点亮了！这就像是输入了一条符咒。</p>
+
+    <p>执行：</p>
+<pre class="SCREEN">
+> 0 PORTB c! 
+</pre>
+
+    <p>可以看到 LED 一下子又熄灭了。上面的命令你可以多试几次找点感觉。</p>
+
+    <p>试了几次之后你可能会觉得这相当无聊，太麻烦了，点亮/关闭一个 LED 居然要敲这么多字，我们需要更好的方法。是的，接下来我们定义一些命令来控制这些 LED.</p>
+
+    <p>在 Forth 中，通常有很多条简单的 word (命令)，每个 word 只做一件简单的事情(有点像 Unix 的一条哲学)。我们可以定义自己的命令，当输入 Forth 命令的时候要注意每个 word 之间至少要间隔一个空格。而且在 Forth 中几乎所有的字符都可以用来做为命令名字的一部分。</p>
+
+    <p>在这个例子里我们首先定义一个命令，它可以把 Port B 的“数据方向寄存器(DDRB)”接 LED 的那一位设置成输出模式，在 Arduino sketch 里程序如下：</p>
+
+<pre class="SCREEN">
+void setup() { pinMode(13, OUTPUT); }
+</pre>
+
+    <p>在 amforth 里，我们这样做：</p>
+<pre class="SCREEN">
+> : led-init  $20 DDRB c! ;
+</pre>
+
+    <p>输入上面的命令并回车后 amforth 内置的解释器就会学习并记住这个叫 led-init 的新命令。命令定义完成/执行成功后 amforth 解释器都会输出 ok，这个时候如果执行 led-init 就会发现 amforth 已经可以认识并执行它了。另外，以前定义的命令可以用在以后的命令定义中。</p>
+
+    <p>在上面的定义中，c! 是 amforth 内置的一个命令，它的作用是向一个指定的 RAM 地址写入一个字节。这个定义的作用是：把 32 (十六进制的 20，二进制的 100000)写入到 DDRB 寄存器中(在 AVR 中，寄存器地址被映射到 RAM 地址中，根据我们前面的定义，寄存器 DDRB 的地址是 $24)，这使得 PORTB 的第 5 位作为输出引脚(从 0 位数起)。</p>
+
+    <p>如果我们执行这个新的 led-init 命令，可以看到 LED 的显示状态根本没有任何改变。别急，我们接下来定义一条可以点亮 LED 的命令：</p>
+
+<pre class="SCREEN">
+> : led-on $20 PORTB c! ;
+</pre>
+
+    <p>在这个定义中 Port B 第 5 位将被置 1 (注意 $20 = 0b100000)，对应的引脚将输出高电平 VCC (5V)，LED 的正极正是通过一个 1k 的电阻连接到这个引脚上的，因此 LED 会被点亮 (LED 的负极已经接到 GND 上了)。</p>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图4. Arduino 原理图中 LED 接法</b></p>
+<a href="http://www.flickr.com/photos/atommann/7175000326/" title="arduino_2009_led by atommann, on Flickr"><img src="http://farm8.staticflickr.com/7075/7175000326_484bf62e0c.jpg" width="461" height="492" alt="arduino_2009_led"></a> 
+
+    </div>
+
+
+    <p>现在试试执行 led-on 命令。如果 LED 不亮，可以再次执行 led-init 命令。同样，在电路复位或重新上电后都要执行 led-init 以初始化端口。</p>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图5. 执行 led-on 命令</b></p>
+      <a href="http://www.flickr.com/photos/atommann/7169661620/" title="led-on by atommann, on Flickr"><img src="http://farm8.staticflickr.com/7102/7169661620_8554a66861_z.jpg" width="640" height="360" alt="led-on"></a>
+
+      <p>从照片中可以看到 Arduino 的板载 LED 已经亮了。</p>
+    </div>
+
+    <p>如果不出意外，led-on 应该可以点亮 LED 了。现在我们需要另一个命令，让它可以关掉 LED。当然，你可以用前面的 0 PORTB c! 来关掉 LED，但是敲的字太多了。一个更聪明的做法是定义一个新的 word:</p>
+
+<pre class="SCREEN">
+> : led-off  0 PORTB c! ;
+</pre>
+
+    <p>现在你可以用新定义的这两个命令来控制 LED 的亮灭了：</p>
+
+<pre class="SCREEN">
+> led-on led-off led-on led-off
+</pre>
+
+    <p>这个命令先点亮 LED，再熄灭，再点亮，再熄灭。但是亮和灭之间没有加延时，你基本看不到 LED 发光(在敲回车的时间凝视 Arduino 上的 LED 可以看到非常短暂的微弱闪光)。</p>
+
+    <p>下面我们定义一个新 word 来解决这个问题，而且可以少打很多字，而且让 LED 实现真正的闪烁效果(对我们人眼而言 :-)。</p>
+
+<pre class="SCREEN">
+> : led-blink led-on 500 ms led-off 500 ms ;
+</pre>
+
+    <p>现在执行 led-blink，你会看到 LED 会亮上大约半秒钟，然后 LED 熄灭，熄灭的时间长短不好判断，但是你可以观察到 LED 熄灭后要等上一小会儿 amforth 才会打印表示命令成功结束的 ok 提示，这表明 LED 熄灭之后确实有一点延时(理论上是半秒钟)。</p>
+
+    <p>执行下面这样的命令：</p>
+
+<pre class="SCREEN">
+> led-blink led-blink led-blink 
+</pre>
+
+    <p>这样连续几次执行 led-blink 可以让 LED 闪烁数秒钟。</p>
+
+    <p>要是我们想让 LED “永远”闪烁，应该怎么办呢？那就定义下面的命令：</p>
+
+<pre class="SCREEN">
+: blink-forever
+    ." press any key to stop "
+    begin
+       led-blink
+       key?
+    until
+    key drop \ we do not want to keep this key stroke
+;
+</pre>
+
+    <p>现在试试这个 blink-forever，应该可以看到 LED 开始闪烁起来了！我们的 Hello world 跑起来了。按键盘上的任意键将结束闪烁。</p>
+
+    <p>这个 word 先输出一些提示性文字("press any key to stop")，然后就进入一个循环。在循环中 LED 闪烁一次，然后检查用户是否有击键(来自电脑键盘)。如果没有任何键被按下，则循环将继续(LED 继续闪烁)。如果有键被按下，则循环结束(LED 停止闪烁)。最后两个命令起管理作用：读取按下的键然后将其丢弃。如果不这样做的话，前面的击键将会成为下一个命令的第一个字符(你可以重新定义上面的 blink-forever 命令而不要最后的 key drop 来测试是否如此)。\ 符号后面的文字是注释，amforth 会对它视而不见。</p>
+
+    <p>我们在前面定义了多个 word，这样做的好处是定义完一个 word 之后就可以立即执行以测试其是否工作正常。这样后面的代码依赖前面那些已经经过测试的 word，这使得调试变得容易一些。定义很多的 word 有什么坏处呢？当然有，你需要更多的代码空间来存放命令的名字。这对执行速度倒是没有什么影响。</p>
+
+
+      </div>
+
+    <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">通过串口上传应用程序</a></h2>
+
+    <p>在上面的 Hello world 中我们使用了 amforth 的交互功能来定义新 word，也敲了不少字。其实我们可以把整个 Forth 应用程序写好，然后一次性上传到硬件上即可，下面来看看怎么做。</p>
+
+    <p>文件 <tt class="FILENAME">amforth-4.8/appl/arduino/blocks/led-mega.frt</tt> 就是上面的 Hello word 的完整程序，但是它使用的硬件是 Arduino Mega，而我们这里使用的硬件是 Arduino Duemilanove，下面的程序是对它的一个小改动以支持我们的 Arduino 版本，你可以把下面的代码保存为比如叫 <tt class="FILENAME">led-2009.frt</tt>，也可以在原有程序上作相应的修改(把 $80 改成 $20)：</p>
+
+<pre class="SCREEN">
+\ let the led at digital-13 aka PortB.5 blink
+
+\
+$25 constant PORTB
+$24 constant DDRB
+
+\ initialize the Port: change to output mode
+: led-init
+  $20 DDRB c!
+;
+
+\ turn the led on
+: led-on
+  $20 PORTB c!
+;
+
+\ turn the led off
+: led-off
+  0 PORTB c!
+;
+
+\ let led blink once
+: led-blink
+  led-on 500 ms led-off 500 ms
+;
+
+\ let led blink until a keystroke
+: blink
+    ." press any key to stop "
+    begin
+       led-blink
+       key?
+    until
+    key drop \ we do not want to keep this key stroke
+;
+
+\ and do it....
+led-init blink
+</pre>
+
+
+    <p>把 Arduino 用 USB 线与电脑相连，然后执行(可能需要 root 权限)：</p>
+<pre class="SCREEN">
+# ascii-xfr -s -c 10 -l 100 led-2009.frt > /dev/ttyUSB0
+</pre>
+
+    <p>如果传输完成没有出错，你就可以启动 minicom 进入 amforth 交互环境并执行 led-init led-on led-off 以及 blink 这些命令了。</p>
+
+    <p>用 ascii-xfr 来上传程序到硬件上只是其中一种方法，amforth 网站上还提到一些别的方法。</p>
+
+      </div>
+
+
+    <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">利用蓝牙模块实现无线连接</a></h2>
+
+    <p>我们看到可以通过串口与 amforth 交互并上传应用程序，这很容易让人联想到用蓝牙来代替串口的物理接线，下面介绍如何实现这一功能。这个功能有一些潜在的应用，比如我们有一个轮式机器小车，那就能通过无线方式升级小车的控制程序了。</p>
+
+    <p>首先，在硬件上我们需要电脑支持蓝牙功能(如果你的电脑没有内置蓝牙功能，可以使用 USB 蓝牙适配器)，在 AVR 硬件侧也要有蓝牙模块的支持才能让电脑和 AVR 相互通讯。</p>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图6. HC-05 蓝牙模块</b></p>
+      <a href="http://www.flickr.com/photos/atommann/7169424686/" title="hc-05 by atommann, on Flickr"><img src="http://farm6.staticflickr.com/5447/7169424686_06374791df_n.jpg" width="272" height="320" alt="hc-05"></a>
+    </div>
+
+    <p>一般的蓝牙模块都是 3.3V 电平(如果你的 Arduino 是 5V 请不要直接相连，要加电平转换)。我使用的 Seeeduino V2.2 上有一个拨动开关，可以让 AVR 系统的逻辑电平在 3.3V 和 5V 之间切换，这个功能带来很多便利。</p>
+
+    <p>接下来的事情是把蓝牙模块与 Arduino 相连，下面的表格列出了接线方式。HC-05 模块采用“引脚半孔工艺”，在焊接的时候应该使用较细的线(用线连接是因为我们做实验只是临时连接)，先在半孔上加一点锡，然后把导线焊上去即可。</p>
+
+<div class="TABLE"><a id="AEN95" name="AEN95"></a>
+<p><b>表 1. 接线</b></p>
+
+<table frame="border" rules="all" class="CALSTABLE" border="1">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup><thead>
+<tr>
+<th>Arduino Duemilanove</th>
+<th>HC-05 蓝牙模块</th>
+<th>注释</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>0 (RX)</td>
+<td>TX (1)</td>
+<td></td>
+</tr>
+
+<tr>
+<td>1 (TX)</td>
+<td>RX (2)</td>
+<td></td>
+</tr>
+
+<tr>
+<td>3V3</td>
+<td>3.3V (12)</td>
+<td></td>
+</tr>
+
+<tr>
+<td>GND</td>
+<td>GND (13)</td>
+<td></td>
+</tr>
+
+<tr>
+<td></td>
+<td>LED1 (31)</td>
+<td>LED1 通过470欧电阻接 LED 正极，LED 负极接地，起指示灯作用</td>
+</tr>
+
+<tr>
+<td></td>
+<td>KEY (34)</td>
+<td>KEY 通过 10K 电阻接地</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图7. Arduino 与 HC-05 蓝牙模块相连</b></p>
+      <a href="http://www.flickr.com/photos/atommann/7169662398/" title="arduino-bluetooth by atommann, on Flickr"><img src="http://farm8.staticflickr.com/7215/7169662398_0183fbd2f4_z.jpg" width="640" height="360" alt="arduino-bluetooth"></a>
+    </div>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图8. Arduino 与 HC-05 蓝牙模块相连(侧视图)</b></p>
+      <a href="http://www.flickr.com/photos/atommann/7169659408/" title="connect-sideview by atommann, on Flickr"><img src="http://farm6.staticflickr.com/5325/7169659408_68474631e3_z.jpg" width="640" height="360" alt="connect-sideview"></a>
+    </div>
+
+    <p>上面两张照片显示了 HC-05 蓝牙模块和 Arduino 之间的连接，在连接中我使用了一个多孔板来做中间的桥梁，这块多孔板是以前在另一个项目中用过的，你可以用自己的方法把它们连接起来。</p>
+
+    <p>Arduino 通过 USB 接到计算机之后可以看到 <tt class="FILENAME">/dev/ttyUSB0</tt> 这个串口设备，前面我们就是利用它和 Arduino 上的 amforth 系统通讯的，现在我们的蓝牙串口在哪里呢？我们要让电脑能够识别到我们所连接的蓝牙模块，并想办法弄出一个串口设备。下面是在 Linux 系统上的做法(参考 thinkwiki.org 上的文章 <a href="http://www.thinkwiki.org/wiki/How_to_setup_Bluetooth" target="_top"><i class="CITETITLE">How to setup Bluetooth</i></a>).</p>
+
+    <p>首先确认 HC-05 和 Arduino 连接正确无误，然后接通电源。这时在 Linux 里面可以用 hcitool 命令来扫描蓝牙硬件：</p>
+<pre class="SCREEN">
+$ hcitool scan
+Scanning ...
+    07:12:05:03:51:78   HC-05
+</pre>
+
+    <p>可以看到，扫描到了一个叫 HC-05 的设备，前面那串字符是它的设备地址。</p>
+
+    <p>接下来要知道这个被扫描到的模块的通讯频道(channel)：</p>
+<pre class="SCREEN">
+$ sdptool records 07:12:05:03:51:78
+Service Name: Dev B
+Service RecHandle: 0x10004
+Service Class ID List:
+  "Serial Port" (0x1101)
+Protocol Descriptor List:
+  "L2CAP" (0x0100)
+  "RFCOMM" (0x0003)
+    Channel: 1
+Language Base Attr List:
+  code_ISO639: 0x656e
+  encoding:    0x6a
+  base_offset: 0x100
+</pre>
+
+    <p>可以从中看到 Channel: 1 的字样，表示频道 1.</p>
+
+    <p>因为我们想要一个无线串口，那就需要在 /dev 目录里有一个串口文件，执行下面的命令：</p>
+
+<pre class="SCREEN">
+# rfcomm bind 0 07:12:05:03:51:78 1
+</pre>
+
+    <p>如果一切正常，你现在可以看到 <tt class="FILENAME">/dev/rfcomm0</tt> 这个串口设备了。</p>
+
+    <p>你可以把参数写到配置文件中，对 <tt class="FILENAME">/etc/bluetooth/rfcomm.conf</tt> 作如下修改(如果没有这个文件则需创建)。</p>
+
+<pre class="SCREEN">
+rfcomm0 {
+bind yes;
+device 07:12:05:03:51:78;
+channel 1;
+comment "HC-05 connection"
+}
+</pre>
+
+    <p>啊，现在一切都已准备好，可以开始进行无线通讯了，这时把 Arduino 的 USB 线拔掉，只需要给 Arduino 供电即可，如图7所示。</p>
+
+    <p>然后执行：</p>
+<pre class="SCREEN">
+$ minicom -D /dev/rfcomm0
+</pre>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图9. 无线交互</b></p>
+<a href="http://www.flickr.com/photos/atommann/7169534508/" title="minicom-rfcomm0 by atommann, on Flickr"><img src="http://farm8.staticflickr.com/7088/7169534508_081d3b3811_z.jpg" width="572" height="521" alt="minicom-rfcomm0"></a>
+    </div>
+
+    <p>上面的截屏演示了一个通讯示例，这时你就可以和 amforth 进行无线交互了，当然也包括无线上传 forth 应用程序到 AVR 中。</p>
+
+    <p>我找了一只 RGB LED，然后把它接到现有的电路上，模拟前面的 Hello world 程序写了一个简单程序来对其进行控制(注意，这里没有使用 PWM 功能)。</p>
+
+<pre class="SCREEN">
+\ The connections between Arduino Duemilanove and RGB LED
+\ Blue  -- Port C bit 0
+\ Green -- 100 Ohm -- Port C bit 1
+\ Red   -- 200 Ohm -- Port C bit 2
+\ Common Anode -- 3V3
+
+$28 constant PORTC
+$27 constant DDRC
+
+\ initialize the Port: change to output mode
+: rgb-init
+  $7 DDRC c!
+;
+
+\ turn the blue LED on
+: blue-on
+  $3e PORTC c!
+;
+
+\ turn the green LED on
+: green-on
+  $3d PORTC c!
+;
+
+\ turn the red LED on
+: red-on
+  $3b PORTC c!
+;
+
+\ turn all LEDs on
+: rgb-on
+  $38 PORTC c!
+;
+
+\ turn all led off
+: rgb-off
+  $3f PORTC c!
+;
+
+\ blink once
+: rgb-blink-once
+  red-on 500 ms green-on 500 ms blue-on 500 ms 
+;
+
+\ let LED blink until a key stroke
+: rgb-blink
+    ." press any key to stop "
+    begin
+       rgb-blink-once
+       key?
+    until
+    key drop \ we do not want to keep this key stroke
+;
+</pre>
+
+    <p>把这代代码存为 <tt class="FILENAME">rgb.frt</tt> 并执行下面的命令就可以把程序烧写进 Arduino 里了：</p>
+
+<pre class="SCREEN">
+# ascii-xfr -s -c 10 -l 100 rgb.frt > /dev/rfcomm0
+</pre>
+
+    <p>下面的 gif 动画演示了上面程序的效果：</p>
+
+    <div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+      <p><b>图10. 闪烁的 RGB LED</b></p>
+      <p><img src="figures/rgb-blink.gif"/></p>
+    </div>
+
+
+      </div>
+
+
+    </div>
+
+  </body>
+</html>

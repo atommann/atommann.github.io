@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>用 RC 电路实现简易 ADC</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">用 RC 电路实现简易 ADC</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　R + C + Analog Comparator = ADC!</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">简介</a></h2>
+
+	<p>　　我们所生活的真实世界是模拟的(想象电压、电流、温度和湿度的连续变化)，而微控制器的内部世界却是数字的，一切量都以数字的形式表现(二进制)。要让微控制器能与模拟世界交谈(懂读模拟量)，我们需要架起一座桥梁——模/数转换器(即 Analog-to-Digital Converter, 常缩写为 ADC)。</p>
+
+    <p>　　现在很多微控制器都内置了 ADC 模块，利用它们我们就能在方便地把模拟量转换为数字量。但是有一些低端、廉价的微控制器并没有提供 ADC 功能，例如 ATtiny2313 就没有内置 ADC。然而，利用一个电阻和电容再加上 AVR 内置的模拟比较器，我们可以为它实现一个低精度的简易 ADC，它主要利用了 RC 电路的一个特性(在 <a href=" http://www.atommann.com/learn/rc-circuit/rc-circuit.html" target="_top"><i class="CITETITLE">RC 电路充放电实验</i></a> 一文中我们对 RC 电路的特性进行了一些探索)</p>
+
+	<p>　　本文档主要内容取自 AVR 应用笔记 AVR400: Low Cost A/D Converter。</p>
+
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 1. morse</b></p>
+
+	  <p><img src="figures/screenshot-morse.png" /></p>
+	</div>
+      </div>
+
+      <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">2 LED 上的 dit 和 dah</a></h2>
+
+	<p>　　在 morse 的 manual page 里有这样一段话：</p>
+
+	<pre class="SCREEN">
+	  Using the -d flag, it is possible to key an external device, like a
+	  sidetone generator with a headset for training purposes, or even your ham
+	  radio transceiver.  For the latter, simply connect an NPN transistor to
+	  the serial port device, emitter connected to ground, base connected
+	  through a resistor (few kiloohms) to RTS, collector to the key line of
+	  your transceiver (assuming the transceiver has a positive key supply
+	  voltage and is keyed by grounding the key input line).  A capacitor (some
+	  nanofarads) between base and ground is advisable to keep stray RF away,
+	  and to suppress the minor glitch that is generated during program
+	  startup.
+	</pre>
+
+	<p>　　就是说如果用 -d 选项，程序输出的 Morse 码会出现在串口的 RTS 脚上面，我们可以用一只 LED 来验证。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 2. 实验原理图</b></p>
+
+	  <p><img src="figures/serial_morse_sch.png" /></p>
+	</div>
+
+	<p>　　LED 阳极接串口的第 7 脚 RTS，阴极通过一个 4.7k 的限流电阻接到串口第 5 脚 GND。</p>
+
+	<div class="FIGURE"><a id="AEN36" name="AEN36"></a>
+	  <p><b>图 3. 实验电路</b></p>
+
+	  <p><img src="figures/serial_morse_led.jpg" /></p>
+	</div>
+
+	<p>　　LED 按照 Morse 码的节奏闪烁。</p>
+
+	<div class="FIGURE"><a id="AEN44" name="AEN44"></a>
+	  <p><b>图 4. 示波器的上 Morse 码</b></p>
+
+	  <p><img src="figures/morse_code_waveform.jpg" /></p>
+	</div>
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">3 Arduino，光敏电阻和 morse</a></h2>
+
+	<p>　　</p>
+
+
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
+

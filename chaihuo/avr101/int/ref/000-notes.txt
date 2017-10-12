@@ -1,0 +1,6 @@
+文章来源
+http://www.fourwalledcubicle.com/AVRArticles.php
+http://www.avrfreaks.net/index.php?name=PNphpBB2&file=printview&t=89843
+
+用打印机驱动来向 AVR 烧写程序
+http://fourwalledcubicle.com/blog/

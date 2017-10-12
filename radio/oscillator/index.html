@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>振荡器</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">振荡器</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　振荡无处不在</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">1 简介</a></h2>
+
+	<p>某天在 google Buzz 上看到 SZDIY Lab 成员哥伦布共享的一则资讯<a href="http://hackaday.com/2010/07/27/200-mile-rf-transmitter-and-high-altitude-balloon/">200 mile RF transmitter (and high altitude balloon)</a>，提到用 Morse code 从高空气球向地面发送信号，我觉得很有意思，在下面的评论中写到：</p>
+
+	<p>“这个我喜欢，你启发了我 :), 那段小程序不停用 Morse code 发送 "go gators"，我有个想法就是做一个 NTC 的温度计，把它固定在某颗树上，然后把温度值定时用 Morse code 送出，然后我在计算机上(或者是一个 Morse code 接收器)可以接收。他网站上还有频谱分析仪软件，是用 Python/Tk 写的，最近我在学 Tcl/Tk，很少的代码就可以写出图形界面程序。”</p>
+
+	<p>google 了一番，果然有人做这样的事情，比如 <a href="http://www.qsl.net/k7tmg/morse-code-hf-wireless-thermometer.html">Morse Code Wireless HF Thermometer</a>，还有 <a href="http://kd1jv.qrpradio.com/temp2morse/temp2morse.htm">Wireless Morse thermometer</a>，这两个项目都用了一只 ATtiny13 来测量温度，然后把测得的值通过 Morse code 发送出去，发射部分用的是一种称之为 <a href="http://zh.wikipedia.org/zh-cn/Colpitts振盪器">Colpitts 振荡器</a>的电路，我对这个产生了兴趣。</p>
+
+	<p>前两天，我想给以前买电键做一个练习器（操作电键的时候发出声音，一般使用 NE555 制作），在 google 中发现一种被称为 <a href="http://www.indianapolis.net/QRPp-I/pixie2.html">"pixie 2"</a> 的 CW 收发器，电路非常简单，只用了 2 个 2N3904，还有一个 LM386 音频放大器，以前一些电阻，电容，电感，极易制作。，原理图如下，注意它的左边就是一个 Colpitts 振荡器：</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 1. Pixie 2 CW 收发器</b></p>
+
+	  <p><a href="figures/pixie2-schematic.gif"><img src="figures/pixie2-schematic.gif" width="758" height="524"/></a></p>
+	</div>
+
+      </div>
+
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">2 Colpitts 振荡器</a></h2>
+
+	<p>　　在动手制作 pixie 2 收发器时最开始就是焊接 Colpitts 振荡器部分，焊好这一部分后用示波器查看波形，是的，它真的振荡起来了！</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 2. Colpitts 振荡器产生的波形</b></p>
+
+	  <p><a href="figures/colpitts-osc.jpg"><img src="figures/colpitts-osc.jpg" width="800" height="450"/></a></p>
+	</div>
+
+	<p>　　使用的晶振是 3.579545MHz，在示波器上，X 方向 0.2us/大格，可以看出一个周期(波峰到波峰的时间)是 0.28us，计算波形的频率：(1s/0.28us) = 3.57MHz.</p>
+
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">3 Ring Oscillator</a></h2>
+
+	<p>　　在阅读《编码的奥秘》第 14 章“反馈与触发器”时，看到作者在书中用继电器构建了一个振荡器，而这个振荡器就是把反向器的输出接入到它的输入上完成的，利用反馈的作用，这样就形成了振荡！以前也曾在书中看到可以用非门构建振荡器，但从未真正试过。我在 HFG 发邮件谈了一下阅读《编码的奥秘》的体验，HFG 成员 zhurui 在回复中提到：“以前用一个发光二极管一个反向器做了一个反馈的振荡器，但是没有出现二极管的一闪一闪的效果，是不是频率太高了？如果想降低振荡器的频率达到二极管闪动的效果应该再加些什么器件了？”</p>
+
+	<p>　　查阅了一些资料再经过计算，如果单用一个反向器来构建这种振荡器的话，频率是相当高的，可以达到几十兆 Hz，因为非门的 gate delay time 是非常短的，通常只有几个纳秒(ns)，当然这个时间和电压、温度都有关系，电压越高，振荡频率就越高。它的频率计算公式是 f = 1/(2*n*T)，n 是串联的反向器的个数(要求是奇数，偶数个反向器相连会达到一个稳定状态，也是 <a href="http://en.wikipedia.org/wiki/Static_random_access_memory">SRAM</a> 的原理)，T 是非门的 gate delay time。</p>
+
+	<p>　　我还没有做过这种振荡器，既然没有做过，那就实际试试吧。最初我把 74HC04 (集成有 6 个反向器)中的一个反向器的输入与输出短接，然后在示波器上观察波形，可是根本看不到波形，我想因为是频率是太高了。</p>
+
+	<p>　　然后我把 74HC04 中的 3 个反向器串联起来，用示波器查看输出的波形，看到了振荡，如下图所示。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 3. 3 个反串器串联的波形，电压 5V</b></p>
+
+	  <p><a href="figures/3-stages-oscillator.jpg"><img src="figures/3-stages-oscillator.jpg" width="800" height="600"/></a></p>
+	</div>
+
+	<p>　　从示波器上可以看到，x 方向每格是 50ns，观察左边的 5 格，一共是 5*50 = 250ns，一共有 9 个周期，因此周期 T = 250/9，频率 F = 1/T = 10^9 * 9/250 = 36 MHz。</p>
+
+	<p>　　前面提到，对这种振荡器，电压越高频率就会越高，我在实验电源上把电压调低，准备调节到 2 V，刚好要接近 2V 的时候，只见实验电源上的 cc 指示灯亮了一下，"pong" 的一声，我闻到一股臭味，74HC04 烧掉了。没关系，实验中这种事是很常见的，可是为什么低压会导致 74HC04 烧掉了，我还没想明白。</p>
+
+	<p>　　又换了一只 74HC04，这次我调节电压的时候就有准备了，慢慢的调节，记住不能调节得太低。下图是电压为 4V 左右的波形，可见频率真的降低了。而且在调节电压的时候，可以明显在示波器上看见波形的周期在发生变化。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 4. 3 个反串器串联的波形，电压 4V</b></p>
+
+	  <p><a href="figures/3-stages-oscillator-4v.jpg"><img src="figures/3-stages-oscillator-4v.jpg" width="800" height="600"/></a></p>
+	</div>
+
+	<p>　　再来计算一下频率，x 方向每个大格 50ns，左边的 3 个周期正好占了 2 个大格，即 100ns, f = 10^9 * 3/100 = 30 MHz，可见频率真的降低了。</p>
+
+	<p>　　振荡频率如此之高，是看不到 LED 闪烁的(因为人眼的视觉暂留)，那怎样才能把频率降到人眼可以识别的范围呢？google 关键字 74HC04 ring oscillator 找到了 <a href="http://www.powershow.com/view/1bc0-YzcyM/Simple_Electronics_Ring_Oscillator_flash_ppt_presentation">Simple Electronics: Ring Oscillator - Presentation</a> 这个幻灯片，正好是讲这个振荡器的，而且讲得很形象，我决定试试。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 5. Ring Oscillator</b></p>
+
+	  <p><a href="figures/ring-oscillator-leds.jpg"><img src="figures/ring-oscillator-leds.jpg" width="800" height="600"/></a></p>
+	</div>
+
+	<p>　　在上面的电路中，6 反向器 74HC04 插在一个 24 针的 IC 座里，实际上 74HC04 只有 14 个脚，但是当时没有找到 14 针的 IC 座。电路需要 2 只 4.7M 的电阻，但是没有找到这个阻值的电阻，就用了 5 只 1M 电阻串联成 5M 的电阻。接上电之后，红色和绿色 LED 果然交替地闪烁起来了！从<a href="figures/ada-ring-oscillator.3gp">这段视频</a>(3gp 格式，1.4M)中可以看到红色和绿色 LED 交替闪烁，供电电压是 3.8V，频率约为 1 Hz。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 6. Ring Oscillator 原理图</b></p>
+
+	  <p><a href="figures/ring_oscillator_sch.png"><img src="figures/ring_oscillator_sch.png" width="898" height="397"/></a></p>
+	</div>
+
+	<p>　　这是上面电路的原理图，电阻可以减少反馈的电流，电容器要吸收电荷(充电)，它们都会让振荡的频率降低。上面的电路用了集成电路 74HC04 中的非门，在需要少数非门的情况下也可以用晶体管自己搭建，这个以后再作尝试。</p>
+
+	<p>　　在查找 ring oscillator 相关资料过程中见到很多有创意的设计，电子学真的非常有趣！</p>
+
+      </div>
+
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>FreeBSD，Morse 码和串口</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">FreeBSD，Morse 码和串口</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　在 FreeBSD 中，可以通过 morse 码游戏和串口来练习莫尔斯码。</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">1 字符游戏 morse</a></h2>
+
+	<p>　　在 FreeBSD 的源码中有一些字符游戏，位置是 <tt class="FILENAME">/usr/src/games</tt>，其中一个是 morse，它可以把字符串翻译成莫尔斯码，也可以把莫尔斯码翻译成字符串。不仅如此，这个程序还可以驱动外部硬件设备，把莫尔斯码发送出去。</p>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 1. morse</b></p>
+
+	  <p><img src="figures/screenshot-morse.png" /></p>
+	</div>
+      </div>
+
+      <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">2 LED 上的 dit 和 dah</a></h2>
+
+	<p>　　在 morse 的 manual page 里有这样一段话：</p>
+
+	<pre class="SCREEN">
+	  Using the -d flag, it is possible to key an external device, like a
+	  sidetone generator with a headset for training purposes, or even your ham
+	  radio transceiver.  For the latter, simply connect an NPN transistor to
+	  the serial port device, emitter connected to ground, base connected
+	  through a resistor (few kiloohms) to RTS, collector to the key line of
+	  your transceiver (assuming the transceiver has a positive key supply
+	  voltage and is keyed by grounding the key input line).  A capacitor (some
+	  nanofarads) between base and ground is advisable to keep stray RF away,
+	  and to suppress the minor glitch that is generated during program
+	  startup.
+	</pre>
+
+	<p>　　就是说如果用 -d 选项，程序输出的 Morse 码会出现在串口的 RTS 脚上面，我们可以用一只 LED 来验证。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 2. 实验原理图</b></p>
+
+	  <p><img src="figures/serial_morse_sch.png" /></p>
+	</div>
+
+	<p>　　LED 阳极接串口的第 7 脚 RTS，阴极通过一个 4.7k 的限流电阻接到串口第 5 脚 GND。</p>
+
+	<div class="FIGURE"><a id="AEN36" name="AEN36"></a>
+	  <p><b>图 3. 实验电路</b></p>
+
+	  <p><img src="figures/serial_morse_led.jpg" /></p>
+	</div>
+
+	<p>　　LED 按照 Morse 码的节奏闪烁。</p>
+
+	<div class="FIGURE"><a id="AEN44" name="AEN44"></a>
+	  <p><b>图 4. 示波器的上 Morse 码</b></p>
+
+	  <p><img src="figures/morse_code_waveform.jpg" /></p>
+	</div>
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">3 Arduino，光敏电阻和 morse</a></h2>
+
+	<p>　　</p>
+
+
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
+

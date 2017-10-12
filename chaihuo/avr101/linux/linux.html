@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Atommann" />
+  <meta name="date" content="2013-04-30" />
+  <title>AVR 101 - Linux 命令基础</title>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">AVR 101 - Linux 命令基础</h1>
+<h2 class="author">Atommann</h2>
+<h3 class="date">April 30, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#ls">ls</a></li>
+<li><a href="#在系统里游走">在系统里游走</a><ul>
+<li><a href="#cd---切换目录">cd - 切换目录</a></li>
+<li><a href="#pwd---我在哪里">pwd - 我在哪里</a></li>
+</ul></li>
+<li><a href="#文件操作">文件操作</a><ul>
+<li><a href="#mv---修改文件名">mv - 修改文件名</a></li>
+<li><a href="#rm---删除文件">rm - 删除文件</a></li>
+</ul></li>
+<li><a href="#自动补齐功能">自动补齐功能</a></li>
+<li><a href="#重复以前的命令">重复以前的命令</a></li>
+<li><a href="#总结">总结</a></li>
+<li><a href="#参考资料">参考资料</a></li>
+</ul>
+</div>
+<h2 id="简介"><a href="#TOC">简介</a></h2>
+<p>在安装了 WinAVR 之后你会发现命令行里多了一些以前不间有的命令，比如 ls touch 等，该教程简单讲解这些命令的使用方法，因为我们在写代码的时候会经常用到它们。</p>
+<p>建一个文件夹，然后面里面操作，这个文件夹就是你的游乐场。</p>
+<h2 id="ls"><a href="#TOC">ls</a></h2>
+<p>ls - 列出目录里的文件和文件夹</p>
+<p>当我们要查看当前目录里有什么文件的时候就使用这个命令，在 DOS 里还可以用 dir 命令。</p>
+<h2 id="在系统里游走"><a href="#TOC">在系统里游走</a></h2>
+<h3 id="cd---切换目录"><a href="#TOC">cd - 切换目录</a></h3>
+<p>. 表示当前目录，.. 表示上级目录</p>
+<p>尝试 cd . 再执行 pwd，你会发现自己还是在原地。</p>
+<p>回到上一级目录 cd .. 再执行 pwd，你会发现自己回到了上级目录。</p>
+<h3 id="pwd---我在哪里"><a href="#TOC">pwd - 我在哪里</a></h3>
+<p>如果你发现自己在 nix 塔里迷路了，就可以用这个命令。</p>
+<h2 id="文件操作"><a href="#TOC">文件操作</a></h2>
+<h3 id="mv---修改文件名"><a href="#TOC">mv - 修改文件名</a></h3>
+<p>mv 是 move(移动) 的缩写。</p>
+<p>mv filea.c fileb.c</p>
+<h3 id="rm---删除文件"><a href="#TOC">rm - 删除文件</a></h3>
+<p>rm 是 remove (删除、移除) 的缩写。</p>
+<h2 id="自动补齐功能"><a href="#TOC">自动补齐功能</a></h2>
+<p>人们总是喜欢偷懒。 输入前几个字母，按 Tab 键。</p>
+<h2 id="重复以前的命令"><a href="#TOC">重复以前的命令</a></h2>
+<p>用向上箭头↑键。</p>
+<h2 id="总结"><a href="#TOC">总结</a></h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">命令</th>
+<th align="left">它的含义</th>
+<th align="left">它可以干嘛</th>
+<th align="left">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">pwd</td>
+<td align="left">Present Working Directory</td>
+<td align="left">显示你现在所处的目录</td>
+<td align="left">pwd</td>
+</tr>
+<tr class="even">
+<td align="left">mkdir</td>
+<td align="left">Make Directory</td>
+<td align="left">创建一个文件夹</td>
+<td align="left">mkdir hello</td>
+</tr>
+<tr class="odd">
+<td align="left">ls</td>
+<td align="left">List</td>
+<td align="left">显示文件夹里的内容</td>
+<td align="left">ls</td>
+</tr>
+</tbody>
+</table>
+<h2 id="参考资料"><a href="#TOC">参考资料</a></h2>
+<ul>
+<li>Unix for the beginning mage</li>
+</ul>
+<!---
+photos
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

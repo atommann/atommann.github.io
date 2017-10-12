@@ -1,0 +1,893 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Atommann" />
+  <meta name="date" content="2013-05-26" />
+  <title>AVR 101 - 显示，各种显示</title>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #0000ff; }
+code > span.ch { color: #008080; }
+code > span.st { color: #008080; }
+code > span.co { color: #008000; }
+code > span.ot { color: #ff4000; }
+code > span.al { color: #ff0000; }
+code > span.er { font-weight: bold; }
+  </style>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">AVR 101 - 显示，各种显示</h1>
+<h2 class="author">Atommann</h2>
+<h3 class="date">May 26, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#我们来玩-7-段数码管">我们来玩 7 段数码管</a><ul>
+<li><a href="#段数码管的内部结构">7 段数码管的内部结构</a></li>
+<li><a href="#共阴极和共阳极">共阴极和共阳极</a></li>
+<li><a href="#小游戏which-is-which">小游戏：which is which</a></li>
+<li><a href="#点亮数码管">点亮数码管</a></li>
+</ul></li>
+<li><a href="#更多数码管">更多数码管</a></li>
+<li><a href="#lcd-显示">LCD 显示</a><ul>
+<li><a href="#hd44780-兼容型字符液晶">HD44780 兼容型字符液晶</a></li>
+<li><a href="#图形-lcd">图形 LCD</a></li>
+<li><a href="#nokia-33105110-lcd">Nokia 3310/5110 LCD</a></li>
+</ul></li>
+<li><a href="#游乐场">游乐场</a><ul>
+<li><a href="#段数码管显示">16 段数码管显示</a><ul>
+<li><a href="#小数点呢">小数点呢？</a></li>
+<li><a href="#能少用一些-io-吗">能少用一些 I/O 吗？</a></li>
+<li><a href="#发挥你的创意">发挥你的创意</a></li>
+</ul></li>
+<li><a href="#点阵-led">点阵 LED</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="简介"><a href="#TOC">简介</a></h2>
+<p><a href="./figures/mcu101.jpg" title="MCU 101"><img src="./figures/mcu101.jpg" title="MCU 101" alt="mcu101" /></a></p>
+<p>当你在用单片机来实现自己的创意时，往往会发现显示输出和按钮输入是必不可少的，按钮可以用来设置一些状态或者输入参数，显示器则可以输出单片机内部的状态或别的一些有意义的内容(想象一下你的手机显示屏和电脑屏幕)。</p>
+<p>在前几次工作坊里我们实际上已经接触到了显示输出的概念：那就是 LED。虽然 LED 是一种简便的显示装置，但总是有些不直观，比如显示的数字是二进制的。(记住：LED 是你的朋友！有时在调试程序的时候它们会给你带来方便)</p>
+<p>本期工作坊，我们将研究如何为单片机接上按键，以及把我们的老朋友(LED指示灯) 换成更直观的数码管和 LCD，以构成更友好的人机接口。</p>
+<h2 id="我们来玩-7-段数码管"><a href="#TOC">我们来玩 7 段数码管</a></h2>
+<h3 id="段数码管的内部结构"><a href="#TOC">7 段数码管的内部结构</a></h3>
+<p><a href="./figures/7_segment_display_labeled.png" title="Seven Segment LED"><img src="./figures/7_segment_display_labeled.png" title="Seven Segment LED" alt="seven_seg" /></a></p>
+<p>7 段数码管是最常见的显示装置之一，你应该在公交车上的时钟，电子万年历，微波炉，洗衣机，小区的对讲机上见过它们。故名思义，7 段数码管是由 7 段 LED 构成的，每一段都是一个 LED<sup><a href="#fn1" class="footnoteRef" id="fnref1">1</a></sup>：</p>
+<p><a href="./figures/comb15.gif" title="Seven Segment LED Internal"><img src="./figures/comb15.gif" title="Seven Segment LED Internal" alt="seven_seg_int" /></a></p>
+<p>只要我们点亮不同的段，就能用这些段组合成阿拉伯数字。</p>
+<p><a href="./figures/comb18.gif" title="digits"><img src="./figures/comb18.gif" title="digits" alt="comb18" /></a></p>
+<h3 id="共阴极和共阳极"><a href="#TOC">共阴极和共阳极</a></h3>
+<p>七段数码管分两种，一种是共阴极(负极)，一种是共阳极（正极）。</p>
+<ul>
+<li>Common Cathode —— 共阴极，有时缩写成 CC</li>
+<li>Common Anode —— 共阳极，有时缩写成 CA</li>
+</ul>
+<p><a href="./figures/display_ca_cc.gif" title="CA or CC"><img src="./figures/display_ca_cc.gif" title="CA or CC" alt="cacc" /></a></p>
+<p>共阳极的数码管在内部所有段的正极都是连在一起的，与此对应，共阴极数码管在内部，所有段的负极都是连在一起的，如下图所示。</p>
+<h3 id="小游戏which-is-which"><a href="#TOC">小游戏：which is which</a></h3>
+<p>如果你拿到一个数码管，上面没有标型号(无法在 google 里搜索)，也没有说明书，如何找出哪个脚对应的是哪一段？</p>
+<p>方法：用万用表或者电源+电阻。</p>
+<h3 id="点亮数码管"><a href="#TOC">点亮数码管</a></h3>
+<p>既然 7 段数码管内部是一些简单的 LED，那用单片机就可以直接控制它们，让我们来做个实验让数码管显示一些数字。</p>
+<p>原理图：</p>
+<p><a href="./figures/sch.png" title="sch"><img src="./figures/sch.png" title="sch" alt="sch" /></a></p>
+<table>
+<caption>单片机与数码管之间的连接</caption>
+<thead>
+<tr class="header">
+<th align="left">单片机针脚</th>
+<th align="left">数码管段</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">PC0</td>
+<td align="left">a</td>
+</tr>
+<tr class="even">
+<td align="left">PC1</td>
+<td align="left">b</td>
+</tr>
+<tr class="odd">
+<td align="left">PC2</td>
+<td align="left">c</td>
+</tr>
+<tr class="even">
+<td align="left">PC3</td>
+<td align="left">d</td>
+</tr>
+<tr class="odd">
+<td align="left">PC4</td>
+<td align="left">e</td>
+</tr>
+<tr class="even">
+<td align="left">PC5</td>
+<td align="left">f</td>
+</tr>
+<tr class="odd">
+<td align="left">PB0</td>
+<td align="left">g</td>
+</tr>
+</tbody>
+</table>
+<p>这个连接关系不是固定的(不一定要这样连)，但连接关系和我们的程序有关。</p>
+<p>我们可以在程序里存一个表格，要显示某个数字的时候，查表把相应的数字赋给单片机的端口就可以了，下面是编码表：</p>
+<table>
+<caption>七段数码管编码表</caption>
+<thead>
+<tr class="header">
+<th align="left">数字</th>
+<th align="left">dp</th>
+<th align="left">g</th>
+<th align="left">f</th>
+<th align="left">e</th>
+<th align="left">d</th>
+<th align="left">c</th>
+<th align="left">b</th>
+<th align="left">a</th>
+<th align="left">十六进制编码</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">7</td>
+<td align="left">6</td>
+<td align="left">5</td>
+<td align="left">4</td>
+<td align="left">3</td>
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0x3F</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0x06</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0x5B</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0x4F</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0x66</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0x6D</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0x7D</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0x07</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0x7F</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0x6F</td>
+</tr>
+<tr class="even">
+<td align="left">A</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0x77</td>
+</tr>
+<tr class="odd">
+<td align="left">b</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0x7C</td>
+</tr>
+<tr class="even">
+<td align="left">C</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0x39</td>
+</tr>
+<tr class="odd">
+<td align="left">d</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0x5E</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0x79</td>
+</tr>
+<tr class="odd">
+<td align="left">F</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1</td>
+<td align="left">0x71</td>
+</tr>
+</tbody>
+</table>
+<p><a href="./seven-seg.zip" title="seven segment LED">下载源程序</a>。</p>
+<pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;avr/io.h&gt;</span>
+<span class="ot">#define F_CPU 12000000UL  // 12 MHz</span>
+<span class="ot">#include &lt;util/delay.h&gt;</span>
+<span class="ot">#include &lt;avr/pgmspace.h&gt; // 访问程序空间，后面的 pgm_read_byte 函数就由这个库所提供</span>
+
+<span class="co">// 7-seg LED 段码表</span>
+<span class="co">// 位: 7  6 5 4 3 2 1 0</span>
+<span class="co">// 段: DP G F E D C B A</span>
+<span class="co">// 加额外的 PROGMEM (PROGram MEMory 的缩写)修饰是为了把表格</span>
+<span class="co">// 存储在 Flash 存储器(程序代码就是存储在这里的)里而非 RAM 里以节省内存</span>
+<span class="dt">const</span> <span class="dt">uint8_t</span> led_7[<span class="dv">16</span>] PROGMEM = {
+<span class="bn">0x3F</span>, <span class="co">// 0</span>
+<span class="bn">0x06</span>, <span class="co">// 1</span>
+<span class="bn">0x5B</span>, <span class="co">// 2</span>
+<span class="bn">0x4F</span>, <span class="co">// 3</span>
+<span class="bn">0x66</span>, <span class="co">// 4</span>
+<span class="bn">0x6D</span>, <span class="co">// 5</span>
+<span class="bn">0x7D</span>, <span class="co">// 6</span>
+<span class="bn">0x07</span>, <span class="co">// 7</span>
+<span class="bn">0x7F</span>, <span class="co">// 8</span>
+<span class="bn">0x6F</span>, <span class="co">// 9</span>
+<span class="bn">0x77</span>, <span class="co">// A</span>
+<span class="bn">0x7C</span>, <span class="co">// b</span>
+<span class="bn">0x39</span>, <span class="co">// C</span>
+<span class="bn">0x5E</span>, <span class="co">// d</span>
+<span class="bn">0x79</span>, <span class="co">// E</span>
+<span class="bn">0x71</span>  <span class="co">// F</span>
+};
+
+<span class="dt">void</span> init(<span class="dt">void</span>)
+{
+    DDRC = <span class="bn">0xFF</span>;  <span class="co">// 将 PORTC 设置成输出模式</span>
+    PORTC = <span class="bn">0x00</span>;
+
+    DDRB = <span class="bn">0xFF</span>;  <span class="co">// 将 PORTB 设置成输出模式</span>
+    PORTB = <span class="bn">0x00</span>;
+}
+
+<span class="dt">int</span> main(<span class="dt">void</span>)
+{
+    <span class="dt">uint8_t</span> i, temp;
+
+    init();
+
+    <span class="kw">while</span> (<span class="dv">1</span>)
+    {
+        <span class="kw">for</span> (i = <span class="dv">0</span>; i &lt; <span class="dv">16</span>; i++)
+        {
+            temp = ~pgm_read_byte(led_7 + i); <span class="co">// 查表并赋给一个临时变量，因为是共阳LED，所要要把值取反(~是取反操作符)</span>
+            PORTC = temp;        <span class="co">// 把值赋给 IO</span>
+            PORTB = (temp &gt;&gt; <span class="dv">6</span>); <span class="co">// 把数据向右移 6 位才能对应到 PB0 上</span>
+            _delay_ms(<span class="dv">1000</span>);
+        }
+    }
+}</code></pre>
+<p>注意，我们声明数组的时候用了 PROGMEM，它是 PROGram MEMory (程序存储空间)的缩写，表示将这个表格存储在代码(程序)空间而不是内存里，因为 program memory 很大（在我们用的芯片里有 32k 字节），而内存很小（在我们用的芯片里只有 2k 字节）资源比较有限，如果不加 PROGMEM 修饰，这个表格就会存储在内存里，对于简单的小程序没有问题，但对大一些的表格就有问题了。</p>
+<p>[一张插图对比 program memory 和 SRAM 的大小]</p>
+<p>七段数码管主要的用处是显示数字，但也能显示完整的字母表，见下图：</p>
+<p><a href="./figures/7SegmentAlphabet.png" title="Seven Segment Alphabet"><img src="./figures/7SegmentAlphabet.png" title="Seven Segment Alphabet" alt="alphabet" /></a></p>
+<p>我们可以观察到，像 K, M, Q, W 这些字线并不能正确地表示，但是如果联系上下文，人们还是可以识别它的意思。而且这样的显示有实际的用途(在一些控制仪表上可以做菜单)。这属于设计上的一种妥协。在做设计并发现资源有限时，可以采用类似的解决方案(比如莫尔斯码温度计用一个 LED 可以显示数字和字母)。ALTEC 的说明书是一个例子。</p>
+<p>用 7 个笔划显示字母显然不够直观，于是人们开发了<a href="http://en.wikipedia.org/wiki/Fourteen-segment_display" title="Fourteen segment display">十四段</a>和<a href="http://en.wikipedia.org/wiki/Sixteen_segment_display" title="Sixteen segment display">十六段 LED 显示器</a>(也称为“米”字管)，它们从本质原理讲和七段是一样的，只不过用了更多的段，请参考游乐场中的例子。</p>
+<h2 id="更多数码管"><a href="#TOC">更多数码管</a></h2>
+<p>我们成功点亮了 1 位数码管，1 位数码管只能显示一位数字，但时钟显示有多位数字，接下来我们看看多位数码管应该如何驱动。</p>
+<p><a href="./figures/clock01.jpg" title="clock LED"><img src="./figures/clock01.jpg" title="clock LED" alt="clock01" /></a></p>
+<p><a href="./figures/clock02.jpg" title="clock LED"><img src="./figures/clock02.jpg" title="clock LED" alt="clock02" /></a></p>
+<p>这里使用共阴极 LED.</p>
+<p>一位数码管需要 8 个 I/O 口(如果要显示小数点的话)，那 4 位数码管需要 4*8 = 32 个 I/O 口，而我们所用的 MCU 一共只有十几个 I/O 可以用？怎么办？</p>
+<p>更好的方法是建立显示缓冲并定时扫描。</p>
+<h2 id="lcd-显示"><a href="#TOC">LCD 显示</a></h2>
+<p>在现实生活中，LCD 是另一种常见的显示设备。它们小巧、省电(相比之下 LED 是比较耗电的)、显示内容丰富生动。</p>
+<h3 id="hd44780-兼容型字符液晶"><a href="#TOC">HD44780 兼容型字符液晶</a></h3>
+<p><a href="./figures/thermometer-lcd.jpg" title="HD44780 LCD"><img src="./figures/thermometer-lcd.jpg" title="HD44780 LCD" alt="hd44780" /></a></p>
+<h3 id="图形-lcd"><a href="#TOC">图形 LCD</a></h3>
+<p><a href="./figures/lcd12864.jpg" title="LCD 12864"><img src="./figures/lcd12864.jpg" title="LCD 12864" alt="lcd12864" /></a></p>
+<h3 id="nokia-33105110-lcd"><a href="#TOC">Nokia 3310/5110 LCD</a></h3>
+<p><a href="./figures/Nokia_3310_blue.jpg" title="Nokia 3310 Blue"><img src="./figures/Nokia_3310_blue.jpg" title="Nokia 3310 Blue" alt="nokia3310" /></a></p>
+<p>按下面的方法把 3310 LCD 与 AVR 连接起来：</p>
+<p><a href="./figures/3310sch.png" title="3310 sch"><img src="./figures/3310sch.png" title="3310 sch" alt="3310sch" /></a></p>
+<p><a href="./3310_hello.zip" title="3310 Hello World">下载源程序</a>。</p>
+<h2 id="游乐场"><a href="#TOC">游乐场</a></h2>
+<h3 id="段数码管显示"><a href="#TOC">16 段数码管显示</a></h3>
+<p>从前面的例子可以看到，七段数码可以很好的显示数字，但要显示英文字母就不方便了，这时可以使用 16 段数码管。</p>
+<p><a href="./figures/sixteen_seg_led.jpg" title="Sixteen segment LED"><img src="./figures/sixteen_seg_led.jpg" title="Sixteen segment LED" alt="16seg" /></a></p>
+<p>16 段显示器也有共阳极(CA)和共阴极(CC)的区别，下图的数码管是共阴极的，此图也显示了段和引脚之间的一一对应关系：</p>
+<p><a href="./figures/sixteen_seg_led_cc.jpg" title="Sixteen segment LED CC"><img src="./figures/sixteen_seg_led_cc.jpg" title="Sixteen segment LED CC" alt="16seg_cc" /></a></p>
+<p>下面的原理图和表格列出了 USnoobie 和 16 段显示器之间的连接关系：</p>
+<p><a href="./figures/16seg_sch.png" title="connection"><img src="./figures/16seg_sch.png" title="connection" alt="16seg_sch" /></a></p>
+<table border="1">
+  <tr>
+    <th>
+段
+</td>
+    <td>
+A
+</td>
+    <td>
+B
+</td>
+    <td>
+C
+</td>
+    <td>
+D
+</td>
+    <td>
+F
+</td>
+    <td>
+E
+</td>
+    <td>
+G
+</td>
+    <td>
+H
+</td>
+    <td>
+U
+</td>
+    <td>
+P
+</td>
+    <td>
+K
+</td>
+    <td>
+M
+</td>
+    <td>
+N
+</td>
+    <td>
+R
+</td>
+    <td>
+S
+</td>
+    <td>
+T
+</td>
+  </tr>
+  <tr>
+    <th>
+I/O
+</td>
+    <td>
+D6
+</td>
+    <td>
+D5
+</td>
+    <td>
+D4
+</td>
+    <td>
+D3
+</td>
+    <td>
+B5
+</td>
+    <td>
+B4
+</td>
+    <td>
+B3
+</td>
+    <td>
+B2
+</td>
+    <td>
+B1
+</td>
+    <td>
+B0
+</td>
+    <td>
+C5
+</td>
+    <td>
+C4
+</td>
+    <td>
+C3
+</td>
+    <td>
+C2
+</td>
+    <td>
+C1
+</td>
+    <td>
+C0
+</td>
+  </tr>
+</table>
+
+<p>注意：在原理图里，表面上看 ATmega328P 和 16 段数码管之间没有任何连线，其际上它们是连接在一起的。在数码管的第一脚接线上标识有 SEG_A，在 ATmega328P 的 R16 一端也同样标有 SEG_A，这个标识就表明它们实际上是一条导线。这个名字(SEG_A, SEG_B…)在原理图里称为 netname，每个连接都称为一个 net. 在原理图里使用 netname 有一个显而易见的好处：让原理图更具“可读性”而不会因为连来连去的线而导致图纸变得难以阅读。</p>
+<p>和七段数码管一样，点亮不同的段组合就会显示不同的字符，因此我们的首先任务是建立一个表格，在要显示一个字符时，只要查表并输出到 MCU 相应的端口就可以了。</p>
+<table border="1">
+  <tr>
+    <td valign ="middle" rowspan="3">
+字符
+</td>
+    <td valign ="middle" rowspan="3">
+亮的段
+</td>
+    <td colspan="8" align="center">
+高 8 位
+</td>
+    <td colspan="8" align="center">
+低 8 位
+</td>
+    <td rowspan="3" valign="middle">
+十六进制
+</td>
+  </tr>
+  <tr>
+    <td colspan="16" align="center">
+段
+</td>
+  </tr>
+  <tr>
+    <td>
+A
+</td>
+    <td>
+B
+</td>
+    <td>
+C
+</td>
+    <td>
+D
+</td>
+    <td>
+F
+</td>
+    <td>
+E
+</td>
+    <td>
+G
+</td>
+    <td>
+H
+</td>
+    <td>
+U
+</td>
+    <td>
+P
+</td>
+    <td>
+K
+</td>
+    <td>
+M
+</td>
+    <td>
+N
+</td>
+    <td>
+R
+</td>
+    <td>
+S
+</td>
+    <td>
+T
+</td>
+  </tr>
+
+
+<tr>
+    <td>
+A
+</td>
+    <td>
+GHUKR
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+1
+</td>
+    <td>
+1
+</td>
+    <td>
+1
+</td>
+    <td>
+0
+</td>
+    <td>
+1
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+1
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+0x03A4
+</td>
+  </tr>
+  <tr>
+    <td>
+B
+</td>
+    <td>
+ABCDFEPMS
+</td>
+    <td>
+1
+</td>
+    <td>
+1
+</td>
+    <td>
+1
+</td>
+    <td>
+1
+</td>
+    <td>
+1
+</td>
+    <td>
+1
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+1
+</td>
+    <td>
+0
+</td>
+    <td>
+1
+</td>
+    <td>
+0
+</td>
+    <td>
+0
+</td>
+    <td>
+1
+</td>
+    <td>
+0
+</td>
+    <td>
+0xFC52
+</td>
+  </tr>
+  <tr>
+    <td>
+.<br/>.</br>.
+</td>
+    <td>
+.<br/>.</br>.
+</td>
+    <td colspan="16">
+.<br/>.</br>.
+</td>
+    <td>
+.<br/>.</br>.
+</td>
+  </tr>
+</table>
+
+<p>上面的表格只列出了字母 A 和 B 的编码，手工制作字型表是一件费时又繁琐的工作，我们可以写一个程序来帮助完成这个工作，例如<a href="./tool.zip" title="tool used to create 16 segment font">这个 quick &amp; dirty 的 C 程序</a>。</p>
+<p>有了表格，我们就可以显示东西了(前提条件是连好电路)，试试下面的程序(<a href="./sixteen-seg.zip" title="sixteen segment LED">下载源程序</a>)。</p>
+<pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;avr/io.h&gt;</span>
+<span class="ot">#define F_CPU 12000000UL  // 12 MHz</span>
+<span class="ot">#include &lt;util/delay.h&gt;</span>
+<span class="ot">#include &lt;avr/pgmspace.h&gt; // 访问程序空间</span>
+<span class="ot">#include &lt;font16seg.h&gt;    // 16 seg LED font table</span>
+
+<span class="co">// 各个端口初始化</span>
+<span class="dt">void</span> init(<span class="dt">void</span>)
+{
+    DDRC = <span class="bn">0xFF</span>; <span class="co">// 将 PORTC 设置成输出模式</span>
+    PORTC = <span class="bn">0x00</span>;
+
+    DDRB = <span class="bn">0xFF</span>; <span class="co">// 将 PORTB 设置成输出模式</span>
+    PORTB = <span class="bn">0x00</span>;
+
+    DDRD = <span class="bn">0xFF</span>; <span class="co">// 将 PORTD 设置成输出模式</span>
+    PORTD = <span class="bn">0x00</span>;
+}
+
+<span class="co">// 显示一个字符</span>
+<span class="dt">void</span> led_put_char(<span class="dt">char</span> a)
+{
+    <span class="dt">uint16_t</span> temp;
+
+    temp = pgm_read_word(font16seg + (a - <span class="bn">0x20</span>)); <span class="co">// 查表，可打印字符是从0x20(空格)开始的，因此要减去这个偏移量</span>
+    PORTC = temp;      <span class="co">// 把最低的 6 位赋给 PORTC 0~5</span>
+    PORTB = temp &gt;&gt; <span class="dv">6</span>; <span class="co">// 右移 6 位，赋给 PORTB 0~5</span>
+    PORTD = temp &gt;&gt; <span class="dv">9</span>; <span class="co">// 右移 9 位，赋给 PORTD 3,4,5,6</span>
+}
+
+<span class="co">// 显示字符串</span>
+<span class="dt">void</span> display_str(<span class="dt">char</span> *s)
+{
+    <span class="kw">while</span> (*s)
+    {
+        led_put_char(*s++);
+        _delay_ms(<span class="dv">500</span>);
+    }
+}
+
+<span class="co">// 显示完整的 ASCII 可打印字符表</span>
+<span class="dt">void</span> display_ascii_tab(<span class="dt">void</span>)
+{
+    <span class="dt">char</span> i;
+
+    <span class="kw">for</span> (i = &#39; &#39;; i &lt;= &#39;~&#39;; i++)
+    {
+        led_put_char(i);
+        _delay_ms(<span class="dv">1000</span>);
+    }
+}
+
+<span class="co">// 显示一个简单的动画</span>
+<span class="dt">void</span> play_animation(<span class="dt">void</span>)
+{
+    <span class="dt">uint8_t</span> i;
+
+    <span class="kw">for</span>(i = <span class="dv">0</span>; i &lt; <span class="dv">15</span>; i++)
+    {
+        led_put_char(&#39;-&#39;);
+        _delay_ms(<span class="dv">50</span>);
+        led_put_char(<span class="ch">&#39;\\&#39;</span>);
+        _delay_ms(<span class="dv">50</span>);
+        led_put_char(&#39;|&#39;);
+        _delay_ms(<span class="dv">50</span>);
+        led_put_char(&#39;/&#39;);
+        _delay_ms(<span class="dv">50</span>);
+    }
+}
+ 
+<span class="dt">int</span> main(<span class="dt">void</span>)
+{
+    <span class="dt">char</span> i;
+
+    init();
+
+    <span class="kw">while</span> (<span class="dv">1</span>)
+    {
+        <span class="co">//led_put_char(&#39;A&#39;);            // 显示字母 A</span>
+        <span class="co">//display_str(&quot;Hello  World &quot;); // 例行的 hello world</span>
+        <span class="co">//display_ascii_tab();          // 演示 ASCII 表</span>
+        play_animation();               <span class="co">// 演示动画</span>
+    }
+}</code></pre>
+<p><a href="./figures/letter_A.jpg" title="Letter A"><img src="./figures/letter_A.jpg" title="Letter A" alt="letter_A" /></a></p>
+<h4 id="小数点呢"><a href="#TOC">小数点呢？</a></h4>
+<p>如果还要显示小数点，则还需要一个 I/O。</p>
+<h4 id="能少用一些-io-吗"><a href="#TOC">能少用一些 I/O 吗？</a></h4>
+<p>完全可以。可以用类似于 74HC595 之类的移位寄存器或专用驱动芯片来驱动 16 段显示器。这样，你所需的 I/O 数量会从 16 个变成 3 个。利用 74HC595，我们可以把字节从单片机里“串行地”传输到 74HC595 里，然后在 74HC595 一端再把它们重新“组装”成并行数据。</p>
+<p>当然，如果你的小作品只需要连接一个显示器，一个蜂鸣器和几个按键，那就不需要用扩展芯片。</p>
+<h4 id="发挥你的创意"><a href="#TOC">发挥你的创意</a></h4>
+<p>用 16 段数码管可以实现一些小巧有创意的作品，比如：</p>
+<ul>
+<li><a href="http://www.evilmadscientist.com/2007/led-micro-readerboard-version-2-0/" title="micro reader board from evilmadscientist">LED Micro-Readerboard, version 2.0</a> by Evil Mad</li>
+<li><a href="http://sunge.awardspace.com/single-letter-reader/single-letter-reader.html" title="Sunge&#39;s single letter reader">Holiday Handicraft: A Single Letter Reader</a> by Sunge</li>
+</ul>
+<p>请发挥你的创意。</p>
+<h3 id="点阵-led"><a href="#TOC">点阵 LED</a></h3>
+<p>5x7 的点阵就可以显示英文字母。</p>
+<p><a href="./figures/5x7_sch.png" title="5x7 matrix"><img src="./figures/5x7_sch.png" title="5x7 matrix" alt="5x7_sch" /></a></p>
+<!---
+figures
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>在某些很大的 7 段数码管里，每一段里不止一只 LED.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+all:
+	#pandoc -s --toc tuto.md -o tuto.html
+	pandoc -s -S --toc -c pandoc.css tuto.md -o tuto.html
+	# markdown_py -x extra -x toc tuto.md -f hello.html
+	# markdown_py -x extra -x tidy tuto.md -f tuto.html
+	# markdown_py -x extra -x meta_data tuto.md -f tuto.html
+
+docx:

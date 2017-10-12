@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Atommann" />
+  <meta name="date" content="2013-05-13" />
+  <title>AVR 101 - 编码的奥秘</title>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">AVR 101 - 编码的奥秘</h1>
+<h2 class="author">Atommann</h2>
+<h3 class="date">May 13, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#用一个实验引出我们的话题">用一个实验引出我们的话题</a></li>
+<li><a href="#数字是什么">数字是什么？</a></li>
+<li><a href="#进制之间的转换">进制之间的转换</a><ul>
+<li><a href="#我们有十个手指">我们有十个手指</a></li>
+<li><a href="#二进制转十六进制">二进制转十六进制</a></li>
+<li><a href="#十六进制转二进制">十六进制转二进制</a></li>
+<li><a href="#十六进制转十进制">十六进制转十进制</a></li>
+<li><a href="#十进制转二进制">十进制转二进制</a></li>
+</ul></li>
+<li><a href="#一个简单时钟">一个简单时钟</a></li>
+<li><a href="#游乐场">游乐场</a><ul>
+<li><a href="#sos">SOS</a></li>
+<li><a href="#pov视频暂留">POV(视频暂留)</a></li>
+<li><a href="#输入与输出">输入与输出</a></li>
+</ul></li>
+<li><a href="#参考资料">参考资料</a></li>
+</ul>
+</div>
+<h2 id="简介"><a href="#TOC">简介</a></h2>
+<p><a href="./figures/binary.jpg" title="binary LEDs"><img src="./figures/binary.jpg" title="binary LEDs" alt="binary_leds" /></a></p>
+<p>我们经常听到“数字化”时代这个词，它是什么意思？事实上，在电脑上、在网络上、在单片机上，它们只用到两个数字，也就是 0 和 1，我们所看到的一切都是 0 和 1 的组合。本次工作坊，我来一起来探求编码的奥秘。</p>
+<h2 id="用一个实验引出我们的话题"><a href="#TOC">用一个实验引出我们的话题</a></h2>
+<p>尝试下面的程序：</p>
+<pre><code>#include &quot;avr/io.h&quot;   // 包含 I/O 头文件
+#define F_CPU 12000000UL
+#include &quot;util/delay.h&quot;   // 包含头文件，延时要用到它
+
+int main(void)
+{
+    DDRC = 0b11111111;  // 数据方向是控制，是输出，还是输入
+
+    // PORTC = 0b00010101;  // 观察 LED 的显示
+    // PORTC = 0x15;        // 用这条语句代替上面的语句，再观察效果
+    PORTC = 21;             // 用这条语句代替上面的语句，再观察效果
+
+    while (1) // 死循环
+    {
+    }
+}</code></pre>
+<p>我们可以观察到，三个数字让 LED 显示出一样的排列，并没有发生任何变化，这说明这三个数字指的是同一个数！就是我们的十进制 21.</p>
+<h2 id="数字是什么"><a href="#TOC">数字是什么？</a></h2>
+<ul>
+<li>数字是什么？</li>
+<li>不会数数的牧人怎样知道他的羊都全部回家了？</li>
+</ul>
+<p><a href="http://211.153.23.37:8080/resource/0406/312/t_sh/9s/21/21_mt/animation/004.html" title="刻木相会">刻木相会</a></p>
+<h2 id="进制之间的转换"><a href="#TOC">进制之间的转换</a></h2>
+<p>那进制之间如何转换？</p>
+<p>权重这个词怎么理解？</p>
+<p>权重在英语里是 weight，就是重量，砝码，称的意思。</p>
+<p>我们举个例子，比如今年的年份是 2013，我们看看这个数字包含了什么样的信息：</p>
+<p>2*1000 + 0*100 + 1*10 + 3*1</p>
+<p>换一种表示方法：</p>
+<p>2 x 10<sup>3</sup> + 0 x 10<sup>2</sup> + 1 x 10<sup>1</sup> + 3 x 10<sup>0</sup></p>
+<h3 id="我们有十个手指"><a href="#TOC">我们有十个手指</a></h3>
+<p>我们现在普遍使用 10 进制的一个重要原因在于我们的双手一共有 10 个手指(当然，有些极少数的人有 11 个或 12 个手指，但那是另一回事，那是基因“编码”出了点问题所导致的)。</p>
+<h3 id="二进制转十六进制"><a href="#TOC">二进制转十六进制</a></h3>
+<p>方法非常简单，从右到左，每四个二进制数字转换成一个 16 进制数字。</p>
+<p>比如二进年数 10101111 转成 16 进制数就是 AF，因为后面四位 1111 对应于 16 进制的 F, 左边 4 位 1010 对应于 16 进制的 A</p>
+<h3 id="十六进制转二进制"><a href="#TOC">十六进制转二进制</a></h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">十进制</th>
+<th align="left">二进制</th>
+<th align="left">16 进制</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">0000</td>
+<td align="left">0</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">0001</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">0010</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">0011</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">0100</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">0101</td>
+<td align="left">5</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">0110</td>
+<td align="left">6</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">0111</td>
+<td align="left">7</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">1000</td>
+<td align="left">8</td>
+</tr>
+<tr class="even">
+<td align="left">9</td>
+<td align="left">1001</td>
+<td align="left">9</td>
+</tr>
+<tr class="odd">
+<td align="left">10</td>
+<td align="left">1010</td>
+<td align="left">A</td>
+</tr>
+<tr class="even">
+<td align="left">11</td>
+<td align="left">1011</td>
+<td align="left">B</td>
+</tr>
+<tr class="odd">
+<td align="left">12</td>
+<td align="left">1100</td>
+<td align="left">C</td>
+</tr>
+<tr class="even">
+<td align="left">13</td>
+<td align="left">1101</td>
+<td align="left">D</td>
+</tr>
+<tr class="odd">
+<td align="left">14</td>
+<td align="left">1110</td>
+<td align="left">E</td>
+</tr>
+<tr class="even">
+<td align="left">15</td>
+<td align="left">1111</td>
+<td align="left">F</td>
+</tr>
+</tbody>
+</table>
+<p>表格: 各种进制之间的对应关系</p>
+<h3 id="十六进制转十进制"><a href="#TOC">十六进制转十进制</a></h3>
+<h3 id="十进制转二进制"><a href="#TOC">十进制转二进制</a></h3>
+<p>我受够了，请问有简便方法吗 :)</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">进制</th>
+<th align="left">有多少个数字</th>
+<th align="left">数字</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">10 进制</td>
+<td align="left">10 个</td>
+<td align="left">0, 1, 2, 3, 4, 5, 6, 7, 8, 9</td>
+</tr>
+<tr class="even">
+<td align="left">2 进制</td>
+<td align="left">2 个</td>
+<td align="left">0, 1</td>
+</tr>
+<tr class="odd">
+<td align="left">8 进制</td>
+<td align="left">8 个</td>
+<td align="left">0, 1, 2, 3, 4, 5, 6, 7</td>
+</tr>
+<tr class="even">
+<td align="left">16 进制</td>
+<td align="left">16 个</td>
+<td align="left">0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F</td>
+</tr>
+</tbody>
+</table>
+<p>表格: 各种进制和它们的数字</p>
+<h2 id="一个简单时钟"><a href="#TOC">一个简单时钟</a></h2>
+<pre><code>#include &lt;avr/io.h&gt;
+#define F_CPU 12000000UL  // 12 MHz
+#include &lt;util/delay.h&gt;
+
+void init(void)
+{
+    DDRC = 0xFF; // 将 PORTC 设置成输出模式
+    PORTC = 0x00;
+}
+
+int main(void)
+{
+    int i = 0;
+
+    init();
+
+    while (1)
+    {
+        PORTC = i++;   // 移位操作
+        _delay_ms(1000);
+    }
+}</code></pre>
+<p>二进制时钟，用三个端口作输出，接 LED，AVR 输出的电流考虑。</p>
+<pre><code>#include &quot;avr/io.h&quot;   // 包含 I/O 头文件
+#define F_CPU 12000000UL
+#include &quot;util/delay.h&quot;   // 包含头文件，延时要用到它
+
+int main(void)
+{
+    int i = 0; // 讲变量的概念
+
+    DDRC = 0b11111111;  // 数据方向是控制，是输出，还是输入
+
+    for (i=0; i &lt;= 255; i++)
+    {
+        PORTC = i;
+        _delay_ms(1000);
+    }
+
+    while (1) // 永远循环
+    {
+    }
+}</code></pre>
+<h2 id="游乐场"><a href="#TOC">游乐场</a></h2>
+<h3 id="sos"><a href="#TOC">SOS</a></h3>
+<p>如果你用过老旧的 Nokia 手机，可能听到过它收到短信时会发出一种“特殊”的铃声：“嘀嘀嘀,嗒嗒,嘀嘀嘀”，也就是短响三次，长响两次，再短响三次。这实际上是摩斯密码的“SMS”(短信服务)的意思。如果你没有听到过这种铃声，可以从<a href="./Nokia_Old_Sms_Tone.mp3" title="Nokia tone">这里</a>下载听一听。</p>
+<p>下面是几个简单的莫尔斯码：</p>
+<ul>
+<li>S …</li>
+<li>O —</li>
+<li>M –</li>
+</ul>
+<p>我们可以用单片机写一个 quick and dirty 的程序以莫尔斯码的方式来发送 SOS 信号。</p>
+<p>Nokia 的短信息铃声 MP3.</p>
+<h3 id="pov视频暂留"><a href="#TOC">POV(视频暂留)</a></h3>
+<h3 id="输入与输出"><a href="#TOC">输入与输出</a></h3>
+<p>用拨动开关还是用电阻来做实验，从一个 PORT 读数据，然后写到另一个 PORT 上显示。</p>
+<p>把这些字形数据保存在内存里是不好的做法，我们将会有更好的方法(后面会使用这种方法)，但这个笨办法在这里达到了我们的目的。</p>
+<h2 id="参考资料"><a href="#TOC">参考资料</a></h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Binary_number" title="Binary number">二进制</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Hexadecimal" title="Hexadecimal">十六进制</a></li>
+</ul>
+</body>
+</html>

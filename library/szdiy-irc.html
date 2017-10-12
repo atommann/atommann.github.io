@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>如何上 SZDIY IRC 频道</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">如何上 SZDIY IRC 频道</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Atommann</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　/join /nick /quit</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">简介</a></h2>
+
+	<p>　　IRC 即 Internet Relay Chat (因特网中继聊天)的缩写。利用它，我们大家可以登录到某个聊天室(也就是频道)在线上实时交流，讨论一些我们感兴趣的话题，或者就某一 DIY 项目召开线上会议。关于 IRC 的历史和其它相关信息可以查看 <a href="http://zh.wikipedia.org/zh-cn/IRC" target="_top"><i class="CITETITLE">Wikipedia 的 IRC 词条</i></a>。</p>
+
+	<p>　　SZDIY 自酿啤酒的很多事情就是通过在 IRC 中交谈完成的。希望有更多的朋友登录 SZDIY 的 IRC 频道交流学习。</p>
+
+	<p>　　本指南讲解如何登录 SZDIY 的 IRC 频道(当然这里说得不恰当，这里的方法适用于任何频道)，八仙过海，各显神通，计算机系统各种各样，大家各有各的方法登录 IRC 频道，下面对其中的几种方式进行介绍。</p>
+
+<hr />
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">在 Web 浏览器中登录 IRC</a></h2>
+
+	<p>　　如果你想登录 SZDIY IRC 频道而又不想为此安装什么软件的话，可以试试 <a href="http://webchat.freenode.net/?channels=szdiy" target="_top"><i class="CITETITLE">web 版本</i></a>，打开链接后输入你的昵称并填写 <a href="http://zh.wikipedia.org/zh-cn/ReCAPTCHA" target="_top"><i class="CITETITLE">reCAPTCHA </i></a>，然后点击 connect 按钮即可。</p>
+
+	<p>　　此外，如果你发现上面的 web IRC 网址太长不方便记忆，可以先进入 <a href="http://www.szdiy.org" target="_top"><i class="CITETITLE">szdiy.org</i></a>，然后点击网页上的 IRC 链接。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 1. Web IRC 登录界面</b></p>
+
+	  <p><img src="figures/web-irc.png" /></p>
+	</div>
+
+
+      </div>
+
+<hr />
+
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">在 Emacs 里上 IRC</a></h2>
+
+	<p>　　如果你的电脑中有安装 Emacs，那你也可以在 Emacs 中登录 IRC 频道。Emacs 是一个优秀的编辑器，但不它仅仅是一个编辑器，它支持一些有趣的应用，它内置一个 IRC 客户端(名叫 ERC)，可以让我们在 Emacs 里登录 IRC 频道，这对那些生活在 Emacs 里的人们有一定的吸引力。下面讲解如何在 Emacs 里登录 SZDIY 的 IRC 频道。</p>
+
+	<p>　　首先，启动 Emacs, 如下图所示(注意，下面的 Emacs 没有加载 .emacs 配置文件，即默认启动)。</p>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 2. 启动 Emacs 后启动 erc 客户端</b></p>
+
+	  <p><img src="figures/screenshot-emacs.png" /></p>
+	</div>
+      </div>
+
+      <div class="SECT1">
+	
+	<p>　　此时 Emacs 已经准备好了，我们键入快捷键 Alt-x 命令，然后输入 erc, 然后回车。ERC 一般会显示默认的 IRC 服务器 irc.freenode.net，回车，然后会提示输入 IRC port，同样用默认值6667(回车)，然后会提示输入 Nickname，这里你可以输入自己想要的昵称。然后提示输入 Password，一般情况下可以不用输入密码直接回车。这里你就会成功连接到 freenode irc 服务器上，此时你会看到 ERC&gt; 提示符。</p>
+
+	<p>　　此时 ERC 已经准备好接受 irc 命令，IRC 服务器上有很多频道，你首先必须加入某个频道才能开始聊天，频道的名字以 # 号打头。好，键入 /join #szdiy 并回车，如下图所示：</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 3. 加入 #szdiy 频道</b></p>
+
+	  <p><img src="figures/erc.png" /></p>
+	</div>
+
+	<p>　　恭喜，你已经成功加入 #szdiy 频道。你可以看到此时有哪些人在线，Edmund 是一个古怪的 IRC 机器人，是 terryoy 在频道中的代理人 :)，它会说很多不太好懂的英国笑话。和它打个招呼，看看它如何回应(如果你想对某人说话并引起对方的注意，就输入他的昵称的前几个字母然后按 Tab 键可以进行自动补齐。)</p>
+
+	<div class="FIGURE"><a id="AEN36" name="AEN36"></a>
+	  <p><b>图 4. 开始聊天</b></p>
+
+	  <p><img src="figures/chat-with-Edmund.png" /></p>
+	</div>
+
+	<p>　　如果你要下线，只要键入 /quit 命令就可以退出聊天室，试试吧。</p>
+
+	<p>　　实际上我们还可以把一些 erc 的参数加到 Emacs 的配置文件中，这样启动 ERC 时可以自动加入一个或几个频道，把下面的文本复制到你的 .emacs 文件中，注意把 erc-nick 后面的值改成自己的昵称，把 erc-user-full-name 后面的值改成自己的名字：</p>
+
+	<pre class="SCREEN">
+;; ERC 设置
+(require 'erc)
+;; 用 utf-8 编码
+(setq erc-default-coding-system '(utf-8 . utf-8))
+;; 设置 nick, 全名: nick 就是登录时用的，full name 是别人查询你的时候显示的信息。(类似BBS 的 C-a )
+(setq erc-nick "atommann"
+     erc-user-full-name "Long Li")
+;; joining && autojoing
+;; make sure to use wildcards for e.g. freenode as the actual server
+;; name can be be a bit different, which would screw up autoconnect
+(erc-autojoin-mode t)
+(setq erc-autojoin-channels-alist
+     '((".*\\.freenode.net"
+        "#szdiy"
+        "#szlug")))
+;; check channels
+;;(erc-track-mode t)
+;;(setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
+;;                               "324" "329" "332" "333" "353" "477"))
+;; don't show any of this
+;;(setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
+;; 如果你对某些消息或者某个人说的话特别感兴趣，我们可以通过关键字匹配对相关信息进行高亮
+(erc-match-mode 1)
+(setq erc-keywords '("avr" "GPS"))
+(setq erc-pals '("danfei"))
+;; log
+(require 'erc-log)
+(erc-log-mode 1)
+(setq erc-log-channels-directory "~/var/erc/"
+     erc-save-buffer-on-part t
+     erc-log-file-coding-system 'utf-8
+     erc-log-write-after-send t
+     erc-log-write-after-insert t)
+
+(unless (file-exists-p erc-log-channels-directory)
+ (mkdir erc-log-channels-directory t))
+	</pre>
+
+	<p>　　经这样设置后，一启动 ERC 再按几次回车就自动登录了，而且还会对聊天内容进行记录。</p>
+
+	<div class="FIGURE"><a id="AEN44" name="AEN44"></a>
+	  <p><b>图 5. 在 Linux 终端中用 Emacs 登录两个频道</b></p>
+
+	  <p><img src="figures/emacs-nw-irc.png" /></p>
+	</div>
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
+

@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>烤箱回流焊</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">烤箱回流焊</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　Toaster, thermocouple, PID and reflow!</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">1 简介</a></h2>
+
+	<p>　　Why this project?</p>
+	<p>　　这个二手烤箱是去年 szdiy lab 一起购买的，只花了 40 元，成本很低廉，把它改装成一台回流焊烤箱，这样在家里就可以焊接贴片元件了。</p>
+
+      </div>
+
+      <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">2 改装</a></h2>
+
+	<p>　　拆除烤箱自带的双金属片温度控制器。</p>
+
+
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">3 实验</a></h2>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 1. 实验装置</b></p>
+
+	  <p><a href="figures/toaster-reflow-expt.jpg"><img src="figures/toaster-reflow-expt.jpg" width="800" height="450"/></a></p>
+	</div>
+
+	<p>　　最左侧是一只 ALTEC PC410 PID 温度控制器，中间是长帝电烤箱(外壳被拆除了)，烤箱中放了一根 K 型热电偶温度传感器，烤箱的电流通断是由 PC410 PID 控制器控制一只可通断 480VAC/40A 的固态继电器(SSR, Solid State Relay)进行控制，Linux 笔记本运行着用 Tcl 编写的上位机软件和 gnuplot，把温度曲线实时记录下来。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 2. Block diagram</b></p>
+
+	  <p><a href="figures/toaster-reflow-block.png"><img src="figures/toaster-reflow-block.png" width="800" height="423"/></a></p>
+	</div>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 3. Gnuplot 绘制的温度曲线</b></p>
+
+	  <p><a href="figures/profile.png"><img src="figures/profile.png" width="800" height="469"/></a></p>
+	</div>
+
+	<p>　　从室温升到 50 度，保持 300 秒，再上升到 80 度，保持 300 秒，停止。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 4. 降温</b></p>
+
+	  <p><a href="figures/toaster-door-open.png"><img src="figures/toaster-door-open.png" width="800" height="469"/></a></p>
+	</div>
+
+	<p>　　曲线运行完后立即打开烤箱门，温度迅速下降，如果用风扇致冷，会降得更快。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 5. 加热中</b></p>
+
+	  <p><a href="figures/heating.jpg"><img src="figures/heating.jpg" width="800" height="450"/></a></p>
+	</div>
+
+	<p>　　加热中，烤箱周围有大量的热辐射出来，温度最高只上升到 235 度，而且升温速度不够快。我现在明白<a href="http://www.rocketnumbernine.com/2009/06/03/smt-table-top-reflow-oven-part-1/">这个网页中最后那两张图</a>为什么要在烤箱上面贴一层反射膜了，就是为了保温，不让热量辐射出去。</p>
+
+	<p>　　还有，烤箱温度很高。一定要注意防火和防止烫伤，做实验时人不要离开！</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 6. 第一次焊接实验</b></p>
+
+	  <p><a href="figures/first-result.jpg"><img src="figures/first-result.jpg" width="700" height="808"/></a></p>
+	</div>
+
+	<p>　　第一次，焊了三只 1206 电阻，有一只电阻飞掉了。</p>
+	<p>　　锡球乱飞，焊盘处还有些脏东西，效果真是惨不忍赌 :(，原因有好几个，一是锡浆买了很久了，上面已经干掉了，我加了些自来水稀释（本来要冰箱保藏，我没有），烤箱没有保温，温度曲线不理想。还有就是没有钢网，我是拿牙签用手工上的锡浆。整个实验有待继续改进……</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 7. 记录的曲线</b></p>
+
+	  <p><a href="figures/first-test.png"><img src="figures/first-test.png" width="800" height="469"/></a></p>
+	</div>
+
+	<p>　　绿色是测量值，和红色的设定值相差 35 度左右，因为温度升不上去，红色曲线一直在等绿色曲线。这称为自动暂停。原因是：没有保温。</p>
+
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
+

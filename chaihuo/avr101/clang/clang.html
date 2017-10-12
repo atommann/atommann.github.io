@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Atommann" />
+  <meta name="date" content="2013-04-30" />
+  <title>AVR 101 - C 语言基础</title>
+  <link rel="stylesheet" href="pandoc.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">AVR 101 - C 语言基础</h1>
+<h2 class="author">Atommann</h2>
+<h3 class="date">April 30, 2013</h3>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#简介">简介</a></li>
+<li><a href="#一个最简单的例子">一个最简单的例子</a><ul>
+<li><a href="#include-是干嘛用的">include 是干嘛用的</a></li>
+</ul></li>
+<li><a href="#c-文件的翻译过程">C 文件的翻译过程</a></li>
+<li><a href="#条件语句">条件语句</a></li>
+<li><a href="#数组">数组</a></li>
+<li><a href="#循环">循环</a><ul>
+<li><a href="#for-循环">for 循环</a></li>
+<li><a href="#while-循环">while 循环</a></li>
+</ul></li>
+<li><a href="#怎样使用库函数">怎样使用库函数</a></li>
+<li><a href="#函数">函数</a></li>
+<li><a href="#变量">变量</a></li>
+<li><a href="#算术运算">算术运算</a><ul>
+<li><a href="#加">加</a></li>
+<li><a href="#减">减</a></li>
+<li><a href="#乘">乘</a></li>
+<li><a href="#除">除</a></li>
+</ul></li>
+<li><a href="#逻辑运算">逻辑运算</a><ul>
+<li><a href="#与">与</a></li>
+<li><a href="#或">或</a></li>
+<li><a href="#非">非</a></li>
+</ul></li>
+<li><a href="#位操作">位操作</a><ul>
+<li><a href="#移位">移位</a></li>
+<li><a href="#按位与">按位与</a></li>
+<li><a href="#按位或">按位或</a></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="简介"><a href="#TOC">简介</a></h2>
+<p>该教程利用单片机开发板学习 C 语言，这里的侧重点是 C 语言编程，因此我们会讲很多与编程相关的知识。</p>
+<p>我们用这种“语言”控制单片机的行为，让它完成我们想要达到的目的。</p>
+<h2 id="一个最简单的例子"><a href="#TOC">一个最简单的例子</a></h2>
+<pre><code>void main(void)
+{
+    while (1)
+        ;
+}</code></pre>
+<h3 id="include-是干嘛用的"><a href="#TOC">include 是干嘛用的</a></h3>
+<p>顾名思义，include 就是包含的意思。</p>
+<p>插图</p>
+<table>
+<col width="16%" />
+<tbody>
+<tr class="odd">
+<td align="left">文件A的内容</td>
+</tr>
+<tr class="even">
+<td align="left">文件B的内容</td>
+</tr>
+</tbody>
+</table>
+<p>把两件文件结合在一起，组装成一个文件后再进行后面的处理。</p>
+<h2 id="c-文件的翻译过程"><a href="#TOC">C 文件的翻译过程</a></h2>
+<ul>
+<li>[中文]插图—&gt;[英语] 类比。</li>
+<li>交叉编译，目标板，Desktop 书中的插图</li>
+</ul>
+<p>单片机的内部只识别 1 和 0 组合成的机器语言。</p>
+<h2 id="条件语句"><a href="#TOC">条件语句</a></h2>
+<h2 id="数组"><a href="#TOC">数组</a></h2>
+<pre><code>uint8_t array[4] = {1, 2, 3, 4};
+
+for (i = 0; i &lt; 4; i++)
+{
+    PORTC = array[i];
+    _delay_ms(2000);
+}</code></pre>
+<p>(1)</p>
+<h2 id="循环"><a href="#TOC">循环</a></h2>
+<h3 id="for-循环"><a href="#TOC">for 循环</a></h3>
+<pre><code>#include &lt;avr/io.h&gt;
+
+void main(void)
+{
+
+    int i;
+
+    for (i = 0; i &lt; 5; i++) // 循环 5 次
+    {
+        PORTC = 0b00000001; // LED 亮
+        _delay_ms(1000);
+        PORTC = 0b00000000; // LED 灭
+        _delay_ms(1000);
+    }
+
+    while (1)
+    {
+        // 这里面没有任何代码，什么都不干
+    }
+}</code></pre>
+<p>注意观察 LED 的闪烁，它会闪烁 5 次，然后熄灭，最后进入无尽的 while(1) 循环。按 Reset 键，单片机会被“重启”(我们这里叫做复位)，程序又会 main 开始运行，因此 LED 又会闪 5 次，然后熄灭。你可以把 i &lt; 5 改成别的数字，然后观察效果。</p>
+<p>参考下面的网页</p>
+<ul>
+<li>http://en.wikipedia.org/wiki/For_loop</li>
+<li>http://en.wikipedia.org/wiki/C_syntax#Iteration_statements</li>
+</ul>
+<h3 id="while-循环"><a href="#TOC">while 循环</a></h3>
+<h2 id="怎样使用库函数"><a href="#TOC">怎样使用库函数</a></h2>
+<p>所谓的库，就是一些事先编写好的函数。这就好比我们要做一个单片机电路，需要用到电阻，LED，我们需要做的是直接从零件库里取出来用就可以了，而不必自己再去做一个电阻或是 LED，这样做的好处显而易见：节省大量的时间。你还可以把自己的程序做成库发布在网上给别人使用。</p>
+<p>我们先来看一个例子，以便得到直观的感受：</p>
+<p>C 语言提供了一套标准的库函数。</p>
+<p>首先，要在程序里包含相应的头文件(即 .h 文件)</p>
+<p>然后，查看库函数的使用方法，比如它需要什么样的参数，它运行完成后会返回一个什么样的值。</p>
+<h2 id="函数"><a href="#TOC">函数</a></h2>
+<p>把大的任务分成一个小的功能块。 怎样调用一个函数。调用之后再返回到此处。（加插图）</p>
+<p>伪代码(不是真正的程序，但是可以把它翻译成真正的程序)</p>
+<pre><code>main:
+    把 I/O 的方向设置成输出模式
+循环:
+    点亮 LED
+    拖延时间，什么都不干
+    关掉 LED
+    拖延时间，什么都不干
+    重复</code></pre>
+<h2 id="变量"><a href="#TOC">变量</a></h2>
+<p>值会变的量。</p>
+<p>用 LED 做实验。</p>
+<h2 id="算术运算"><a href="#TOC">算术运算</a></h2>
+<h3 id="加"><a href="#TOC">加</a></h3>
+<pre><code>PORTC = 1 + 1;</code></pre>
+<p>观察 PORTC 上的 LED，因为 1 + 1 = 2，因此第二个 LED 会亮，因为数字 2 的二进制形式是 10.</p>
+<h3 id="减"><a href="#TOC">减</a></h3>
+<pre><code>PORTC = 5 - 1;</code></pre>
+<p>观察 PORTC 上的 LED，因为 5 - 1 = 4，因此第 3 个 LED 会亮，因为数字 4 的二进制形式是 100.</p>
+<h3 id="乘"><a href="#TOC">乘</a></h3>
+<pre><code>PORTC = 3 * 3;</code></pre>
+<p>观察 PORTC 上的 LED，因为 3 * 3 = 9，因此第 1 个和第 4 个 LED 会亮，因为数字 9 的二进制形式是 1001.</p>
+<h3 id="除"><a href="#TOC">除</a></h3>
+<pre><code>PORTC = 7 / 3;</code></pre>
+<p>观察 PORTC 上的 LED，因为 7 / 3 = 2.5，但在 C 语言里，整数和整数相除会舍去小数部分，因此 7 / 3 的结果是 2，因此第 2 个 LED 会亮，因为数字 2 的二进制形式是 10.</p>
+<h2 id="逻辑运算"><a href="#TOC">逻辑运算</a></h2>
+<h3 id="与"><a href="#TOC">与</a></h3>
+<h3 id="或"><a href="#TOC">或</a></h3>
+<h3 id="非"><a href="#TOC">非</a></h3>
+<h2 id="位操作"><a href="#TOC">位操作</a></h2>
+<h3 id="移位"><a href="#TOC">移位</a></h3>
+<p>用实际例子来讲解。LED</p>
+<h3 id="按位与"><a href="#TOC">按位与</a></h3>
+<p>按位与批的是，按对应的位之间执行与操作。 用 LED 举例子。</p>
+<h3 id="按位或"><a href="#TOC">按位或</a></h3>
+<!---
+photos
+-->
+
+
+
+
+</body>
+</html>

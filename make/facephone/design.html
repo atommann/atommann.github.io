@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <title>Facephone</title>
+    <meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79" />
+    <link rel="STYLESHEET" type="text/css" href="docbook.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+  </head>
+  <body class="ARTICLE" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084"
+	alink="#0000FF">
+    <div class="ARTICLE">
+      <div class="TITLEPAGE">
+	<h1 class="TITLE"><a id="AEN2" name="AEN2">电话是怎样工作的</a></h1>
+	
+	<h3 class="AUTHOR"><a id="AEN4" name="AEN4">Li Long</a></h3>
+	
+	<div class="AFFILIATION">
+	  <div class="ADDRESS">
+	    <p class="ADDRESS"><code class="EMAIL">&#60;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&#62;</code></p>
+	  </div>
+	</div>
+
+	<div>
+	  <div class="ABSTRACT"><a id="AEN10" name="AEN10"></a>
+	    <p>　　See how does a phone works</p>
+	  </div>
+	</div>
+
+	<hr />
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">1 拨号</a></h2>
+
+	<p>　　什么是 DTMF？</p>
+
+	<div class="FIGURE"><a id="AEN16" name="AEN16"></a>
+	  <p><b>图 1. morse</b></p>
+
+	  <p><img src="figures/screenshot-morse.png" /></p>
+	</div>
+      </div>
+
+      <div class="SECT1">
+	<hr />
+	<h2 class="SECT1"><a id="AEN23" name="AEN23">2 叮叮叮——振铃</a></h2>
+
+	<p>　　铃声检测。</p>
+
+	<div class="FIGURE"><a id="AEN28" name="AEN28"></a>
+	  <p><b>图 2. 实验原理图</b></p>
+
+	  <p><img src="figures/serial_morse_sch.png" /></p>
+	</div>
+
+	<p>　　LED 阳极接串口的第 7 脚 RTS，阴极通过一个 4.7k 的限流电阻接到串口第 5 脚 GND。</p>
+
+	<div class="FIGURE"><a id="AEN36" name="AEN36"></a>
+	  <p><b>图 3. 实验电路</b></p>
+
+	  <p><img src="figures/serial_morse_led.jpg" /></p>
+	</div>
+
+	<p>　　LED 按照 Morse 码的节奏闪烁。</p>
+
+	<div class="FIGURE"><a id="AEN44" name="AEN44"></a>
+	  <p><b>图 4. 示波器的上 Morse 码</b></p>
+
+	  <p><img src="figures/morse_code_waveform.jpg" /></p>
+	</div>
+      </div>
+
+      <div class="SECT1">
+	<h2 class="SECT1"><a id="AEN12" name="AEN12">3 通话</a></h2>
+
+	<p>　　声音是怎样传到对方去的？</p>
+
+
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
+
