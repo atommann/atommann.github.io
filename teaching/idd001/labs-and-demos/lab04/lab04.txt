@@ -7,8 +7,13 @@ V0.1, 2017-10-11
 
 == 测试 digitalRead() 函数
 
-.按键和 LED 接线图
-image::button-demo_bb.svg[sch]
+.原理图
+image::button-demo_schem.png[sch]
+
+
+.面包板上的电路
+image::button-demo_bb.svg[cir-breadboard]
+
 
 [TIP]
 完成接线后，在上电之前，请再次检查接线，注意是否有短路存在(如 5V 和 GND
@@ -67,12 +72,28 @@ while ( 表达式 )
 
 == 消除抖动
 
+从上面的实验可以发现，抖动的存在会让程序误动作。我们必须消除它。其中一个方法是用
+delay() 函数跳过抖动区。见下面的代码。
+
+=== 用 delay() 跳过抖动区
+
 [source,cpp]
 ----
 include::{sourcedir}/button-demo-3-debounce/button-demo-3-debounce.ino[]
 ----
 
-用 delay() 跳过抖动区。
+
+=== 一个更好的方法
+
+上面的方法用了 delay() 函数。10ms 的 CPU 时间被浪费掉了。
+
+Arduino 网站上的 Tutorial 区有一个利用 millis() 的更高效的方法。
+
+https://www.arduino.cc/en/Tutorial/Debounce
+
+这个例程也存在于 Arduino IDE 中，见 File -> Examples -> 02.Digital -> Debounce
+
+例程中用的是下拉电阻，做实验时，请注意代码和电路的对应。
 
 == 再加一个键
 

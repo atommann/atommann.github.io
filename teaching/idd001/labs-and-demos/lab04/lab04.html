@@ -747,9 +747,15 @@ asciidoc.install(2);
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="figures/button-demo_bb.svg" alt="sch" />
+<img src="figures/button-demo_schem.png" alt="sch" />
 </div>
-<div class="title">Figure 1. 按键和 LED 接线图</div>
+<div class="title">Figure 1. 原理图</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="figures/button-demo_bb.svg" alt="cir-breadboard" />
+</div>
+<div class="title">Figure 2. 面包板上的电路</div>
 </div>
 <div class="admonitionblock">
 <table><tr>
@@ -901,6 +907,10 @@ http://www.gnu.org/software/src-highlite -->
 <div class="sect1">
 <h2 id="_消除抖动">消除抖动</h2>
 <div class="sectionbody">
+<div class="paragraph"><p>从上面的实验可以发现，抖动的存在会让程序误动作。我们必须消除它。其中一个方法是用
+delay() 函数跳过抖动区。见下面的代码。</p></div>
+<div class="sect2">
+<h3 id="_用_delay_跳过抖动区">用 delay() 跳过抖动区</h3>
 <div class="listingblock">
 <div class="content"><!-- Generator: GNU source-highlight 3.1.8
 by Lorenzo Bettini
@@ -962,7 +972,15 @@ http://www.gnu.org/software/src-highlite -->
   <span style="font-style: italic"><span style="color: #9A1900">//Serial.println(in_val, HEX); // 可以打印到串口观察数值</span></span>
 <span style="color: #FF0000">}</span>
 </tt></pre></div></div>
-<div class="paragraph"><p>用 delay() 跳过抖动区。</p></div>
+</div>
+<div class="sect2">
+<h3 id="_一个更好的方法">一个更好的方法</h3>
+<div class="paragraph"><p>上面的方法用了 delay() 函数。10ms 的 CPU 时间被浪费掉了。</p></div>
+<div class="paragraph"><p>Arduino 网站上的 Tutorial 区有一个利用 millis() 的更高效的方法。</p></div>
+<div class="paragraph"><p><a href="https://www.arduino.cc/en/Tutorial/Debounce">https://www.arduino.cc/en/Tutorial/Debounce</a></p></div>
+<div class="paragraph"><p>这个例程也存在于 Arduino IDE 中，见 File &#8594; Examples &#8594; 02.Digital &#8594; Debounce</p></div>
+<div class="paragraph"><p>例程中用的是下拉电阻，做实验时，请注意代码和电路的对应。</p></div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1092,7 +1110,7 @@ http://www.gnu.org/software/src-highlite -->
 <div id="footer">
 <div id="footer-text">
 Version 0.1<br />
-Last updated 2017-10-13 21:23:21 HKT
+Last updated 2017-10-16 21:53:53 HKT
 </div>
 </div>
 </body>
