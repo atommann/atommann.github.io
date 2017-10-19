@@ -1,0 +1,235 @@
+= 实验，第 5 课
+Atommann <atommann@gmail.com>
+V0.2, 2017-10-19
+:toc:
+:imagesdir: figures
+:sourcedir: src
+
+== analogWrite()
+
+可以认为 analogWrite() 是把 0-255 映射到 0-5V. 最简单直观的实验就是用它来调节 LED 的亮度。
+
+.analogWrite() 和输出等效电压的线性对应关系
+image::analogWrite-linear.svg[linear]
+
+=== RGB LED
+
+.原理图
+image::RGB-LED_schem.svg[]
+
+[source, cpp]
+----
+include::{sourcedir}/rgb-fading/rgb-fading.ino[]
+----
+
+上面的代码简单地对 lab kit 中的 RGB LED 进行测试。
+
+红绿蓝每种颜色的变化范围有 256 种可能性(0 到 255)，256x256x256 = 16777216, 因此你可以用 RGB LED 混合出 1600 万种颜色。
+
+[TIP]
+结合 Lab04 中的按键方法，你可以通过按键调节 analogWrite(ledPin, val);
+中的 val 值，进行手动控制。
+
+=== 呼吸灯
+
+[source,cpp]
+----
+include::{sourcedir}/analogWrite-demo-1/analogWrite-demo-1.ino[]
+----
+
+在程序中标示 <1> 处，用 for 循环去遍历查找表中的 91
+个数据，这并不是一个好的做法。因为一旦表格中的数据个数发生了变化，或变多变少之后，不好数清楚。像
+91 这样的数字在编程中被称为魔术数字(Magic number),
+以后你自己或别人看你代码时，都不知道这儿为什么是这个数字而不是另一个，天知道它是从哪儿来的。
+
+我们可以用 C 语言的 sizeof 运算符来帮助我们偷懒，避免出现魔术数字。见下面的版本。
+
+[source,cpp]
+----
+include::{sourcedir}/analogWrite-demo-1-sizeof/analogWrite-demo-1-sizeof.ino[]
+----
+<1> sizeof sine_table 计算出数组 sine_table[] 一共占用了多少个 bytes,
+    sizeof sine_table[0] 计算出数组中每个元素占用了多少个 bytes.
+    两者相除，就得到了数组中的元素数量。Magic number
+    消失了！
+
+
+我们再来看下面的代码片断：
+
+[source,c]
+----
+int sine_table[] = {1, 2, 3, 4};
+
+int numData = (sizeof sine_table) / (sizeof sine_table[0]); // numData = 4
+----
+
+因为 C 语言并没有规定一个 int 类型占用几个字节。例如一台计算机上 int
+用 4 bytes, sizeof sine_table 就得到 16, sizeof sine_table[0] 得到 4,
+16/4 = 4, 通过采用除法(/)，这段代码在任何计算机上得到的结果 numData
+都为 4, 提高了程序的可移植性。
+
+[NOTE]
+============================
+sizeof 是 C 语言的一个运算符(+, -, *, /... 都是运算符),
+可以用它"测量"一个变量或一种数据类型占用的字节数。
+
+[source,c]
+----
+int a, b;
+
+b = sizeof(a);  // 在 Arduino 上，结果是 b = 2, 因为一个 int 占用两个 byte
+//b = sizeof a; // 上面的语句也可以写成这样，当 sizeof 作用于变量名时，() 可以省略
+----
+
+[source,cpp]
+----
+int b;
+
+// 计算一个长整型数据类型要占用几个 byte
+// 计算数据类型时，sizeof 后面必须加 ()
+b = sizeof(unsigned long); // 在 Arduino 上，结果是 b = 4
+----
+============================
+
+问题: 为什么用 analogWrite()
+写完一个亮度值之后要加延时？改变延时的时间长短，甚至去掉延时，会有什么效果？
+
+
+
+== analogRead()
+
+=== 读电位器
+
+pot.
+
+=== 读 LM35 温度传感器
+
+.LM35 和 Arduino 的连接
+image::TemperaturSensorLM35_bb.svg[LM35 bradboard]
+
+因为 LM35
+被设计成输出电压和环境温度成线性关系，因此你可以直接用万用表测量中间引脚的电压值得到温度值。例如，测得的电压是
+234mV，则温度是 234/10 = 23.4 摄氏度。
+
+.温度和 LM35 输出电压的关系
+image::lm35-graph.png[LM35 Vout VS temp]
+
+
+[source,cpp]
+----
+include::{sourcedir}/read-LM35/read-LM35.ino[]
+----
+
+Arduino 的 analogRead() 是把模拟输入引脚上的电压和 5V
+作比较，把比值映射到 0 到 1023 之间。
+....
+           Vin
+reading = ----- * 1024
+           5V
+....
+只要对公式进行简单变形就得到:
+....
+ reading
+--------- * 5V = Vin
+  1024
+
+Vin: LM35 输出的电压
+....
+
+这个公式反应在上面的代码中。
+
+我们得到电压的单位是 V, 电压和温度的对应关系是 10mV/°C =
+0.01V/°C，因此:
+....
+ voltage
+---------- = temperature (单位: °C)
+ 0.01V/°C
+....
+
+再对上面的代码作一些很小的修改。
+
+[source,cpp]
+----
+include::{sourcedir}/LM35-templogger/LM35-templogger.ino[]
+----
+
+打开 Arduino IDE 的串口监视器，PC 就可以开始接收 CSV
+格式的数据，下面是约 1 分钟的数据。
+
+....
+0, 24.41
+1, 24.41
+2, 24.41
+3, 24.90
+4, 24.41
+5, 24.41
+6, 24.41
+7, 24.41
+8, 24.41
+9, 25.39
+10, 26.86
+11, 27.83
+12, 28.32
+13, 28.81
+14, 29.30
+15, 29.79
+16, 29.79
+17, 30.27
+18, 30.27
+19, 30.27
+20, 30.76
+21, 30.76
+22, 30.76
+23, 30.76
+24, 30.76
+25, 30.76
+26, 31.25
+27, 31.25
+28, 31.74
+29, 31.74
+30, 31.25
+31, 31.25
+32, 31.25
+33, 30.76
+34, 30.76
+35, 30.76
+36, 30.27
+37, 29.79
+38, 29.79
+39, 29.30
+40, 29.30
+41, 28.81
+42, 28.81
+43, 28.32
+44, 28.32
+45, 28.32
+46, 28.32
+47, 28.32
+48, 27.83
+49, 27.83
+50, 27.83
+51, 27.83
+52, 27.34
+53, 27.34
+54, 26.86
+55, 26.86
+56, 26.86
+57, 26.86
+....
+
+再用电子表格或别的软件，你可以把数据可视化。
+
+.CSV 转成图表
+image::lm35-templogger.svg[]
+
+Wow, cool, 现在你有一个简易的温度记录仪(temperature logger)了!
+只是它需要用电脑来存数据，如果给 Arduino 加一个 SD 卡，就能脱机存储了。
+
+== 读光敏电阻
+
+请参考 https://learn.adafruit.com/photocells/using-a-photocell
+
+== Your turn!
+
+你可以发挥自己的想象力，用 lab kit 中的模拟量传感器设计自己的实验！
+

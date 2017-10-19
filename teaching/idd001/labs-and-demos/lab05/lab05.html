@@ -1,0 +1,1186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.8" />
+<title>实验，第 5 课</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>实验，第 5 课</h1>
+<span id="author">Atommann</span><br />
+<span id="email"><code>&lt;<a href="mailto:atommann@gmail.com">atommann@gmail.com</a>&gt;</code></span><br />
+<span id="revnumber">version 0.2,</span>
+<span id="revdate">2017-10-19</span>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_analogwrite">analogWrite()</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>可以认为 analogWrite() 是把 0-255 映射到 0-5V. 最简单直观的实验就是用它来调节 LED 的亮度。</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="figures/analogWrite-linear.svg" alt="linear" />
+</div>
+<div class="title">Figure 1. analogWrite() 和输出等效电压的线性对应关系</div>
+</div>
+<div class="sect2">
+<h3 id="_rgb_led">RGB LED</h3>
+<div class="imageblock">
+<div class="content">
+<img src="figures/RGB-LED_schem.svg" alt="RGB-LED_schem.svg" />
+</div>
+<div class="title">Figure 2. 原理图</div>
+</div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">/*</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">  RGB fading</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">  Modified from the following example.</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">  </span></span><span style="text-decoration: underline"><span style="color: #0000FF">http://arduino.cc/en/Tutorial/Fading</span></span>
+<span style="font-style: italic"><span style="color: #9A1900"> */</span></span>
+
+<span style="color: #009900">int</span> rPin <span style="color: #990000">=</span> <span style="color: #993399">11</span><span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">// red</span></span>
+<span style="color: #009900">int</span> gPin <span style="color: #990000">=</span> <span style="color: #993399">9</span><span style="color: #990000">;</span>  <span style="font-style: italic"><span style="color: #9A1900">// green</span></span>
+<span style="color: #009900">int</span> bPin <span style="color: #990000">=</span> <span style="color: #993399">10</span><span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">// blue</span></span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">setup</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+  <span style="font-style: italic"><span style="color: #9A1900">//Serial.begin(9600);</span></span>
+<span style="color: #FF0000">}</span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">loop</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+
+  <span style="font-weight: bold"><span style="color: #000000">fading</span></span><span style="color: #990000">(</span>rPin<span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// red</span></span>
+  <span style="font-weight: bold"><span style="color: #000000">fading</span></span><span style="color: #990000">(</span>gPin<span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// green</span></span>
+  <span style="font-weight: bold"><span style="color: #000000">fading</span></span><span style="color: #990000">(</span>bPin<span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// blue</span></span>
+<span style="color: #FF0000">}</span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">fading</span></span><span style="color: #990000">(</span><span style="color: #009900">int</span> ledPin<span style="color: #990000">)</span>
+<span style="color: #FF0000">{</span>
+  <span style="font-style: italic"><span style="color: #9A1900">// fade in from min to max in increments of 5 points:</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">for</span></span> <span style="color: #990000">(</span><span style="color: #009900">int</span> fadeValue <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">;</span> fadeValue <span style="color: #990000">&lt;=</span> <span style="color: #993399">255</span><span style="color: #990000">;</span> fadeValue <span style="color: #990000">+=</span> <span style="color: #993399">5</span><span style="color: #990000">)</span> <span style="color: #FF0000">{</span>
+    <span style="font-weight: bold"><span style="color: #000000">analogWrite</span></span><span style="color: #990000">(</span>ledPin<span style="color: #990000">,</span> fadeValue<span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// sets the value (range from 0 to 255):</span></span>
+    <span style="font-weight: bold"><span style="color: #000000">delay</span></span><span style="color: #990000">(</span><span style="color: #993399">10</span><span style="color: #990000">);</span>                      <span style="font-style: italic"><span style="color: #9A1900">// wait for 10 milliseconds to see the dimming effect</span></span>
+  <span style="color: #FF0000">}</span>
+
+  <span style="font-style: italic"><span style="color: #9A1900">// fade out from max to min in increments of 5 points:</span></span>
+  <span style="font-weight: bold"><span style="color: #0000FF">for</span></span> <span style="color: #990000">(</span><span style="color: #009900">int</span> fadeValue <span style="color: #990000">=</span> <span style="color: #993399">255</span><span style="color: #990000">;</span> fadeValue <span style="color: #990000">&gt;=</span> <span style="color: #993399">0</span><span style="color: #990000">;</span> fadeValue <span style="color: #990000">-=</span> <span style="color: #993399">5</span><span style="color: #990000">)</span> <span style="color: #FF0000">{</span>
+    <span style="font-weight: bold"><span style="color: #000000">analogWrite</span></span><span style="color: #990000">(</span>ledPin<span style="color: #990000">,</span> fadeValue<span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// sets the value (range from 0 to 255):</span></span>
+    <span style="font-weight: bold"><span style="color: #000000">delay</span></span><span style="color: #990000">(</span><span style="color: #993399">10</span><span style="color: #990000">);</span>                      <span style="font-style: italic"><span style="color: #9A1900">// wait for 10 milliseconds to see the dimming effect</span></span>
+  <span style="color: #FF0000">}</span>
+<span style="color: #FF0000">}</span>
+</tt></pre></div></div>
+<div class="paragraph"><p>上面的代码简单地对 lab kit 中的 RGB LED 进行测试。</p></div>
+<div class="paragraph"><p>红绿蓝每种颜色的变化范围有 256 种可能性(0 到 255)，256x256x256 = 16777216, 因此你可以用 RGB LED 混合出 1600 万种颜色。</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">结合 Lab04 中的按键方法，你可以通过按键调节 analogWrite(ledPin, val);
+中的 val 值，进行手动控制。</td>
+</tr></table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_呼吸灯">呼吸灯</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">// 呼吸灯</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">// 在 Uno 上 pin 3, 5, 6, 9, 10, 11 支持 analogWrite()</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">// 也就是带 ~ 的 pin</span></span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> LED_PIN <span style="color: #993399">3</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 存放 LED 亮度值的查找表(lookup table)</span></span>
+<span style="color: #008080">uint8_t</span> sine_table<span style="color: #990000">[]</span> <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+  <span style="color: #993399">1</span><span style="color: #990000">,</span>   <span style="color: #993399">1</span><span style="color: #990000">,</span>   <span style="color: #993399">2</span><span style="color: #990000">,</span>   <span style="color: #993399">3</span><span style="color: #990000">,</span>   <span style="color: #993399">5</span><span style="color: #990000">,</span>   <span style="color: #993399">8</span><span style="color: #990000">,</span>  <span style="color: #993399">11</span><span style="color: #990000">,</span>  <span style="color: #993399">15</span><span style="color: #990000">,</span>  <span style="color: #993399">20</span><span style="color: #990000">,</span>  <span style="color: #993399">25</span><span style="color: #990000">,</span>
+ <span style="color: #993399">30</span><span style="color: #990000">,</span>  <span style="color: #993399">36</span><span style="color: #990000">,</span>  <span style="color: #993399">43</span><span style="color: #990000">,</span>  <span style="color: #993399">49</span><span style="color: #990000">,</span>  <span style="color: #993399">56</span><span style="color: #990000">,</span>  <span style="color: #993399">64</span><span style="color: #990000">,</span>  <span style="color: #993399">72</span><span style="color: #990000">,</span>  <span style="color: #993399">80</span><span style="color: #990000">,</span>  <span style="color: #993399">88</span><span style="color: #990000">,</span>  <span style="color: #993399">97</span><span style="color: #990000">,</span>
+<span style="color: #993399">105</span><span style="color: #990000">,</span> <span style="color: #993399">114</span><span style="color: #990000">,</span> <span style="color: #993399">123</span><span style="color: #990000">,</span> <span style="color: #993399">132</span><span style="color: #990000">,</span> <span style="color: #993399">141</span><span style="color: #990000">,</span> <span style="color: #993399">150</span><span style="color: #990000">,</span> <span style="color: #993399">158</span><span style="color: #990000">,</span> <span style="color: #993399">167</span><span style="color: #990000">,</span> <span style="color: #993399">175</span><span style="color: #990000">,</span> <span style="color: #993399">183</span><span style="color: #990000">,</span>
+<span style="color: #993399">191</span><span style="color: #990000">,</span> <span style="color: #993399">199</span><span style="color: #990000">,</span> <span style="color: #993399">206</span><span style="color: #990000">,</span> <span style="color: #993399">212</span><span style="color: #990000">,</span> <span style="color: #993399">219</span><span style="color: #990000">,</span> <span style="color: #993399">225</span><span style="color: #990000">,</span> <span style="color: #993399">230</span><span style="color: #990000">,</span> <span style="color: #993399">235</span><span style="color: #990000">,</span> <span style="color: #993399">240</span><span style="color: #990000">,</span> <span style="color: #993399">244</span><span style="color: #990000">,</span>
+<span style="color: #993399">247</span><span style="color: #990000">,</span> <span style="color: #993399">250</span><span style="color: #990000">,</span> <span style="color: #993399">252</span><span style="color: #990000">,</span> <span style="color: #993399">253</span><span style="color: #990000">,</span> <span style="color: #993399">254</span><span style="color: #990000">,</span> <span style="color: #993399">255</span><span style="color: #990000">,</span> <span style="color: #993399">254</span><span style="color: #990000">,</span> <span style="color: #993399">253</span><span style="color: #990000">,</span> <span style="color: #993399">252</span><span style="color: #990000">,</span> <span style="color: #993399">250</span><span style="color: #990000">,</span>
+<span style="color: #993399">247</span><span style="color: #990000">,</span> <span style="color: #993399">244</span><span style="color: #990000">,</span> <span style="color: #993399">240</span><span style="color: #990000">,</span> <span style="color: #993399">235</span><span style="color: #990000">,</span> <span style="color: #993399">230</span><span style="color: #990000">,</span> <span style="color: #993399">225</span><span style="color: #990000">,</span> <span style="color: #993399">219</span><span style="color: #990000">,</span> <span style="color: #993399">212</span><span style="color: #990000">,</span> <span style="color: #993399">206</span><span style="color: #990000">,</span> <span style="color: #993399">199</span><span style="color: #990000">,</span>
+<span style="color: #993399">191</span><span style="color: #990000">,</span> <span style="color: #993399">183</span><span style="color: #990000">,</span> <span style="color: #993399">175</span><span style="color: #990000">,</span> <span style="color: #993399">167</span><span style="color: #990000">,</span> <span style="color: #993399">158</span><span style="color: #990000">,</span> <span style="color: #993399">150</span><span style="color: #990000">,</span> <span style="color: #993399">141</span><span style="color: #990000">,</span> <span style="color: #993399">132</span><span style="color: #990000">,</span> <span style="color: #993399">123</span><span style="color: #990000">,</span> <span style="color: #993399">114</span><span style="color: #990000">,</span>
+<span style="color: #993399">105</span><span style="color: #990000">,</span>  <span style="color: #993399">97</span><span style="color: #990000">,</span>  <span style="color: #993399">88</span><span style="color: #990000">,</span>  <span style="color: #993399">80</span><span style="color: #990000">,</span>  <span style="color: #993399">72</span><span style="color: #990000">,</span>  <span style="color: #993399">64</span><span style="color: #990000">,</span>  <span style="color: #993399">56</span><span style="color: #990000">,</span>  <span style="color: #993399">49</span><span style="color: #990000">,</span>  <span style="color: #993399">43</span><span style="color: #990000">,</span>  <span style="color: #993399">36</span><span style="color: #990000">,</span>
+ <span style="color: #993399">30</span><span style="color: #990000">,</span>  <span style="color: #993399">25</span><span style="color: #990000">,</span>  <span style="color: #993399">20</span><span style="color: #990000">,</span>  <span style="color: #993399">15</span><span style="color: #990000">,</span>  <span style="color: #993399">11</span><span style="color: #990000">,</span>   <span style="color: #993399">8</span><span style="color: #990000">,</span>   <span style="color: #993399">5</span><span style="color: #990000">,</span>   <span style="color: #993399">3</span><span style="color: #990000">,</span>   <span style="color: #993399">2</span><span style="color: #990000">,</span>   <span style="color: #993399">1</span><span style="color: #990000">,</span> <span style="color: #993399">0</span><span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">setup</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+  <span style="font-style: italic"><span style="color: #9A1900">//pinMode(LED_PIN, OUTPUT); // 用 analogWrite() 时无需把 pin 设置成输出</span></span>
+<span style="color: #FF0000">}</span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">loop</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">for</span></span> <span style="color: #990000">(</span><span style="color: #009900">int</span> i <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">;</span> i <span style="color: #990000">&lt;</span> <span style="color: #993399">91</span><span style="color: #990000">;</span> i<span style="color: #990000">++)</span> <span style="color: #FF0000">{</span> <span style="font-style: italic"><span style="color: #9A1900">// <b>&lt;1&gt;</b></span></span>
+    <span style="font-weight: bold"><span style="color: #000000">analogWrite</span></span><span style="color: #990000">(</span>LED_PIN<span style="color: #990000">,</span> sine_table<span style="color: #990000">[</span>i<span style="color: #990000">]);</span>
+    <span style="font-weight: bold"><span style="color: #000000">delay</span></span><span style="color: #990000">(</span><span style="color: #993399">50</span><span style="color: #990000">);</span>
+  <span style="color: #FF0000">}</span>
+<span style="color: #FF0000">}</span></tt></pre></div></div>
+<div class="paragraph"><p>在程序中标示 &lt;1&gt; 处，用 for 循环去遍历查找表中的 91
+个数据，这并不是一个好的做法。因为一旦表格中的数据个数发生了变化，或变多变少之后，不好数清楚。像
+91 这样的数字在编程中被称为魔术数字(Magic number),
+以后你自己或别人看你代码时，都不知道这儿为什么是这个数字而不是另一个，天知道它是从哪儿来的。</p></div>
+<div class="paragraph"><p>我们可以用 C 语言的 sizeof 运算符来帮助我们偷懒，避免出现魔术数字。见下面的版本。</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">// 呼吸灯</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">// 在 Uno 上 pin 3, 5, 6, 9, 10, 11 支持 analogWrite()</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">// 也就是带 ~ 的 pin</span></span>
+<span style="font-weight: bold"><span style="color: #000080">#define</span></span> LED_PIN <span style="color: #993399">3</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 存放 LED 亮度值的查找表(lookup table)</span></span>
+<span style="color: #008080">uint8_t</span> sine_table<span style="color: #990000">[]</span> <span style="color: #990000">=</span> <span style="color: #FF0000">{</span>
+  <span style="color: #993399">1</span><span style="color: #990000">,</span>   <span style="color: #993399">1</span><span style="color: #990000">,</span>   <span style="color: #993399">2</span><span style="color: #990000">,</span>   <span style="color: #993399">3</span><span style="color: #990000">,</span>   <span style="color: #993399">5</span><span style="color: #990000">,</span>   <span style="color: #993399">8</span><span style="color: #990000">,</span>  <span style="color: #993399">11</span><span style="color: #990000">,</span>  <span style="color: #993399">15</span><span style="color: #990000">,</span>  <span style="color: #993399">20</span><span style="color: #990000">,</span>  <span style="color: #993399">25</span><span style="color: #990000">,</span>
+ <span style="color: #993399">30</span><span style="color: #990000">,</span>  <span style="color: #993399">36</span><span style="color: #990000">,</span>  <span style="color: #993399">43</span><span style="color: #990000">,</span>  <span style="color: #993399">49</span><span style="color: #990000">,</span>  <span style="color: #993399">56</span><span style="color: #990000">,</span>  <span style="color: #993399">64</span><span style="color: #990000">,</span>  <span style="color: #993399">72</span><span style="color: #990000">,</span>  <span style="color: #993399">80</span><span style="color: #990000">,</span>  <span style="color: #993399">88</span><span style="color: #990000">,</span>  <span style="color: #993399">97</span><span style="color: #990000">,</span>
+<span style="color: #993399">105</span><span style="color: #990000">,</span> <span style="color: #993399">114</span><span style="color: #990000">,</span> <span style="color: #993399">123</span><span style="color: #990000">,</span> <span style="color: #993399">132</span><span style="color: #990000">,</span> <span style="color: #993399">141</span><span style="color: #990000">,</span> <span style="color: #993399">150</span><span style="color: #990000">,</span> <span style="color: #993399">158</span><span style="color: #990000">,</span> <span style="color: #993399">167</span><span style="color: #990000">,</span> <span style="color: #993399">175</span><span style="color: #990000">,</span> <span style="color: #993399">183</span><span style="color: #990000">,</span>
+<span style="color: #993399">191</span><span style="color: #990000">,</span> <span style="color: #993399">199</span><span style="color: #990000">,</span> <span style="color: #993399">206</span><span style="color: #990000">,</span> <span style="color: #993399">212</span><span style="color: #990000">,</span> <span style="color: #993399">219</span><span style="color: #990000">,</span> <span style="color: #993399">225</span><span style="color: #990000">,</span> <span style="color: #993399">230</span><span style="color: #990000">,</span> <span style="color: #993399">235</span><span style="color: #990000">,</span> <span style="color: #993399">240</span><span style="color: #990000">,</span> <span style="color: #993399">244</span><span style="color: #990000">,</span>
+<span style="color: #993399">247</span><span style="color: #990000">,</span> <span style="color: #993399">250</span><span style="color: #990000">,</span> <span style="color: #993399">252</span><span style="color: #990000">,</span> <span style="color: #993399">253</span><span style="color: #990000">,</span> <span style="color: #993399">254</span><span style="color: #990000">,</span> <span style="color: #993399">255</span><span style="color: #990000">,</span> <span style="color: #993399">254</span><span style="color: #990000">,</span> <span style="color: #993399">253</span><span style="color: #990000">,</span> <span style="color: #993399">252</span><span style="color: #990000">,</span> <span style="color: #993399">250</span><span style="color: #990000">,</span>
+<span style="color: #993399">247</span><span style="color: #990000">,</span> <span style="color: #993399">244</span><span style="color: #990000">,</span> <span style="color: #993399">240</span><span style="color: #990000">,</span> <span style="color: #993399">235</span><span style="color: #990000">,</span> <span style="color: #993399">230</span><span style="color: #990000">,</span> <span style="color: #993399">225</span><span style="color: #990000">,</span> <span style="color: #993399">219</span><span style="color: #990000">,</span> <span style="color: #993399">212</span><span style="color: #990000">,</span> <span style="color: #993399">206</span><span style="color: #990000">,</span> <span style="color: #993399">199</span><span style="color: #990000">,</span>
+<span style="color: #993399">191</span><span style="color: #990000">,</span> <span style="color: #993399">183</span><span style="color: #990000">,</span> <span style="color: #993399">175</span><span style="color: #990000">,</span> <span style="color: #993399">167</span><span style="color: #990000">,</span> <span style="color: #993399">158</span><span style="color: #990000">,</span> <span style="color: #993399">150</span><span style="color: #990000">,</span> <span style="color: #993399">141</span><span style="color: #990000">,</span> <span style="color: #993399">132</span><span style="color: #990000">,</span> <span style="color: #993399">123</span><span style="color: #990000">,</span> <span style="color: #993399">114</span><span style="color: #990000">,</span>
+<span style="color: #993399">105</span><span style="color: #990000">,</span>  <span style="color: #993399">97</span><span style="color: #990000">,</span>  <span style="color: #993399">88</span><span style="color: #990000">,</span>  <span style="color: #993399">80</span><span style="color: #990000">,</span>  <span style="color: #993399">72</span><span style="color: #990000">,</span>  <span style="color: #993399">64</span><span style="color: #990000">,</span>  <span style="color: #993399">56</span><span style="color: #990000">,</span>  <span style="color: #993399">49</span><span style="color: #990000">,</span>  <span style="color: #993399">43</span><span style="color: #990000">,</span>  <span style="color: #993399">36</span><span style="color: #990000">,</span>
+ <span style="color: #993399">30</span><span style="color: #990000">,</span>  <span style="color: #993399">25</span><span style="color: #990000">,</span>  <span style="color: #993399">20</span><span style="color: #990000">,</span>  <span style="color: #993399">15</span><span style="color: #990000">,</span>  <span style="color: #993399">11</span><span style="color: #990000">,</span>   <span style="color: #993399">8</span><span style="color: #990000">,</span>   <span style="color: #993399">5</span><span style="color: #990000">,</span>   <span style="color: #993399">3</span><span style="color: #990000">,</span>   <span style="color: #993399">2</span><span style="color: #990000">,</span>   <span style="color: #993399">1</span><span style="color: #990000">,</span> <span style="color: #993399">0</span><span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 计算查找表中的元素数量</span></span>
+<span style="color: #009900">int</span> numData <span style="color: #990000">=</span> <span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">sizeof</span></span> sine_table<span style="color: #990000">)</span> <span style="color: #990000">/</span> <span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">sizeof</span></span> sine_table<span style="color: #990000">[</span><span style="color: #993399">0</span><span style="color: #990000">]);</span> <span style="font-style: italic"><span style="color: #9A1900">// 在这里 numData = 91 <b>&lt;1&gt;</b></span></span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">setup</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">begin</span></span><span style="color: #990000">(</span><span style="color: #993399">9600</span><span style="color: #990000">);</span>
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">println</span></span><span style="color: #990000">(</span>numData<span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// 打印出数字帮助我们确认</span></span>
+<span style="color: #FF0000">}</span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">loop</span></span><span style="color: #990000">()</span> <span style="color: #FF0000">{</span>
+  <span style="font-weight: bold"><span style="color: #0000FF">for</span></span> <span style="color: #990000">(</span><span style="color: #009900">int</span> i <span style="color: #990000">=</span> <span style="color: #993399">0</span><span style="color: #990000">;</span> i <span style="color: #990000">&lt;</span> numData<span style="color: #990000">;</span> i<span style="color: #990000">++)</span> <span style="color: #FF0000">{</span>
+    <span style="font-weight: bold"><span style="color: #000000">analogWrite</span></span><span style="color: #990000">(</span>LED_PIN<span style="color: #990000">,</span> sine_table<span style="color: #990000">[</span>i<span style="color: #990000">]);</span>
+    <span style="font-weight: bold"><span style="color: #000000">delay</span></span><span style="color: #990000">(</span><span style="color: #993399">50</span><span style="color: #990000">);</span>
+  <span style="color: #FF0000">}</span>
+<span style="color: #FF0000">}</span></tt></pre></div></div>
+<div class="colist arabic"><ol>
+<li>
+<p>
+sizeof sine_table 计算出数组 sine_table[] 一共占用了多少个 bytes,
+    sizeof sine_table[0] 计算出数组中每个元素占用了多少个 bytes.
+    两者相除，就得到了数组中的元素数量。Magic number
+    消失了！
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>我们再来看下面的代码片断：</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">int</span> sine_table<span style="color: #990000">[]</span> <span style="color: #990000">=</span> <span style="color: #FF0000">{</span><span style="color: #993399">1</span><span style="color: #990000">,</span> <span style="color: #993399">2</span><span style="color: #990000">,</span> <span style="color: #993399">3</span><span style="color: #990000">,</span> <span style="color: #993399">4</span><span style="color: #FF0000">}</span><span style="color: #990000">;</span>
+
+<span style="color: #009900">int</span> numData <span style="color: #990000">=</span> <span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">sizeof</span></span> sine_table<span style="color: #990000">)</span> <span style="color: #990000">/</span> <span style="color: #990000">(</span><span style="font-weight: bold"><span style="color: #0000FF">sizeof</span></span> sine_table<span style="color: #990000">[</span><span style="color: #993399">0</span><span style="color: #990000">]);</span> <span style="font-style: italic"><span style="color: #9A1900">// numData = 4</span></span></tt></pre></div></div>
+<div class="paragraph"><p>因为 C 语言并没有规定一个 int 类型占用几个字节。例如一台计算机上 int
+用 4 bytes, sizeof sine_table 就得到 16, sizeof sine_table[0] 得到 4,
+16/4 = 4, 通过采用除法(/)，这段代码在任何计算机上得到的结果 numData
+都为 4, 提高了程序的可移植性。</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph"><p>sizeof 是 C 语言的一个运算符(+, -, *, /&#8230; 都是运算符),
+可以用它"测量"一个变量或一种数据类型占用的字节数。</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">int</span> a<span style="color: #990000">,</span> b<span style="color: #990000">;</span>
+
+b <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #0000FF">sizeof</span></span><span style="color: #990000">(</span>a<span style="color: #990000">);</span>  <span style="font-style: italic"><span style="color: #9A1900">// 在 Arduino 上，结果是 b = 2, 因为一个 int 占用两个 byte</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">//b = sizeof a; // 上面的语句也可以写成这样，当 sizeof 作用于变量名时，() 可以省略</span></span></tt></pre></div></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">int</span> b<span style="color: #990000">;</span>
+
+<span style="font-style: italic"><span style="color: #9A1900">// 计算一个长整型数据类型要占用几个 byte</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">// 计算数据类型时，sizeof 后面必须加 ()</span></span>
+b <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #0000FF">sizeof</span></span><span style="color: #990000">(</span><span style="color: #009900">unsigned</span> <span style="color: #009900">long</span><span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// 在 Arduino 上，结果是 b = 4</span></span></tt></pre></div></div>
+</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>问题: 为什么用 analogWrite()
+写完一个亮度值之后要加延时？改变延时的时间长短，甚至去掉延时，会有什么效果？</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_analogread">analogRead()</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_读电位器">读电位器</h3>
+<div class="paragraph"><p>pot.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_读_lm35_温度传感器">读 LM35 温度传感器</h3>
+<div class="imageblock">
+<div class="content">
+<img src="figures/TemperaturSensorLM35_bb.svg" alt="LM35 bradboard" />
+</div>
+<div class="title">Figure 3. LM35 和 Arduino 的连接</div>
+</div>
+<div class="paragraph"><p>因为 LM35
+被设计成输出电压和环境温度成线性关系，因此你可以直接用万用表测量中间引脚的电压值得到温度值。例如，测得的电压是
+234mV，则温度是 234/10 = 23.4 摄氏度。</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="figures/lm35-graph.png" alt="LM35 Vout VS temp" />
+</div>
+<div class="title">Figure 4. 温度和 LM35 输出电压的关系</div>
+</div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">/*</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">  用 LM35 进行温度测量</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900">  inspired by</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">  ladyada </span></span><span style="text-decoration: underline"><span style="color: #0000FF">https://learn.adafruit.com/tmp36-temperature-sensor</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">  pscmpf </span></span><span style="text-decoration: underline"><span style="color: #0000FF">http://pscmpf.blogspot.com/2008/12/arduino-lm35-sensor.html</span></span>
+
+<span style="font-style: italic"><span style="color: #9A1900">*/</span></span>
+
+<span style="color: #009900">int</span> reading<span style="color: #990000">;</span>        <span style="font-style: italic"><span style="color: #9A1900">// 存放 ADC 原始数据</span></span>
+<span style="color: #009900">float</span> voltage<span style="color: #990000">;</span>      <span style="font-style: italic"><span style="color: #9A1900">// 存放电压值</span></span>
+<span style="color: #009900">float</span> temperature<span style="color: #990000">;</span>  <span style="font-style: italic"><span style="color: #9A1900">// 存放温度值</span></span>
+<span style="color: #009900">int</span> sensorPin <span style="color: #990000">=</span> A0<span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">// LM35 第 2 pin 接到 A0 上</span></span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">setup</span></span><span style="color: #990000">()</span>
+<span style="color: #FF0000">{</span>
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">begin</span></span><span style="color: #990000">(</span><span style="color: #993399">9600</span><span style="color: #990000">);</span>
+<span style="color: #FF0000">}</span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">loop</span></span><span style="color: #990000">()</span>
+<span style="color: #FF0000">{</span>
+  <span style="font-style: italic"><span style="color: #9A1900">// 读 sensorPin 上的电压</span></span>
+  <span style="font-style: italic"><span style="color: #9A1900">// 会得到一个 0 to 1023 之间的值</span></span>
+  reading <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">analogRead</span></span><span style="color: #990000">(</span>sensorPin<span style="color: #990000">);</span>
+
+  <span style="font-style: italic"><span style="color: #9A1900">// 转换成电压值</span></span>
+  voltage <span style="color: #990000">=</span> reading <span style="color: #990000">*</span> <span style="color: #993399">5.0</span><span style="color: #990000">;</span>     <span style="font-style: italic"><span style="color: #9A1900">// 5V Arduino</span></span>
+  voltage <span style="color: #990000">=</span> voltage <span style="color: #990000">/</span> <span style="color: #993399">1024.0</span><span style="color: #990000">;</span>
+  <span style="font-style: italic"><span style="color: #9A1900">//voltage = (reading * 5) / 1024; // 这行代码似乎可以代替上面两行，试一试把上两行换成这一行</span></span>
+                                    <span style="font-style: italic"><span style="color: #9A1900">// 观察有什么效果</span></span>
+
+  <span style="font-style: italic"><span style="color: #9A1900">// 打印电压</span></span>
+  <span style="font-style: italic"><span style="color: #9A1900">// 随时可以用 print 查看数据的正确性</span></span>
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">print</span></span><span style="color: #990000">(</span>voltage<span style="color: #990000">);</span> Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">println</span></span><span style="color: #990000">(</span><span style="color: #FF0000">" V"</span><span style="color: #990000">);</span>
+
+  <span style="font-style: italic"><span style="color: #9A1900">// 得到温度值，单位 °C</span></span>
+  temperature <span style="color: #990000">=</span> voltage <span style="color: #990000">*</span> <span style="color: #993399">100</span><span style="color: #990000">;</span>
+
+  <span style="font-style: italic"><span style="color: #9A1900">// 把温度值发送到电脑串口</span></span>
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">print</span></span><span style="color: #990000">(</span>temperature<span style="color: #990000">);</span> Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">println</span></span><span style="color: #990000">(</span><span style="color: #FF0000">" °C"</span><span style="color: #990000">);</span>
+  <span style="font-weight: bold"><span style="color: #000000">delay</span></span><span style="color: #990000">(</span><span style="color: #993399">1000</span><span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// 等一会儿再进行下次测量</span></span>
+<span style="color: #FF0000">}</span>
+</tt></pre></div></div>
+<div class="paragraph"><p>Arduino 的 analogRead() 是把模拟输入引脚上的电压和 5V
+作比较，把比值映射到 0 到 1023 之间。</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>           Vin
+reading = ----- * 1024
+           5V</code></pre>
+</div></div>
+<div class="paragraph"><p>只要对公式进行简单变形就得到:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code> reading
+--------- * 5V = Vin
+  1024
+
+Vin: LM35 输出的电压</code></pre>
+</div></div>
+<div class="paragraph"><p>这个公式反应在上面的代码中。</p></div>
+<div class="paragraph"><p>我们得到电压的单位是 V, 电压和温度的对应关系是 10mV/°C =
+0.01V/°C，因此:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code> voltage
+---------- = temperature (单位: °C)
+ 0.01V/°C</code></pre>
+</div></div>
+<div class="paragraph"><p>再对上面的代码作一些很小的修改。</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.8
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900">/*</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">  LM35 输出 CSV 文件进行数据记录</span></span>
+<span style="font-style: italic"><span style="color: #9A1900">*/</span></span>
+
+<span style="color: #009900">int</span> reading<span style="color: #990000">;</span>        <span style="font-style: italic"><span style="color: #9A1900">// 存放 ADC 原始数据</span></span>
+<span style="color: #009900">float</span> voltage<span style="color: #990000">;</span>      <span style="font-style: italic"><span style="color: #9A1900">// 存放电压值</span></span>
+<span style="color: #009900">float</span> temperature<span style="color: #990000">;</span>  <span style="font-style: italic"><span style="color: #9A1900">// 存放温度值</span></span>
+<span style="color: #009900">int</span> sensorPin <span style="color: #990000">=</span> A0<span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">// LM35 第 2 pin 接到 A0 上</span></span>
+<span style="color: #009900">unsigned</span> <span style="color: #009900">long</span> time<span style="color: #990000">;</span> <span style="font-style: italic"><span style="color: #9A1900">// 时间戳</span></span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">setup</span></span><span style="color: #990000">()</span>
+<span style="color: #FF0000">{</span>
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">begin</span></span><span style="color: #990000">(</span><span style="color: #993399">9600</span><span style="color: #990000">);</span>
+<span style="color: #FF0000">}</span>
+
+<span style="color: #009900">void</span> <span style="font-weight: bold"><span style="color: #000000">loop</span></span><span style="color: #990000">()</span>
+<span style="color: #FF0000">{</span>
+  time <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">millis</span></span><span style="color: #990000">();</span> <span style="font-style: italic"><span style="color: #9A1900">// 读当前时间</span></span>
+  <span style="font-style: italic"><span style="color: #9A1900">// 读 sensorPin 上的电压</span></span>
+  <span style="font-style: italic"><span style="color: #9A1900">// 会得到一个 0 to 1023 之间的值</span></span>
+  reading <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">analogRead</span></span><span style="color: #990000">(</span>sensorPin<span style="color: #990000">);</span>
+
+  <span style="font-style: italic"><span style="color: #9A1900">// 转换成电压值</span></span>
+  voltage <span style="color: #990000">=</span> reading <span style="color: #990000">*</span> <span style="color: #993399">5.0</span><span style="color: #990000">;</span>     <span style="font-style: italic"><span style="color: #9A1900">// 5V Arduino</span></span>
+  voltage <span style="color: #990000">=</span> voltage <span style="color: #990000">/</span> <span style="color: #993399">1024.0</span><span style="color: #990000">;</span>
+
+  <span style="font-style: italic"><span style="color: #9A1900">// 得到温度值，单位 °C</span></span>
+  temperature <span style="color: #990000">=</span> voltage <span style="color: #990000">*</span> <span style="color: #993399">100</span><span style="color: #990000">;</span>
+
+  <span style="font-style: italic"><span style="color: #9A1900">//prints time since program started</span></span>
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">print</span></span><span style="color: #990000">(</span>time<span style="color: #990000">/</span><span style="color: #993399">1000</span><span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// in seconds</span></span>
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">print</span></span><span style="color: #990000">(</span><span style="color: #FF0000">", "</span><span style="color: #990000">);</span>      <span style="font-style: italic"><span style="color: #9A1900">// 打印 CSV (Comma-Separated Values) 格式</span></span>
+
+  Serial<span style="color: #990000">.</span><span style="font-weight: bold"><span style="color: #000000">print</span></span><span style="color: #990000">(</span>temperature<span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// 把温度值发送到电脑串口</span></span>
+  <span style="font-weight: bold"><span style="color: #000000">delay</span></span><span style="color: #990000">(</span><span style="color: #993399">1000</span><span style="color: #990000">);</span> <span style="font-style: italic"><span style="color: #9A1900">// 等一会儿再进行下次测量</span></span>
+<span style="color: #FF0000">}</span>
+</tt></pre></div></div>
+<div class="paragraph"><p>打开 Arduino IDE 的串口监视器，PC 就可以开始接收 CSV
+格式的数据，下面是约 1 分钟的数据。</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>0, 24.41
+1, 24.41
+2, 24.41
+3, 24.90
+4, 24.41
+5, 24.41
+6, 24.41
+7, 24.41
+8, 24.41
+9, 25.39
+10, 26.86
+11, 27.83
+12, 28.32
+13, 28.81
+14, 29.30
+15, 29.79
+16, 29.79
+17, 30.27
+18, 30.27
+19, 30.27
+20, 30.76
+21, 30.76
+22, 30.76
+23, 30.76
+24, 30.76
+25, 30.76
+26, 31.25
+27, 31.25
+28, 31.74
+29, 31.74
+30, 31.25
+31, 31.25
+32, 31.25
+33, 30.76
+34, 30.76
+35, 30.76
+36, 30.27
+37, 29.79
+38, 29.79
+39, 29.30
+40, 29.30
+41, 28.81
+42, 28.81
+43, 28.32
+44, 28.32
+45, 28.32
+46, 28.32
+47, 28.32
+48, 27.83
+49, 27.83
+50, 27.83
+51, 27.83
+52, 27.34
+53, 27.34
+54, 26.86
+55, 26.86
+56, 26.86
+57, 26.86</code></pre>
+</div></div>
+<div class="paragraph"><p>再用电子表格或别的软件，你可以把数据可视化。</p></div>
+<div class="imageblock">
+<div class="content">
+<img src="figures/lm35-templogger.svg" alt="lm35-templogger.svg" />
+</div>
+<div class="title">Figure 5. CSV 转成图表</div>
+</div>
+<div class="paragraph"><p>Wow, cool, 现在你有一个简易的温度记录仪(temperature logger)了!
+只是它需要用电脑来存数据，如果给 Arduino 加一个 SD 卡，就能脱机存储了。</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_读光敏电阻">读光敏电阻</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>请参考 <a href="https://learn.adafruit.com/photocells/using-a-photocell">https://learn.adafruit.com/photocells/using-a-photocell</a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_your_turn">Your turn!</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>你可以发挥自己的想象力，用 lab kit 中的模拟量传感器设计自己的实验！</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Version 0.2<br />
+Last updated 2017-10-19 15:19:15 HKT
+</div>
+</div>
+</body>
+</html>
